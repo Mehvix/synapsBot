@@ -389,13 +389,13 @@ async def on_message(message):
     author_level = get_level(user_id)
     author_karma = get_karma(user_id)
 
-    # Because @xpoes#9244 spammed the shit out of our pokemon channel
+    # Because @xpoes#9244 spams the shit out of our pokemon channel
     if message.channel.id == pokemon_channel:
         print("{0}: DIDN'T give karma to {1} for message '{2}' because they sent a message in the Pokemon channel"
               .format(get_time(), message.author, message.content))
     else:
         user_add_karma(user_id, 1)
-        print("{0}: ADDED 1 karma to {0} for a message '{2}' in {3}"
+        print("{0}: ADDED 1 karma to {1} for a message '{2}' in {3}"
               .format(get_time(), user_name, message.content, message.channel.id))
 
     # Checks Karma / Level
