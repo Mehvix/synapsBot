@@ -7,7 +7,7 @@ import os
 import random
 import string
 import sys
-
+import math
 import discord
 from discord.ext import commands
 from urbandictionary_top import udtop
@@ -119,7 +119,14 @@ minutes = 0
 hours = 0
 days = 0
 
+# Resets vote variables
 vote_phase = 0
+vote_1 = 0
+vote_2 = 0
+vote_3 = 0
+vote_4 = 0
+vote_5 = 0
+vote_6 = 0
 
 # For deleting/kicking code not messaging twice for bans
 ban_message = 0
@@ -231,7 +238,146 @@ async def on_member_remove(member):
         ban_message = 0
 
 
+# This is for the upvote/downvote system
+@client.event
+async def on_reaction_add(reaction, user):
+    emoji_used = str(reaction.emoji)
 
+    formted_up = "<{}>".format(upvote_emoji)
+    formted_down = "<{}>".format(downvote_emoji)
+    formated_one = "<{}>".format(one_emote)
+    formated_two = "<{}>".format(two_emote)
+    formated_three = "<{}>".format(three_emote)
+    formated_four = "<{}>".format(four_emote)
+    formated_five = "<{}>".format(five_emote)
+    formated_six = "<{}>".format(six_emote)
+
+    fulltime = "{0}:{1}:{2} {3}".format(new_cur_hour, new_cur_min, new_cur_sec, new_am_or_pm)
+
+    print("{0}: {1} reacted with {2} to {3}'s message"
+          .format(fulltime, user, emoji_used, reaction.message.author))
+
+    if emoji_used == formated_one:
+        global vote_1
+        vote_1 += 1
+        print("{0}:{1}:{2}: {3} voted for #1".format(fulltime, user, emoji_used, reaction.message.author))
+
+    if emoji_used == formated_two:
+        global vote_2
+        vote_2 += 1
+        print("{0}: {1} voted for #2".format(fulltime, user, emoji_used, reaction.message.author))
+
+    if emoji_used == formated_three:
+        global vote_3
+        vote_3 += 1
+        print("{0}: {1} voted for #3".format(fulltime, user, emoji_used, reaction.message.author))
+        global vote_4
+
+    if emoji_used == formated_four:
+        global vote_4
+        vote_4 += 1
+        print("{0}: {1} voted for #4".format(fulltime, user, emoji_used, reaction.message.author))
+
+    if emoji_used == formated_five:
+        global vote_5
+        vote_5 += 1
+        print("{0}: {1} voted for #5".format(fulltime, user, emoji_used, reaction.message.author))
+
+    if emoji_used == formated_six:
+        global vote_6
+        vote_6 += 1
+        print("{0}: {1} voted for #6".format(fulltime, user, emoji_used, reaction.message.author))
+
+    if reaction.message.channel.id != pokemon_channel:
+        if emoji_used == formted_up:  # If emote is the upvote emote
+            if reaction.message.author.id == user.id:
+                print("{0}: {1} upvoted there own link. NO CHANGE"
+                      .format(fulltime, user))
+            else:
+                user_add_karma(reaction.user_id, 5)
+                print("{0}: ADDED 5 karma to {1} for a UPVOTE from {2}"
+                      .format(fulltime, reaction.message.author, user))
+
+        # If emote is the downvote emote
+        if emoji_used == formted_down:
+            if reaction.message.author.id == user.id:
+                print("{0}: {1} downvoted there post. NO CHANGE"
+                      .format(fulltime, user))
+            else:
+                user_add_karma(reaction.user_id, -5)
+                print("{0}: REMOVED 5 karma to {1} for a DOWNVOTE from {1}"
+                      .format(fulltime, reaction.message.author, user))
+    else:
+        print("{0}: Didn't change {1}'s karma because they're in the Pokemon Channel!"
+              .format(fulltime, user))
+
+
+# This is more stuff for the upvote/downvote system
+@client.event
+async def on_reaction_remove(reaction, user):
+    emoji_used = str(reaction.emoji)
+
+    formated_up = "<{}>".format(upvote_emoji)
+    formated_down = "<{}>".format(downvote_emoji)
+    formated_one = "<{}>".format(one_emote)
+    formated_two = "<{}>".format(two_emote)
+    formated_three = "<{}>".format(three_emote)
+    formated_four = "<{}>".format(four_emote)
+    formated_five = "<{}>".format(five_emote)
+    formated_six = "<{}>".format(six_emote)
+
+    fulltime = "{0}:{1}:{2} {3}".format(new_cur_hour, new_cur_min, new_cur_sec, new_am_or_pm)
+
+    if emoji_used == formated_one:
+        global vote_1
+        vote_1 -= 1
+        print("{0}: {1} removed their vote for #1".format(fulltime, user))
+
+    if emoji_used == formated_two:
+        global vote_2
+        vote_2 -= 1
+        print("{0}: {1} removed their vote for #2".format(fulltime, user))
+
+    if emoji_used == formated_three:
+        global vote_3
+        vote_3 -= 1
+        print("{0}: {1} removed their vote for #3".format(fulltime, user))
+
+    if emoji_used == formated_four:
+        global vote_4
+        vote_4 -= 1
+        print("{0}: {1} removed their vote for #4".format(fulltime, user))
+
+    if emoji_used == formated_five:
+        global vote_5
+        vote_5 -= 1
+        print("{0}: {1} removed their vote for #5".format(fulltime, user))
+
+    if emoji_used == formated_six:
+        global vote_6
+        vote_6 -= 1
+        print("{0}: {1} removed their vote for #6".format(fulltime, user))
+
+    if reaction.message.channel.id != pokemon_channel:
+        if emoji_used == formated_up:
+            if reaction.user_id == user.id:
+                print("{0}: {1} removed their upvote to their post. NO CHANGE".format(fulltime, user.id))
+            else:
+                user_add_karma(reaction.user_id, -5)
+                print("{0}: REMOVED 5 karma from {0} because {1} removed there UPVOTE"
+                      .format(fulltime, reaction.message.author, user))
+
+        # If emote is the downvote emote
+        if emoji_used == formated_down:
+            if reaction.user_id == user.id:
+                print("{0}: {1} removed their downvote to there own link. NO CHANGE".format(fulltime, user))
+            else:
+                user_add_karma(reaction.user_id, 5)
+                print("{0}: RE-ADDED 5 karma to {1} for removal of downvote reaction from {2}"
+                      .format(fulltime, reaction.message.author, user))
+    else:
+        print("{0}: Didn't change {1}'s karma because it was in the Pokemon Channel!"
+              .format(fulltime, user))
 
 
 @client.event
@@ -580,14 +726,9 @@ async def on_message(message):
 
                 # Poll System
                 if message.content.upper().startswith(".CREATEPOLL"):
+                    global vote_phase
                     if vote_phase != 1:
-                        vote_1 = 0
-                        vote_2 = 0
-                        vote_3 = 0
-                        vote_4 = 0
-                        vote_5 = 0
-                        vote_6 = 0
-                        vote_phase + 1
+                        vote_phase += 1
                         print("{0}: {1} created a poll".format(fulltime, user_name))
                         await client.delete_message(message)
 
@@ -615,25 +756,21 @@ async def on_message(message):
                             # await client.delete_message(time_bot)
                         except ValueError:
                             await client.send_message(message.channel, "You didn't reply a number!")
-                            vote_phase - 1
                             break
                         except AttributeError:
                             await client.send_message(
                                 message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
-                            vote_phase - 1
                             break
 
                         if poll_time_raw < .5:
                             await client.send_message(
                                 message.channel, "Sorry, you can't have a less than `30` second poll")
-                            vote_phase - 1
                             break
 
                         if poll_time_raw > 60:
                             await client.send_message(
                                 message.channel, "Sorry, you can't have more than a `60` minute poll")
-                            vote_phase - 1
                             break
 
                         title_embed = discord.Embed(title="\u200b", color=embed_color)
@@ -658,7 +795,6 @@ async def on_message(message):
                             await client.send_message(
                                 message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
-                            vote_phase - 1
                             break
 
                         options_embed = discord.Embed(title="\u200b", color=embed_color)
@@ -686,23 +822,19 @@ async def on_message(message):
                         except ValueError:
                             await client.send_message(
                                 message.channel, "You can only use **whole** numbers, no decimals!")
-                            vote_phase - 1
                             break
                         except AttributeError:
                             await client.send_message(
                                 message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
-                            vote_phase - 1
                             break
 
                         # Option debugging
                         if poll_options <= 1:
                             await client.send_message(message.channel, "Sorry, You can't have 1 option")
-                            vote_phase - 1
                             break
                         if poll_options > 6:
                             await client.send_message(message.channel, "Sorry, You can't have more than 6 options!")
-                            vote_phase - 1
                             break
 
                         one_embed = discord.Embed(title="\u200b", color=embed_color)
@@ -734,7 +866,6 @@ async def on_message(message):
                                 message.channel,
                                 "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
-                            vote_phase - 1
                             break
 
                         two_embed = discord.Embed(title="\u200b", color=embed_color)
@@ -768,7 +899,6 @@ async def on_message(message):
                                 message.channel,
                                 "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
-                            vote_phase - 1
                             break
 
                         if poll_options >= 3:
@@ -804,7 +934,6 @@ async def on_message(message):
                                     message.channel,
                                     "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                         message.author.id))
-                                vote_phase - 1
                                 break
 
                             if poll_options >= 4:
@@ -840,7 +969,6 @@ async def on_message(message):
                                         message.channel,
                                         "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                             message.author.id))
-                                    vote_phase - 1
                                     break
 
                                 if poll_options >= 5:
@@ -879,7 +1007,6 @@ async def on_message(message):
                                             message.channel,
                                             "<@{}> didn't respond fast enough, so the poll was cancelled".format(
                                                 message.author.id))
-                                        vote_phase - 1
                                         break
 
                                     if poll_options == 6:
@@ -921,7 +1048,6 @@ async def on_message(message):
                                                 message.channel,
                                                 "<@{}> didn't respond fast enough, so the poll was cancelled".format
                                                 (message.author.id))
-                                            vote_phase - 1
                                             break
                                 else:
                                     await client.delete_message(msg)
@@ -977,7 +1103,7 @@ async def on_message(message):
                         vote_4 = 0
                         vote_5 = 0
                         vote_6 = 0
-                        vote_phase - 1
+                        vote_phase -= 1
                     else:
                         await client.send_message(message.channel, "Sorry, another vote is taking place right now!")
 
@@ -1114,147 +1240,6 @@ async def on_message(message):
     if message.content.startswith("This is an automated message to spawn Pokémon."):
         print("{0}: {1} sent the pokemon spam message".format(fulltime, user_name))
         await client.delete_message(message)
-
-
-# This is for the upvote/downvote system
-@client.event
-async def on_reaction_add(reaction, user):
-    emoji_used = str(reaction.emoji)
-
-    formted_up = "<{}>".format(upvote_emoji)
-    formted_down = "<{}>".format(downvote_emoji)
-    formated_one = "<{}>".format(one_emote)
-    formated_two = "<{}>".format(two_emote)
-    formated_three = "<{}>".format(three_emote)
-    formated_four = "<{}>".format(four_emote)
-    formated_five = "<{}>".format(five_emote)
-    formated_six = "<{}>".format(six_emote)
-
-    fulltime = "{0}:{1}:{2} {3}".format(new_cur_hour, new_cur_min, new_cur_sec, new_am_or_pm)
-
-    print("{0}: {1} reacted with {2} to {3}'s message"
-          .format(fulltime, user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_one:
-        vote_1 += 1
-        print("{0}:{1}:{2}: {3} voted for #1".format(fulltime, user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_two:
-        global vote_2
-        vote_2 += 1
-        print("{0}: {1} voted for #2".format(fulltime, user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_three:
-        global vote_3
-        vote_3 += 1
-        print("{0}: {1} voted for #3".format(fulltime, user, emoji_used, reaction.message.author))
-        global vote_4
-
-    if emoji_used == formated_four:
-        global vote_4
-        vote_4 += 1
-        print("{0}: {1} voted for #4".format(fulltime, user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_five:
-        global vote_5
-        vote_5 += 1
-        print("{0}: {1} voted for #5".format(fulltime, user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_six:
-        global vote_6
-        vote_6 += 1
-        print("{0}: {1} voted for #6".format(fulltime, user, emoji_used, reaction.message.author))
-
-    if reaction.message.channel.id != pokemon_channel:
-        if emoji_used == formted_up:  # If emote is the upvote emote
-            if reaction.message.author.id == user.id:
-                print("{0}: {1} upvoted there own link. NO CHANGE"
-                      .format(fulltime, user))
-            else:
-                user_add_karma(reaction.user_id, 5)
-                print("{0}: ADDED 5 karma to {1} for a UPVOTE from {2}"
-                      .format(fulltime, reaction.message.author, user))
-
-        # If emote is the downvote emote
-        if emoji_used == formted_down:
-            if reaction.message.author.id == user.id:
-                print("{0}: {1} downvoted there post. NO CHANGE"
-                      .format(fulltime, user))
-            else:
-                user_add_karma(reaction.user_id, -5)
-                print("{0}: REMOVED 5 karma to {1} for a DOWNVOTE from {1}"
-                      .format(fulltime, reaction.message.author, user))
-    else:
-        print("{0}: Didn't change {1}'s karma because they're in the Pokemon Channel!"
-              .format(fulltime, user))
-
-
-# This is more stuff for the upvote/downvote system
-@client.event
-async def on_reaction_remove(reaction, user):
-    emoji_used = str(reaction.emoji)
-
-    formated_up = "<{}>".format(upvote_emoji)
-    formated_down = "<{}>".format(downvote_emoji)
-    formated_one = "<{}>".format(one_emote)
-    formated_two = "<{}>".format(two_emote)
-    formated_three = "<{}>".format(three_emote)
-    formated_four = "<{}>".format(four_emote)
-    formated_five = "<{}>".format(five_emote)
-    formated_six = "<{}>".format(six_emote)
-
-    fulltime = "{0}:{1}:{2} {3}".format(new_cur_hour, new_cur_min, new_cur_sec, new_am_or_pm)
-
-    if emoji_used == formated_one:
-        vote_1 -= 1
-        print("{0}: {1} removed their vote for #1".format(fulltime, user))
-
-    if emoji_used == formated_two:
-        global vote_2
-        vote_2 -= 1
-        print("{0}: {1} removed their vote for #2".format(fulltime, user))
-
-    if emoji_used == formated_three:
-        global vote_3
-        vote_3 -= 1
-        print("{0}: {1} removed their vote for #3".format(fulltime, user))
-
-    if emoji_used == formated_four:
-        global vote_4
-        vote_4 -= 1
-        print("{0}: {1} removed their vote for #4".format(fulltime, user))
-
-    if emoji_used == formated_five:
-        global vote_5
-        vote_5 -= 1
-        print("{0}: {1} removed their vote for #5".format(fulltime, user))
-
-    if emoji_used == formated_six:
-        global vote_6
-        vote_6 -= 1
-        print("{0}: {1} removed their vote for #6".format(fulltime, user))
-
-    if reaction.message.channel.id != pokemon_channel:
-        if emoji_used == formated_up:
-            if reaction.user_id == user.id:
-                print("{0}: {1} removed their upvote to their post. NO CHANGE".format(fulltime, user.id))
-            else:
-                user_add_karma(reaction.user_id, -5)
-                print("{0}: REMOVED 5 karma from {0} because {1} removed there UPVOTE"
-                      .format(fulltime, reaction.message.author, user))
-
-        # If emote is the downvote emote
-        if emoji_used == formated_down:
-            if reaction.user_id == user.id:
-                print("{0}: {1} removed their downvote to there own link. NO CHANGE".format(fulltime, user))
-            else:
-                user_add_karma(reaction.user_id, 5)
-                print("{0}: RE-ADDED 5 karma to {1} for removal of downvote reaction from {2}"
-                      .format(fulltime, reaction.message.author, user))
-    else:
-        print("{0}: Didn't change {1}'s karma because it was in the Pokemon Channel!"
-              .format(fulltime, user))
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
