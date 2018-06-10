@@ -387,12 +387,6 @@ async def on_message(message):
         embed.add_field(name=".serverrules (admin)", value="Outputs the Server Rules.", inline=False)
         await client.send_message(message.channel, embed=embed)
 
-    if "bot?" in message.content:
-        print(message.author.bot)
-
-    if "send bot" in message.content:
-        await client.send_message(message.channel, "bot?")
-
     # ".Accept" code
     role = discord.utils.get(message.server.roles, name=member_role_name)
     if message.author.bot is True:
