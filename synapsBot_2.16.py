@@ -145,12 +145,6 @@ days = 0
 
 # Resets vote variables
 vote_phase = 0
-vote_1 = 0
-vote_2 = 0
-vote_3 = 0
-vote_4 = 0
-vote_5 = 0
-vote_6 = 0
 
 # For deleting/kicking code not messaging twice for bans
 ban_message = 0
@@ -243,49 +237,11 @@ async def on_member_remove(member):
 @client.event
 async def on_reaction_add(reaction, user):
     emoji_used = str(reaction.emoji)
-
     formted_up = "<{}>".format(upvote_emoji)
     formted_down = "<{}>".format(downvote_emoji)
-    formated_one = "<{}>".format(one_emote)
-    formated_two = "<{}>".format(two_emote)
-    formated_three = "<{}>".format(three_emote)
-    formated_four = "<{}>".format(four_emote)
-    formated_five = "<{}>".format(five_emote)
-    formated_six = "<{}>".format(six_emote)
 
     print("{0}: {1} reacted with {2} to {3}'s message"
           .format(get_time(), user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_one:
-        global vote_1
-        vote_1 + 1
-        print("{0}: {3} voted for #1".format(get_time(), user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_two:
-        global vote_2
-        vote_2 += 1
-        print("{0}: {1} voted for #2".format(get_time(), user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_three:
-        global vote_3
-        vote_3 += 1
-        print("{0}: {1} voted for #3".format(get_time(), user, emoji_used, reaction.message.author))
-        global vote_4
-
-    if emoji_used == formated_four:
-        global vote_4
-        vote_4 += 1
-        print("{0}: {1} voted for #4".format(get_time(), user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_five:
-        global vote_5
-        vote_5 += 1
-        print("{0}: {1} voted for #5".format(get_time(), user, emoji_used, reaction.message.author))
-
-    if emoji_used == formated_six:
-        global vote_6
-        vote_6 += 1
-        print("{0}: {1} voted for #6".format(get_time(), user, emoji_used, reaction.message.author))
 
     if reaction.message.channel.id != pokemon_channel:
         if emoji_used == formted_up:  # If emote is the upvote emote
@@ -315,45 +271,8 @@ async def on_reaction_add(reaction, user):
 @client.event
 async def on_reaction_remove(reaction, user):
     emoji_used = str(reaction.emoji)
-
-    formated_up = "<{}>".format(upvote_emoji)
-    formated_down = "<{}>".format(downvote_emoji)
-    formated_one = "<{}>".format(one_emote)
-    formated_two = "<{}>".format(two_emote)
-    formated_three = "<{}>".format(three_emote)
-    formated_four = "<{}>".format(four_emote)
-    formated_five = "<{}>".format(five_emote)
-    formated_six = "<{}>".format(six_emote)
-
-    if emoji_used == formated_one:
-        global vote_1
-        vote_1 -= 1
-        print("{0}: {1} removed their vote for #1".format(get_time(), user))
-
-    if emoji_used == formated_two:
-        global vote_2
-        vote_2 -= 1
-        print("{0}: {1} removed their vote for #2".format(get_time(), user))
-
-    if emoji_used == formated_three:
-        global vote_3
-        vote_3 -= 1
-        print("{0}: {1} removed their vote for #3".format(get_time(), user))
-
-    if emoji_used == formated_four:
-        global vote_4
-        vote_4 -= 1
-        print("{0}: {1} removed their vote for #4".format(get_time(), user))
-
-    if emoji_used == formated_five:
-        global vote_5
-        vote_5 -= 1
-        print("{0}: {1} removed their vote for #5".format(get_time(), user))
-
-    if emoji_used == formated_six:
-        global vote_6
-        vote_6 -= 1
-        print("{0}: {1} removed their vote for #6".format(get_time(), user))
+    formted_up = "<{}>".format(upvote_emoji)
+    formted_down = "<{}>".format(downvote_emoji)
 
     if reaction.message.channel.id != pokemon_channel:
         if emoji_used == formated_up:
@@ -512,7 +431,7 @@ async def on_message(message):
                     else:
                         try:
                             term = udtop(target_def)
-                            print("{0}  requested the UD for {1}".format(user_name, target_def))
+                            print("{0}: {1} requested the UD for {2}".format(get_time(), user_name, target_def))
                             embed = discord.Embed(title="Definition Page",
                                                   url="https://www.urbandictionary.com/define.php?term={}"
                                                   .format(target_def.replace(" ", "%20")), color=embed_color)
@@ -606,25 +525,15 @@ async def on_message(message):
 
                 # Gets random bear picture
                 if message.content.upper().startswith(".BEAR"):
-                    if message.channel.id == notification_channel:
-                        await client.send_message(message.channel, "Sorry, that command is banned in <#{}>"
-                                                  .format(notification_channel))
-                    else:
-                        print("{0} sent a bear in {1} (banned in {2})".format(user_name, message.channel,
-                                                                              notification_channel))
-                        fp = random.choice(os.listdir("bears"))
-                        await client.send_file(message.channel, "bears/{}".format(fp))
+                    print("{0}: {1} sent a bear".format(get_time(), user_name))
+                    fp = random.choice(os.listdir("bears"))
+                    await client.send_file(message.channel, "bears/{}".format(fp))
 
                 # Gets random Sam picture
                 if message.content.upper().startswith(".SAM"):
-                    if message.channel.id == notification_channel:
-                        await client.send_message(message.channel, "Sorry, that command is banned in <#{}>"
-                                                  .format(notification_channel))
-                    else:
-                        print("{0} sent a sam in {1} (banned in {2})".format(user_name, message.channel,
-                                                                             notification_channel))
-                        fp = random.choice(os.listdir("sams"))
-                        await client.send_file(message.channel, "sams/{}".format(fp))
+                    print("{0}: {1} sent a sam".format(get_time(), user_name))
+                    fp = random.choice(os.listdir("sams"))
+                    await client.send_file(message.channel, "sams/{}".format(fp))
 
                 # Server Info
                 if message.content.upper().startswith(".SERVERINFO"):
@@ -675,8 +584,11 @@ async def on_message(message):
                                                                    "Please try another time.")
                     else:
                         if msg.author.id == "196355904503939073":
-                            await client.send_message(user, "You've been accepted! https://discord.gg/wjPwUJx")
-                            await client.send_message(message.channel, "<@!196355904503939073> just accepted <@{}>"
+                            testinvite = get_json('./test_server.json')
+                            invite = testinvite.get("invite")
+                            await client.send_message(user, "You've been accepted! {}".format(invite))
+                            await client.send_message(message.channel,
+                                                      "<@{}> was accepted into the beta testing server! :tada:"
                                                       .format(user_id))
                             # await client.send_message(message.channel, "https://discord.gg/wjPwUJx")
                         else:
@@ -697,11 +609,7 @@ async def on_message(message):
                     await client.send_message(
                         message.channel, "<@{0}> has `{1}` karma".format(user_req, get_karma(user_req)))
 
-                # TODO
-                # Remove str() from update printing
-                # Fix poll_time_reformat
-
-                # Poll System
+                # TODO Poll System
                 if message.content.upper().startswith(".CREATEPOLL"):
                     global vote_phase
                     if vote_phase != 1:
@@ -709,55 +617,13 @@ async def on_message(message):
                         print("{0}: {1} created a poll".format(get_time(), user_name))
                         await client.delete_message(message)
 
-                        embed = discord.Embed(title="\u200b", color=embed_color)
-                        embed.set_author(name="Generating a poll for {0} {1}"
-                                         .format(user_name, random.choice(clock_emoji)))
-                        embed.add_field(name="\u200b", value="\u200b", inline=False)
-                        embed.add_field(name="Question", value="How long should this pole go on in minutes "
-                                                               "(no more than 60)", inline=False)
-
-                        msg = await client.send_message(message.channel, embed=embed)
-
-                        # Time
-                        # time_bot = await client.send_message(
-                        #     message.channel, "How long should this pole go on in minutes (no more than 60)")
-                        time1 = await client.wait_for_message(
-                            timeout=120, author=message.author, channel=message.channel)
-
-                        try:
-                            poll_time_raw = float(time1.content)
-                            poll_time_reformat = float(str(poll_time_raw).replace(".", ""))
-
-                            print("Time set to {}".format(poll_time_raw))
-                            await client.delete_message(time1)
-                            # await client.delete_message(time_bot)
-                        except ValueError:
-                            await client.send_message(message.channel, "You didn't reply a number!")
-                            break
-                        except AttributeError:
-                            await client.send_message(
-                                message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
-                                    message.author.id))
-                            break
-
-                        if poll_time_raw < .5:
-                            await client.send_message(
-                                message.channel, "Sorry, you can't have a less than `30` second poll")
-                            break
-
-                        if poll_time_raw > 60:
-                            await client.send_message(
-                                message.channel, "Sorry, you can't have more than a `60` minute poll")
-                            break
-
                         title_embed = discord.Embed(title="\u200b", color=embed_color)
                         title_embed.set_author(name="Generating a poll for {0} {1}".format(user_name,
                                                                                            random.choice(clock_emoji)))
-                        title_embed.add_field(name="Length:", value=poll_time_reformat, inline=True)
                         title_embed.add_field(name="\u200b", value="\u200b", inline=False)
                         title_embed.add_field(name="Question", value="What would you like the title to be?",
                                               inline=False)
-                        await client.edit_message(msg, embed=title_embed)
+                        msg = await client.send_message(message.channel, embed=title_embed)
 
                         # Title
                         title = await client.wait_for_message(
@@ -765,7 +631,7 @@ async def on_message(message):
 
                         try:
                             poll_title = title.content
-                            print("Set title to {}".format(poll_title))
+                            print("{0}: Set title to {1}".format(get_time(), poll_title))
                             await client.delete_message(title)
                         #    await client.delete_message(title_bot)
                         except AttributeError:
@@ -775,10 +641,9 @@ async def on_message(message):
                             break
 
                         options_embed = discord.Embed(title="\u200b", color=embed_color)
-                        options_embed.set_author(name="Generating a poll for {0} {1}".format(user_name,
-                                                                                           random.choice(clock_emoji)))
-                        options_embed.add_field(name="Length:", value=poll_time_reformat, inline=True)
-                        options_embed.add_field(name="Title:", value=str(poll_title), inline=True)
+                        options_embed.set_author(name="Generating a poll for {0} {1}"
+                                                 .format(user_name, random.choice(clock_emoji)))
+                        options_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                         options_embed.add_field(name="\u200b", value="\u200b", inline=False)
                         options_embed.add_field(
                             name="Question", value="How many options do you want their to be? (No more than 6)",
@@ -793,7 +658,7 @@ async def on_message(message):
 
                         try:
                             poll_options = int(options.content)
-                            print("Number of options set to {}".format(poll_options))
+                            print("{0}: Number of options set to {1}".format(get_time(), poll_options))
                             # await client.delete_message(num_bot)
                             await client.delete_message(options)
                         except ValueError:
@@ -815,12 +680,10 @@ async def on_message(message):
                             break
 
                         one_embed = discord.Embed(title="\u200b", color=embed_color)
-                        one_embed.set_author(name="Generating a poll for {0} {1}".format(user_name,
-                                                                                             random.choice(
-                                                                                                 clock_emoji)))
-                        one_embed.add_field(name="Length:", value=str(poll_time_reformat), inline=True)
-                        one_embed.add_field(name="Title:", value=str(poll_title), inline=True)
-                        one_embed.add_field(name="Number of Options:", value=str(poll_options), inline=True)
+                        one_embed.set_author(name="Generating a poll for {0} {1}"
+                                             .format(user_name, random.choice(clock_emoji)))
+                        one_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                        one_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
                         one_embed.add_field(name="\u200b", value="\u200b", inline=False)
                         one_embed.add_field(
                             name="Question", value="What should option one be called?",
@@ -834,7 +697,7 @@ async def on_message(message):
                                                                  channel=message.channel)
                         try:
                             poll_option_1 = option_1.content
-                            print("Option 1 set to {}".format(poll_option_1))
+                            print("{0}: Option 1 set to {1}".format(get_time(), poll_option_1))
                             await client.delete_message(option_1)
                             # await client.delete_message(bot_opt1)
 
@@ -849,9 +712,8 @@ async def on_message(message):
                         two_embed.set_author(name="Generating a poll for {0} {1}".format(user_name,
                                                                                          random.choice(
                                                                                              clock_emoji)))
-                        two_embed.add_field(name="Length:", value=str(poll_time_reformat), inline=True)
-                        two_embed.add_field(name="Title:", value=str(poll_title), inline=True)
-                        two_embed.add_field(name="Number of Options:", value=str(poll_options), inline=True)
+                        two_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                        two_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
                         two_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
                         two_embed.add_field(name="\u200b", value="\u200b", inline=False)
                         two_embed.add_field(
@@ -867,7 +729,7 @@ async def on_message(message):
 
                         try:
                             poll_option_2 = option_2.content
-                            print("Option 2 set to {}".format(poll_option_2))
+                            print("{0}: Option 2 set to {1}".format(get_time(), poll_option_2))
                             # await client.delete_message(bot_opt2)
                             await client.delete_message(option_2)
 
@@ -883,9 +745,8 @@ async def on_message(message):
                             three_embed = discord.Embed(title="\u200b", color=embed_color)
                             three_embed.set_author(
                                 name="Generating a poll for {0} {1}".format(user_name, random.choice(clock_emoji)))
-                            three_embed.add_field(name="Length:", value=str(poll_time_reformat), inline=True)
-                            three_embed.add_field(name="Title:", value=str(poll_title), inline=True)
-                            three_embed.add_field(name="Number of Options:", value=str(poll_options), inline=True)
+                            three_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                            three_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
                             three_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
                             three_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
                             three_embed.add_field(name="\u200b", value="\u200b", inline=False)
@@ -902,7 +763,7 @@ async def on_message(message):
 
                             try:
                                 poll_option_3 = option_3.content
-                                print("Option 3 set to {}".format(poll_option_3))
+                                print("{0}: Option 3 set to {1}".format(get_time(), poll_option_3))
                                 # await client.delete_message(bot_opt3)
                                 await client.delete_message(option_3)
 
@@ -917,9 +778,8 @@ async def on_message(message):
                                 four_embed = discord.Embed(title="\u200b", color=embed_color)
                                 four_embed.set_author(
                                     name="Generating a poll for {0} {1}".format(user_name, random.choice(clock_emoji)))
-                                four_embed.add_field(name="Length:", value=str(poll_time_reformat), inline=True)
-                                four_embed.add_field(name="Title:", value=str(poll_title), inline=True)
-                                four_embed.add_field(name="Number of Options:", value=str(poll_options), inline=True)
+                                four_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                                four_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
                                 four_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
                                 four_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
                                 four_embed.add_field(name="Option 3:", value=str(poll_option_3), inline=True)
@@ -937,7 +797,7 @@ async def on_message(message):
 
                                 try:
                                     poll_option_4 = option_4.content
-                                    print("Option 4 set to {}".format(poll_option_4))
+                                    print("{0}: Option 4 set to {1}".format(get_time(), poll_option_4))
                                 #    await client.delete_message(bot_opt4)
                                     await client.delete_message(option_4)
 
@@ -953,10 +813,9 @@ async def on_message(message):
                                     five_embed.set_author(
                                         name="Generating a poll for {0} {1}".format(user_name,
                                                                                     random.choice(clock_emoji)))
-                                    five_embed.add_field(name="Length:", value=str(poll_time_reformat), inline=True)
-                                    five_embed.add_field(name="Title:", value=str(poll_title), inline=True)
+                                    five_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                                     five_embed.add_field(name="Number of Options:", value=str(poll_options),
-                                                         inline=True)
+                                                         inline=False)
                                     five_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
                                     five_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
                                     five_embed.add_field(name="Option 3:", value=str(poll_option_3), inline=True)
@@ -975,7 +834,7 @@ async def on_message(message):
 
                                     try:
                                         poll_option_5 = option_5.content
-                                        print("Option 5 set to {}".format(poll_option_5))
+                                        print("{0}: Option 5 set to {1}".format(get_time(), poll_option_5))
                                     #   await client.delete_message(bot_opt5)
                                         await client.delete_message(option_5)
 
@@ -991,16 +850,15 @@ async def on_message(message):
                                         six_embed.set_author(
                                             name="Generating a poll for {0} {1}".format(user_name,
                                                                                         random.choice(clock_emoji)))
-                                        six_embed.add_field(name="Length:", value=str(poll_time_reformat), inline=True)
-                                        six_embed.add_field(name="Title:", value=str(poll_title), inline=True)
+                                        six_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                                         six_embed.add_field(name="Number of Options:", value=str(poll_options),
-                                                            inline=True)
+                                                            inline=False)
                                         six_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
                                         six_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
                                         six_embed.add_field(name="Option 3:", value=str(poll_option_3), inline=True)
                                         six_embed.add_field(name="Option 4:", value=str(poll_option_4), inline=True)
                                         six_embed.add_field(name="Option 5:", value=str(poll_option_5), inline=True)
-                                        six_embed.add_field(name="\u200b", value="\u200b", inline=False)
+                                        six_embed.add_field(name="\u200b", value="\u200b", inline=True)
                                         six_embed.add_field(
                                             name="Question", value="What should option six be called?",
                                             inline=False)
@@ -1014,7 +872,7 @@ async def on_message(message):
 
                                         try:
                                             poll_option_6 = option_6.content
-                                            print("Option 6 set to {}".format(poll_option_6))
+                                            print("{0}: Option 6 set to {1}".format(get_time(), poll_option_6))
                                         #    await client.delete_message(bot_opt6)
                                             await client.delete_message(option_6)
 
@@ -1032,6 +890,7 @@ async def on_message(message):
                                 await client.delete_message(msg)
                         else:
                             await client.delete_message(msg)
+
                         embed = discord.Embed(
                             title=string.capwords(poll_title),
                             description="Created by: {}".format(user_name), color=embed_color)
@@ -1054,8 +913,6 @@ async def on_message(message):
                                         embed.add_field(
                                             name="6️⃣  Option 6:", value=string.capwords(poll_option_6),
                                             inline=True)
-                        embed.set_footer(
-                            text="I'll announce the winners {0} minutes ⏰".format(poll_time_reformat))
                         poll_message = await client.send_message(message.channel, embed=embed)
 
                         await client.add_reaction(poll_message, one_emote)
@@ -1068,18 +925,6 @@ async def on_message(message):
                                     await client.add_reaction(poll_message, five_emote)
                                     if poll_options == 6:
                                         await client.add_reaction(poll_message, six_emote)
-
-                        time_in_min = float(poll_time_raw * 60)
-                        await asyncio.sleep(time_in_min)
-                        await client.send_message(
-                            message.channel, "Option `{}` won the vote! :tada:".format(
-                                max(vote_1, vote_2, vote_3, vote_4, vote_5, vote_6)))
-                        vote_1 = 0
-                        vote_2 = 0
-                        vote_3 = 0
-                        vote_4 = 0
-                        vote_5 = 0
-                        vote_6 = 0
                         vote_phase -= 1
                     else:
                         await client.send_message(message.channel, "Sorry, another vote is taking place right now!")
