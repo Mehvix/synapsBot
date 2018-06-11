@@ -212,7 +212,7 @@ async def on_member_join(member):
 async def on_member_ban(member):
     global ban_message
     ban_message += 1
-    print("{}: {1} was banned".format(get_time(), member))
+    print("{}: Someone was banned".format(get_time()))
     await client.send_message(discord.Object(id=notification_channel),
                               "<@{}> was either **banned** :hammer:".format(member.id))
     await client.send_message(discord.Object(id=notification_channel),
@@ -603,7 +603,7 @@ async def on_message(message):
                     await client.send_message(
                         message.channel, "<@{0}> has `{1}` karma".format(user_req, get_karma(user_req)))
 
-                # TODO Poll System
+                # Poll System
                 if message.content.upper().startswith(".CREATEPOLL"):
                     global vote_phase
                     if vote_phase != 1:
@@ -617,7 +617,7 @@ async def on_message(message):
                         title_embed.add_field(name="\u200b", value="\u200b", inline=False)
                         title_embed.add_field(name="Question", value="What would you like the title to be?",
                                               inline=False)
-                        msg = await client.send_message(message.channel, embed=title_embed)
+                        title_message = await client.send_message(message.channel, embed=title_embed)
 
                         # Title
                         title = await client.wait_for_message(
@@ -642,7 +642,8 @@ async def on_message(message):
                         options_embed.add_field(
                             name="Question", value="How many options do you want their to be? (No more than 6)",
                             inline=False)
-                        await client.edit_message(msg, embed=options_embed)
+                        await client.delete_message(title_message)
+                        options_message = await client.send_message(message.channel, embed=options_embed)
 
                         # Number of Options
                         # num_bot = await client.send_message(
@@ -682,7 +683,8 @@ async def on_message(message):
                         one_embed.add_field(
                             name="Question", value="What should option one be called?",
                             inline=False)
-                        await client.edit_message(msg, embed=one_embed)
+                        await client.delete_message(options_message)
+                        one_message = await client.send_message(message.channel, embed=one_embed)
 
                         # Gets Option 1
                         # bot_opt1 = await client.send_message(
@@ -713,7 +715,8 @@ async def on_message(message):
                         two_embed.add_field(
                             name="Question", value="What should option two be called?",
                             inline=False)
-                        await client.edit_message(msg, embed=two_embed)
+                        await client.delete_message(one_message)
+                        two_message = await client.send_message(message.channel, embed=two_embed)
 
                         # Gets Option 2
                         # bot_opt2 = await client.send_message(
@@ -747,7 +750,8 @@ async def on_message(message):
                             three_embed.add_field(
                                 name="Question", value="What should option three be called?",
                                 inline=False)
-                            await client.edit_message(msg, embed=three_embed)
+                            await client.delete_message(two_message)
+                            three_message = await client.send_message(message.channel, embed=three_embed)
 
                             # Option 3
                             # bot_opt3 = await client.send_message(
@@ -781,7 +785,8 @@ async def on_message(message):
                                 four_embed.add_field(
                                     name="Question", value="What should option four be called?",
                                     inline=False)
-                                await client.edit_message(msg, embed=four_embed)
+                                await client.delete_message(three_message)
+                                four_message = await client.send_message(message.channel, embed=four_embed)
 
                                 # Option 4
                                 # bot_opt4 = await client.send_message(
@@ -818,7 +823,8 @@ async def on_message(message):
                                     five_embed.add_field(
                                         name="Question", value="What should option five be called?",
                                         inline=False)
-                                    await client.edit_message(msg, embed=five_embed)
+                                    await client.delete_message(four_message)
+                                    five_message = await client.send_message(message.channel, embed=five_embed)
 
                                     # Option 5
                                     # bot_opt5 = await client.send_message(
@@ -856,7 +862,8 @@ async def on_message(message):
                                         six_embed.add_field(
                                             name="Question", value="What should option six be called?",
                                             inline=False)
-                                        await client.edit_message(msg, embed=six_embed)
+                                        await client.delete_message(five_message)
+                                        six_message = await client.send_message(message.channel, embed=six_embed)
 
                                         # Option 6
                                         # bot_opt6 = await client.send_message(
@@ -870,7 +877,7 @@ async def on_message(message):
                                         #    await client.delete_message(bot_opt6)
                                             await client.delete_message(option_6)
 
-                                            await client.delete_message(msg)
+                                            await client.delete_message(six_message)
 
                                         except AttributeError:
                                             await client.send_message(
@@ -887,25 +894,25 @@ async def on_message(message):
 
                         embed = discord.Embed(
                             title=string.capwords(poll_title),
-                            description="Created by: {}".format(user_name), color=embed_color)
+                            description="Created by {}".format(user_name), color=embed_color)
                         embed.set_thumbnail(
                             url="https://png.icons8.com/metro/1600/poll-topic.png")
                         embed.add_field(
-                            name="1️⃣  Option 1:", value=string.capwords(poll_option_1), inline=True)
+                            name="Option 1:", value=string.capwords(poll_option_1), inline=True)
                         embed.add_field(
-                            name="2️⃣  Option 2:", value=string.capwords(poll_option_2), inline=True)
+                            name="Option 2:", value=string.capwords(poll_option_2), inline=True)
                         if poll_options >= 3:
                             embed.add_field(
-                                name="3️⃣  Option 3:", value=string.capwords(poll_option_3), inline=True)
+                                name="Option 3:", value=string.capwords(poll_option_3), inline=True)
                             if poll_options >= 4:
                                 embed.add_field(
-                                    name="4️⃣  Option 4:", value=string.capwords(poll_option_4), inline=True)
+                                    name="Option 4:", value=string.capwords(poll_option_4), inline=True)
                                 if poll_options >= 5:
                                     embed.add_field(
-                                        name="5️⃣  Option 5:", value=string.capwords(poll_option_5), inline=True)
+                                        name="Option 5:", value=string.capwords(poll_option_5), inline=True)
                                     if poll_options == 6:
                                         embed.add_field(
-                                            name="6️⃣  Option 6:", value=string.capwords(poll_option_6),
+                                            name="Option 6:", value=string.capwords(poll_option_6),
                                             inline=True)
                         poll_message = await client.send_message(message.channel, embed=embed)
 
@@ -987,7 +994,8 @@ async def on_message(message):
                             pass
             else:
                 # If user isn't Verified
-                print("{0}: {1} requested for a verified command but doesn't have verified".format(get_time(), user_name))
+                print("{0}: {1} requested for a verified command but doesn't have verified".format(get_time(),
+                                                                                                   user_name))
                 if verified_role_id not in [role.id for role in message.author.roles]:
                     await client.send_message(message.channel,
                                               "Sorry, <@{0}>. You have to be {1} to use that command! Just put `[TS]` "
@@ -1024,7 +1032,7 @@ async def on_message(message):
                         message.channel, "• https://socialclub.rockstargames.com/crew/team_synaps")
                     await client.send_message(message.channel, "• https://blizzard.com/invite/XKp33F07e)")
 
-                # TODO
+                # TODO Mute Command
                 role = discord.utils.get(message.server.roles, name=mute_role_name)
                 if message.content.upper().startswith(".MUTE"):
                     mute_target_id = int(message.content[8:-1])
@@ -1034,16 +1042,15 @@ async def on_message(message):
                     await client.send_message(message.channel, "<@{0}> muted <@{1}> :zipper_mouth:"
                                               .format(user_id, mute_target))
 
-                # TODO
+                # TODO Ban Command
                 if message.content.upper().startswith(".BAN"):
                     ban_target = message.content[7:-1]
-
-                    print("ban target = {}".format(discord.Server.get_member(ban_target)))
+                    server = message.server
+                    print("trying to ban {}".format(ban_target))
                     if not message.raw_mentions:
                         await client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        print(discord.Server.get_member(ban_target))
-                        await client.ban(member=server.get_member(ban_target))
+                        await client.ban(member=server.get_member(ban_target), delete_message_days=0)
 
             else:
                 if admin_role_id not in [role.id for role in message.author.roles]:
