@@ -16,6 +16,7 @@ from urbandictionary_top import udtop
 # TODO New Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 >  jerma pirate song
+>  ban list
 >  Mute user
 >  ban user
 >  kick user
@@ -46,7 +47,7 @@ def get_json(file_path):
 
 def get_time():
     # Decides if startup is during AM or PM ours (yea damn 'murica time)
-    if datetime.datetime.now().hour > 12:
+    if datetime.datetime.now().hour > 13:
         cur_hour = datetime.datetime.now().hour - 12
         am_or_pm = "PM"
     else:
@@ -214,7 +215,7 @@ async def on_member_ban(member):
     ban_message += 1
     print("{}: Someone was banned".format(get_time()))
     await client.send_message(discord.Object(id=notification_channel),
-                              "<@{}> was either **banned** :hammer:".format(member.id))
+                              "<@{}> was **banned** :hammer:".format(member.id))
     await client.send_message(discord.Object(id=notification_channel),
                               "`NOTE:` You can check who banned them in the server audit log. :thumbsup: ")
 
@@ -227,7 +228,7 @@ async def on_member_remove(member):
         print("Canceled kick message")
         ban_message = 0
     else:
-        print("{0}: {1} left".format(get_time(), member))
+        print("{0}: {1} left or was kicked".format(get_time(), member))
         await client.send_message(discord.Object(id=notification_channel),
                                   "<@{}> was either kicked or left the server :frowning2:".format(member.id))
         ban_message = 0
@@ -362,7 +363,7 @@ async def on_message(message):
     # About Command
     if message.content.upper().startswith(".ABOUT"):
         print("{0}: {1} requested '.ABOUT'".format(get_time(), user_name))
-        embed = discord.Embed(title="Github", url="https://github.com/Mehvix/synaps-bot", color=embed_color)
+        embed = discord.Embed(title="Github", url="https://github.com/Mehvix/synapsBot", color=embed_color)
         embed.set_author(name="About:", url="https://steamcommunity.com/id/Mehvix/",
                          icon_url="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/08/080527004088"
                                   "e8e461d6fc9a4df248dfd3fa2dc8_full.jpg")
@@ -378,12 +379,22 @@ async def on_message(message):
         embed = discord.Embed(title="Commands:", color=embed_color)
         embed.add_field(name=".help", value="This command.", inline=False)
         embed.add_field(name=".ping", value="Play Ping-Pong with the bot.", inline=False)
-        embed.add_field(name=".uptime", value="Returns however long the bot has been online.", inline=False)
-        embed.add_field(name=".8ball +question", value="Returns the true answer to a question.", inline=False)
         embed.add_field(name=".about", value="Returns info on the bot.", inline=False)
-        embed.add_field(name=".karma", value="Returns your karma amount.", inline=False)
-        embed.add_field(name=".karma @name", value="Returns (name's) karma amount.", inline=False)
-        embed.add_field(name=".ud +word", value="Returns (word) definition on Urban Dictionary.", inline=False)
+        embed.add_field(name=".ud +word", value="Returns (word)'s definition on Urban Dictionary.", inline=False)
+        embed.add_field(name=".8ball", value="Shake the 8-ball.", inline=False)
+        embed.add_field(name=".uptime", value="Returns how long the bot has been online.", inline=False)
+        embed.add_field(name=".karma", value="Returns your karma.", inline=False)
+        embed.add_field(name=".karma @name", value="Returns (name)'s karma.", inline=False)
+        embed.add_field(name=".level", value="Returns your level.", inline=False)
+        embed.add_field(name=".level @name", value="Returns (name)'s level.", inline=False)
+        embed.add_field(name=".sam", value="Gives you a picture of Sammy.", inline=False)
+        embed.add_field(name=".bear", value="Uploads a gif of a bear.", inline=False)
+        embed.add_field(name=".sam", value="Gives you a picture of Sammy.", inline=False)
+        embed.add_field(name=".beta", value="Ask's Mehvix for access to beta server.", inline=False)
+        embed.add_field(name=".serverinfo", value="For finding server statistics.", inline=False)
+        embed.add_field(name=".version", value="Find the bot's version", inline=False)
+        embed.add_field(name=".whois", value="Gets someone's account info", inline=False)
+        embed.add_field(name=".createpoll", value="Self explanatory", inline=False)
         embed.add_field(name=".serverrules (admin)", value="Outputs the Server Rules.", inline=False)
         await client.send_message(message.channel, embed=embed)
 
@@ -405,7 +416,7 @@ async def on_message(message):
 
     # Verified Code
     words = [".UD", ".8BALL", ".UPTIME", ".LEVEL", ".BEAR", ".KARMA", ".CREATEPOLL", ".SAM", ".BETA", ".SERVERINFO",
-             ".VERSION", ".USER", ".WHOIS", ".LOAD"]
+             ".VERSION", ".WHOIS", ".LOAD"]
     for word in words:
         if message.content.upper().startswith(word):
             if verified_role_id in [role.id for role in message.author.roles]:
@@ -930,38 +941,6 @@ async def on_message(message):
                     else:
                         await client.send_message(message.channel, "Sorry, another vote is taking place right now!")
 
-                if message.content.upper().startswith(".LOAD"):
-                    msg = await client.send_message(message.channel, clock_emoji[11])
-                    i = 0
-                    while i < 12:
-                        await asyncio.sleep(1)
-                        if i == 0:
-                            await client.edit_message(msg, clock_emoji[0])
-                        if i == 1:
-                            await client.edit_message(msg, clock_emoji[1])
-                        if i == 2:
-                            await client.edit_message(msg, clock_emoji[2])
-                        if i == 3:
-                            await client.edit_message(msg, clock_emoji[3])
-                        if i == 4:
-                            await client.edit_message(msg, clock_emoji[4])
-                        if i == 5:
-                            await client.edit_message(msg, clock_emoji[5])
-                        if i == 6:
-                            await client.edit_message(msg, clock_emoji[6])
-                        if i == 7:
-                            await client.edit_message(msg, clock_emoji[7])
-                        if i == 8:
-                            await client.edit_message(msg, clock_emoji[8])
-                        if i == 9:
-                            await client.edit_message(msg, clock_emoji[9])
-                        if i == 10:
-                            await client.edit_message(msg, clock_emoji[10])
-                        if i == 11:
-                            await client.edit_message(msg, clock_emoji[11])
-                            i = 0
-                        i += 1
-
                 # Who-is command
                 # Assistance from https://gist.github.com/Grewoss/c0601832982a99f59cc73510f7841fe4
                 if message.content.upper().startswith(".WHOIS"):
@@ -1042,15 +1021,36 @@ async def on_message(message):
                     await client.send_message(message.channel, "<@{0}> muted <@{1}> :zipper_mouth:"
                                               .format(user_id, mute_target))
 
-                # TODO Ban Command
                 if message.content.upper().startswith(".BAN"):
                     ban_target = message.content[7:-1]
                     server = message.server
-                    print("trying to ban {}".format(ban_target))
+                    print("{0}: {1} banned {2}".format(get_time(), user_name, ban_target))
                     if not message.raw_mentions:
                         await client.send_message(message.channel, "You need to `@` a user")
                     else:
+                        print("{0}: {1} banned {2}".format(get_time(), user_name, ban_target))
                         await client.ban(member=server.get_member(ban_target), delete_message_days=0)
+
+                if message.content.upper().startswith(".KICK"):
+                    kick_target = message.content[8:-1]
+                    server = message.server
+                    print("{0}: {1} kicked {2}".format(get_time(), user_name, kick_target))
+                    if not message.raw_mentions:
+                        await client.send_message(message.channel, "You need to `@` a user")
+                    else:
+                        print("{0}: {1} kicked {2}".format(get_time(), user_name, kick_target))
+                        await client.kick(member=server.get_member(kick_target))
+
+                if message.content.upper().startswith(".UNBAN"):
+                    unban_target = message.content[9:-1]
+                    server = message.server
+                    await client.send_message(message.channel, "Sorry, this command is coming soon.")
+                    # print("{0}: {1} unbanned {2}".format(get_time(), user_name, unban_target))
+                    # if not message.raw_mentions:
+                    #     await client.send_message(message.channel, "You need to `@` a user")
+                    # else:
+                    #     print("{0}: {1} unbanned {2}".format(get_time(), user_name, unban_target))
+                    #     await client.unban(member=server.get_member(unban_target))
 
             else:
                 if admin_role_id not in [role.id for role in message.author.roles]:
