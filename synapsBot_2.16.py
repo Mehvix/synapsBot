@@ -68,12 +68,12 @@ def get_time():
     return "{0}:{1}:{2} {3}".format(cur_hour, cur_min, cur_sec, am_or_pm)
 
 
-acc_name = "test"
+acc_name = "main"
 jsontoken = 0
 
 if acc_name == "test":
     print("Using TEST account")
-    jsontoken = get_json('./test_token.json')
+    jsontoken = get_json('C:/Users/maxla/PycharmProjects/synapsBot remastered/test_token.json')
     token = jsontoken.get("token")
     upvote_emoji = ":upvote:414204250642579488"
     downvote_emoji = ":downvote:414204250948894721"
@@ -98,7 +98,7 @@ if acc_name == "test":
     six_emote = ":sixv2:442817607196868629"
 if acc_name == "main":
     print("Using MAIN account")
-    jsontoken = get_json('./main_token.json')
+    jsontoken = get_json('C:/Users/maxla/PycharmProjects/synapsBot remastered/main_token.json')
     token = jsontoken.get("token")
     upvote_emoji = ":upvote:412119803034075157"
     downvote_emoji = ":downvote:412119802904313858"
@@ -238,33 +238,33 @@ async def on_member_remove(member):
 @client.event
 async def on_reaction_add(reaction, user):
     emoji_used = str(reaction.emoji)
-    formted_up = "<{}>".format(upvote_emoji)
-    formted_down = "<{}>".format(downvote_emoji)
+    formated_up = "<{}>".format(upvote_emoji)
+    formated_down = "<{}>".format(downvote_emoji)
 
     print("{0}: {1} reacted with {2} to {3}'s message"
           .format(get_time(), user, emoji_used, reaction.message.author))
 
     if reaction.message.channel.id != pokemon_channel:
-        if emoji_used == formted_up:  # If emote is the upvote emote
+        if emoji_used == formated_up:  # If emote is the upvote emote
             if reaction.message.author.id == user.id:
                 print("{0}: {1} upvoted there own link. NO CHANGE"
                       .format(get_time(), user))
             else:
-                user_add_karma(reaction.user_id, 5)
+                user_add_karma(reaction.message.author.id, 5)
                 print("{0}: ADDED 5 karma to {1} for a UPVOTE from {2}"
                       .format(get_time(), reaction.message.author, user))
 
         # If emote is the downvote emote
-        if emoji_used == formted_down:
+        if emoji_used == formated_down:
             if reaction.message.author.id == user.id:
                 print("{0}: {1} downvoted there post. NO CHANGE"
                       .format(get_time(), user))
             else:
-                user_add_karma(reaction.user_id, -5)
+                user_add_karma(reaction.message.author.id, -5)
                 print("{0}: REMOVED 5 karma to {1} for a DOWNVOTE from {1}"
                       .format(get_time(), reaction.message.author, user))
     else:
-        print("{0}: Didn't change {1}'s karma because they're in the Pokemon Channel!"
+        print("{0}: DIDN'T change {1}'s karma because they're in the Pokemon Channel!"
               .format(get_time(), user))
 
 
@@ -272,28 +272,28 @@ async def on_reaction_add(reaction, user):
 @client.event
 async def on_reaction_remove(reaction, user):
     emoji_used = str(reaction.emoji)
-    formted_up = "<{}>".format(upvote_emoji)
-    formted_down = "<{}>".format(downvote_emoji)
+    formated_up = "<{}>".format(upvote_emoji)
+    formated_down = "<{}>".format(downvote_emoji)
 
     if reaction.message.channel.id != pokemon_channel:
         if emoji_used == formated_up:
-            if reaction.user_id == user.id:
-                print("{0}: {1} removed their upvote to their post. NO CHANGE".format(get_time(), user.id))
+            if reaction.message.author.id == user.id:
+                print("{0}: {1} REMOVED their upvote to their post. NO CHANGE".format(get_time(), user.id))
             else:
-                user_add_karma(reaction.user_id, -5)
-                print("{0}: REMOVED 5 karma from {0} because {1} removed there UPVOTE"
+                user_add_karma(reaction.message.author.id, -5)
+                print("{0}: REMOVED 5 karma from {0} because {1} REMOVED there UPVOTE"
                       .format(get_time(), reaction.message.author, user))
 
         # If emote is the downvote emote
         if emoji_used == formated_down:
-            if reaction.user_id == user.id:
-                print("{0}: {1} removed their downvote to there own link. NO CHANGE".format(get_time(), user))
+            if reaction.message.author.id == user.id:
+                print("{0}: {1} REMOVED their downvote to there own link. NO CHANGE".format(get_time(), user))
             else:
-                user_add_karma(reaction.user_id, 5)
+                user_add_karma(reaction.message.author.id, 5)
                 print("{0}: RE-ADDED 5 karma to {1} for removal of downvote reaction from {2}"
                       .format(get_time(), reaction.message.author, user))
     else:
-        print("{0}: Didn't change {1}'s karma because it was in the Pokemon Channel!"
+        print("{0}: DIDN'T change {1}'s karma because it was in the Pokemon Channel!"
               .format(get_time(), user))
 
 
@@ -412,7 +412,7 @@ async def on_message(message):
                 print("{0}: {1} joined the server (.accept)".format(get_time(), user_name))
             else:
                 await client.delete_message(message)
-                print("{0}: didn't type '.accept'".format(get_time(), user_name))
+                print("{0}: DIDN'T type '.accept'".format(get_time(), user_name))
 
     # Verified Code
     words = [".UD", ".8BALL", ".UPTIME", ".LEVEL", ".BEAR", ".KARMA", ".CREATEPOLL", ".SAM", ".BETA", ".SERVERINFO",
@@ -585,7 +585,7 @@ async def on_message(message):
                                                                "Type `.allow` to send them an invite".format(user_id))
                     msg = await client.wait_for_message(content=".allow")
                     if msg is None:
-                        await client.send_message(message.channel, "<@!196355904503939073> didn't respond in time :(. "
+                        await client.send_message(message.channel, "<@!196355904503939073> DIDN'T respond in time :(. "
                                                                    "Please try another time.")
                     else:
                         if msg.author.id == "196355904503939073":
@@ -641,7 +641,7 @@ async def on_message(message):
                         #    await client.delete_message(title_bot)
                         except AttributeError:
                             await client.send_message(
-                                message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                message.channel, "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
                             break
 
@@ -673,7 +673,7 @@ async def on_message(message):
                             break
                         except AttributeError:
                             await client.send_message(
-                                message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                message.channel, "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
                             break
 
@@ -711,7 +711,7 @@ async def on_message(message):
                         except AttributeError:
                             await client.send_message(
                                 message.channel,
-                                "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
                             break
 
@@ -744,7 +744,7 @@ async def on_message(message):
                         except AttributeError:
                             await client.send_message(
                                 message.channel,
-                                "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                     message.author.id))
                             break
 
@@ -779,7 +779,7 @@ async def on_message(message):
                             except AttributeError:
                                 await client.send_message(
                                     message.channel,
-                                    "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                    "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                         message.author.id))
                                 break
 
@@ -814,7 +814,7 @@ async def on_message(message):
                                 except AttributeError:
                                     await client.send_message(
                                         message.channel,
-                                        "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                        "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                             message.author.id))
                                     break
 
@@ -852,7 +852,7 @@ async def on_message(message):
                                     except AttributeError:
                                         await client.send_message(
                                             message.channel,
-                                            "<@{}> didn't respond fast enough, so the poll was cancelled".format(
+                                            "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
                                                 message.author.id))
                                         break
 
@@ -893,15 +893,15 @@ async def on_message(message):
                                         except AttributeError:
                                             await client.send_message(
                                                 message.channel,
-                                                "<@{}> didn't respond fast enough, so the poll was cancelled".format
+                                                "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
                                                 (message.author.id))
                                             break
                                 else:
-                                    await client.delete_message(msg)
+                                    await client.delete_message(four_message)
                             else:
-                                await client.delete_message(msg)
+                                await client.delete_message(three_message)
                         else:
-                            await client.delete_message(msg)
+                            await client.delete_message(two_message)
 
                         embed = discord.Embed(
                             title=string.capwords(poll_title),
@@ -928,14 +928,19 @@ async def on_message(message):
                         poll_message = await client.send_message(message.channel, embed=embed)
 
                         await client.add_reaction(poll_message, one_emote)
+                        await asyncio.sleep(.1)
                         await client.add_reaction(poll_message, two_emote)
                         if poll_options >= 3:
+                            await asyncio.sleep(.1)
                             await client.add_reaction(poll_message, three_emote)
                             if poll_options >= 4:
+                                await asyncio.sleep(.1)
                                 await client.add_reaction(poll_message, four_emote)
                                 if poll_options >= 5:
+                                    await asyncio.sleep(.1)
                                     await client.add_reaction(poll_message, five_emote)
                                     if poll_options == 6:
+                                        await asyncio.sleep(.1)
                                         await client.add_reaction(poll_message, six_emote)
                         vote_phase -= 1
                     else:
@@ -967,7 +972,7 @@ async def on_message(message):
                             embed.set_thumbnail(url=user.avatar_url)
                             await client.send_message(message.channel, embed=embed)
                         except IndexError:
-                            print("{0}: {1} requested '.WHOIS' but they didn't exist".format(get_time(), user_name))
+                            print("{0}: {1} requested '.WHOIS' but they DIDN'T exist".format(get_time(), user_name))
                             await client.send_message(message.channel, "Sorry, but I couldn't find that user")
                         finally:
                             pass
@@ -1092,30 +1097,30 @@ async def uptime():
 
 
 def user_add_karma(user_id: int, karma: int):
-    if os.path.isfile("users.json"):
+    if os.path.isfile("C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json"):
         try:
-            with open('users.json', 'r') as fp:
+            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'r') as fp:
                 users = json.load(fp)
             users[user_id]['karma'] += karma
-            with open('users.json', 'w') as fp:
+            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'w') as fp:
                 json.dump(users, fp, sort_keys=True, indent=4)
         except KeyError:
-            with open('users.json', 'r') as fp:
+            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'r') as fp:
                 users = json.load(fp)
             users[user_id] = {}
             users[user_id]['karma'] = karma
-            with open('users.json', 'w') as fp:
+            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'w') as fp:
                 json.dump(users, fp, sort_keys=True, indent=4)
     else:
         users = {user_id: {}}
         users[user_id]['karma'] = karma
-        with open('users.json', 'w') as fp:
+        with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'w') as fp:
             json.dump(users, fp, sort_keys=True, indent=4)
 
 
 def get_karma(user_id: int):
-    if os.path.isfile('users.json'):
-        with open('users.json', 'r') as fp:
+    if os.path.isfile('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json'):
+        with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'r') as fp:
             users = json.load(fp)
         return users[user_id]['karma']
     else:
@@ -1123,18 +1128,18 @@ def get_karma(user_id: int):
 
 
 def set_level(user_id: int, level: int):
-    if os.path.isfile('users.json'):
-        with open('users.json', 'r') as fp:
+    if os.path.isfile('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json'):
+        with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'r') as fp:
             users = json.load(fp)
         users[user_id]["level"] = level
-        with open('users.json', 'w') as fp:
+        with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'w') as fp:
             json.dump(users, fp, sort_keys=True, indent=4)
 
 
 def get_level(user_id: int):
-    if os.path.isfile('users.json'):
+    if os.path.isfile('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json'):
         try:
-            with open('users.json', 'r') as fp:
+            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/users.json', 'r') as fp:
                 users = json.load(fp)
             return users[user_id]['level']
         except KeyError:
