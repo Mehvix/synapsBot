@@ -16,16 +16,14 @@ from urbandictionary_top import udtop
 # TODO New Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 >  jerma pirate song
+>  gambling and poker (casino games)
 >  ban list
 >  Mute user
->  ban user
->  kick user
 >  Cool down
 >  Hearthstone cards (import hearthstone)
 >  delete messages
 >  Create invite
 >  Invite info
->  Server invites / request (send owner of server DM and option to accept/decline user to server)
 >  Give XP for voice channel usage
 >  Remind me (x) x == time
 >  save console to file
