@@ -993,7 +993,8 @@ async def on_message(message):
                 embed.add_field(name="How to Play:",
                                 value="Type .roulette [BET AMOUNT]",
                                 inline=True)
-                embed.set_footer(text="Maximum bet is 100 karma.")
+                embed.set_footer(text="Maximum bet is 250 karma. Winning on zero will quattuordecuple (x14) your bet"
+                                      " and odd and even will double it.")
                 await client.send_message(message.channel, embed=embed)
             else:
                 message_split = message.content.split(" ")
@@ -1001,17 +1002,16 @@ async def on_message(message):
                 try:
                     bet_amount = int(message_split[1])
                 except ValueError:
-                    await client.send_message(message.channel, "You need to bet a number under `100`")
+                    await client.send_message(message.channel, "Sorry, you need to bet a number between `10` and `250`")
                     return
                 except IndexError:
-                    await client.send_message(message.channel, "You need to bet a number under `100`")
+                    await client.send_message(message.channel, "Sorry, you need to bet a number between `10` and `250`")
                     return
 
-                if 0 < bet_amount < 100:
+                if 9 < bet_amount < 251:
                     if bet_amount > author_karma:
                         await client.send_message(message.channel, "You don't have enough karma!")
                         return
-                    user_add_karma(user_id, -int(bet_amount))
                     outcomes = ["zero", "even", "odd"]
                     outcome_message = await client.send_message(message.channel, "What outcome would you like to bet on"
                                                                                  "? The options are `zero`, `even`, or"
@@ -1030,6 +1030,7 @@ async def on_message(message):
                         return
 
                     if outcomes_formatted in outcomes:
+                        user_add_karma(user_id, -int(bet_amount))
                         rolling_message = await client.send_message(message.channel, "Rolling")
                         await asyncio.sleep(.25)
                         await client.edit_message(rolling_message, "Rolling.")
@@ -1063,14 +1064,13 @@ async def on_message(message):
                                 else:
                                     await client.send_message(message.channel, "Sorry, better luck next time!")
 
-
                     else:
                         await client.send_message(
                             message.channel, "`ERROR:` You needed to enter `zero`, `even`, or `odd`")
 
                 else:
                     await client.send_message(message.channel,
-                                              "You need to bet a number under `100`")
+                                              "Sorry, you need to bet a number between `10` and `250`")
                     return
 
     if admin_role_id in [role.id for role in message.author.roles]:
