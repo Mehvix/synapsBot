@@ -322,7 +322,7 @@ async def on_message(message):
     else:
         user_add_karma(user_id, 1)
         print("{0}: ADDED 1 karma to {1} for a message '{2}' in {3}"
-              .format(get_time(), user_name, message.content, message.channel.id))
+              .format(get_time(), user_name, message.content, message.channel))
 
     # Checks Karma / Level
     new_level = author_level + 1
