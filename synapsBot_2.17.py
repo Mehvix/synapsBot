@@ -401,6 +401,8 @@ async def on_message(message):
         embed.add_field(name=".whois", value="Gets someone's account info", inline=False)
         embed.add_field(name=".createpoll", value="Self explanatory", inline=False)
         embed.add_field(name=".serverrules (admin)", value="Outputs the Server Rules.", inline=False)
+        embed.add_field(name=".roulette {BET}", value="Gamble your karma.", inline=False)
+        embed.add_field(name=".roulette help", value="Self-explanatory", inline=False)
         await client.send_message(message.channel, embed=embed)
 
     # ".Accept" code
@@ -980,7 +982,7 @@ async def on_message(message):
         # Roulette system
         if message.content.upper().startswith(".ROULETTE"):
             if message.content.upper().startswith(".ROULETTE HELP"):
-                embed = discord.Embed(title="\u200b")
+                embed = discord.Embed(title="\u200b", color=embed_color)
                 embed.set_author(name="Roulette Help")
                 embed.set_thumbnail(url="https://d30y9cdsu7xlg0.cloudfront.net/png/90386-200.png")
                 embed.add_field(name="Zero:", value="0", inline=True)
@@ -1030,7 +1032,7 @@ async def on_message(message):
 
                     if outcomes_formatted in outcomes:
                         user_add_karma(user_id, -int(bet_amount))
-                        rolling_message = await client.send_message(message.channel, "Rolling")
+                        rolling_message = await client.send_message(message.channel, "Spinning")
                         await asyncio.sleep(.25)
                         await client.edit_message(rolling_message, "Spinning.")
                         await asyncio.sleep(.25)
