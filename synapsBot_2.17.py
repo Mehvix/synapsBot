@@ -66,7 +66,7 @@ def get_time():
     return "{0}:{1}:{2} {3}".format(cur_hour, cur_min, cur_sec, am_or_pm)
 
 
-acc_name = "test"
+acc_name = "main"
 jsontoken = 0
 
 if acc_name == "test":
@@ -411,11 +411,13 @@ async def on_message(message):
         if member_role_id not in [role.id for role in message.author.roles]:
             if message.content.upper().startswith(".ACCEPT"):
                 await client.add_roles(user_name, role)
+                await asyncio.sleep(.1)
                 await client.delete_message(message)
                 await client.send_message(discord.Object(id=notification_channel),
                                           "<@{}> is now a Member :ok_hand:".format(user_id))
                 print("{0}: {1} joined the server (.accept)".format(get_time(), user_name))
             else:
+                await asyncio.sleep(.1)
                 await client.delete_message(message)
                 print("{0}: DIDN'T type '.accept'".format(get_time(), user_name))
 
@@ -620,6 +622,7 @@ async def on_message(message):
             if vote_phase != 1:
                 vote_phase += 1
                 print("{0}: {1} created a poll".format(get_time(), user_name))
+                await asyncio.sleep(.1)
                 await client.delete_message(message)
 
                 title_embed = discord.Embed(title="\u200b", color=embed_color)
@@ -637,6 +640,7 @@ async def on_message(message):
                 try:
                     poll_title = title.content
                     print("{0}: Set title to {1}".format(get_time(), poll_title))
+                    await asyncio.sleep(.1)
                     await client.delete_message(title)
                 #    await client.delete_message(title_bot)
                 except AttributeError:
@@ -653,6 +657,7 @@ async def on_message(message):
                 options_embed.add_field(
                     name="Question", value="How many options do you want their to be? (No more than 6)",
                     inline=False)
+                await asyncio.sleep(.1)
                 await client.delete_message(title_message)
                 options_message = await client.send_message(message.channel, embed=options_embed)
 
@@ -666,6 +671,7 @@ async def on_message(message):
                     poll_options = int(options.content)
                     print("{0}: Number of options set to {1}".format(get_time(), poll_options))
                     # await client.delete_message(num_bot)
+                    await asyncio.sleep(.1)
                     await client.delete_message(options)
                 except ValueError:
                     await client.send_message(
@@ -694,6 +700,7 @@ async def on_message(message):
                 one_embed.add_field(
                     name="Question", value="What should option one be called?",
                     inline=False)
+                await asyncio.sleep(.1)
                 await client.delete_message(options_message)
                 one_message = await client.send_message(message.channel, embed=one_embed)
 
@@ -705,6 +712,7 @@ async def on_message(message):
                 try:
                     poll_option_1 = option_1.content
                     print("{0}: Option 1 set to {1}".format(get_time(), poll_option_1))
+                    await asyncio.sleep(.1)
                     await client.delete_message(option_1)
                     # await client.delete_message(bot_opt1)
 
@@ -726,6 +734,7 @@ async def on_message(message):
                 two_embed.add_field(
                     name="Question", value="What should option two be called?",
                     inline=False)
+                await asyncio.sleep(.1)
                 await client.delete_message(one_message)
                 two_message = await client.send_message(message.channel, embed=two_embed)
 
@@ -738,7 +747,7 @@ async def on_message(message):
                 try:
                     poll_option_2 = option_2.content
                     print("{0}: Option 2 set to {1}".format(get_time(), poll_option_2))
-                    # await client.delete_message(bot_opt2)
+                    await asyncio.sleep(.1)
                     await client.delete_message(option_2)
 
                 except AttributeError:
@@ -761,6 +770,7 @@ async def on_message(message):
                     three_embed.add_field(
                         name="Question", value="What should option three be called?",
                         inline=False)
+                    await asyncio.sleep(.1)
                     await client.delete_message(two_message)
                     three_message = await client.send_message(message.channel, embed=three_embed)
 
@@ -773,7 +783,7 @@ async def on_message(message):
                     try:
                         poll_option_3 = option_3.content
                         print("{0}: Option 3 set to {1}".format(get_time(), poll_option_3))
-                        # await client.delete_message(bot_opt3)
+                        await asyncio.sleep(.1)
                         await client.delete_message(option_3)
 
                     except AttributeError:
@@ -796,6 +806,7 @@ async def on_message(message):
                         four_embed.add_field(
                             name="Question", value="What should option four be called?",
                             inline=False)
+                        await asyncio.sleep(.1)
                         await client.delete_message(three_message)
                         four_message = await client.send_message(message.channel, embed=four_embed)
 
@@ -808,7 +819,7 @@ async def on_message(message):
                         try:
                             poll_option_4 = option_4.content
                             print("{0}: Option 4 set to {1}".format(get_time(), poll_option_4))
-                        #    await client.delete_message(bot_opt4)
+                            await asyncio.sleep(.1)
                             await client.delete_message(option_4)
 
                         except AttributeError:
@@ -834,6 +845,7 @@ async def on_message(message):
                             five_embed.add_field(
                                 name="Question", value="What should option five be called?",
                                 inline=False)
+                            await asyncio.sleep(.1)
                             await client.delete_message(four_message)
                             five_message = await client.send_message(message.channel, embed=five_embed)
 
@@ -846,7 +858,7 @@ async def on_message(message):
                             try:
                                 poll_option_5 = option_5.content
                                 print("{0}: Option 5 set to {1}".format(get_time(), poll_option_5))
-                            #   await client.delete_message(bot_opt5)
+                                await asyncio.sleep(.1)
                                 await client.delete_message(option_5)
 
                             except AttributeError:
@@ -873,6 +885,7 @@ async def on_message(message):
                                 six_embed.add_field(
                                     name="Question", value="What should option six be called?",
                                     inline=False)
+                                await asyncio.sleep(.1)
                                 await client.delete_message(five_message)
                                 six_message = await client.send_message(message.channel, embed=six_embed)
 
@@ -885,9 +898,9 @@ async def on_message(message):
                                 try:
                                     poll_option_6 = option_6.content
                                     print("{0}: Option 6 set to {1}".format(get_time(), poll_option_6))
-                                #    await client.delete_message(bot_opt6)
+                                    await asyncio.sleep(.1)
                                     await client.delete_message(option_6)
-
+                                    await asyncio.sleep(.1)
                                     await client.delete_message(six_message)
 
                                 except AttributeError:
@@ -897,10 +910,13 @@ async def on_message(message):
                                         (message.author.id))
                                     return
                         else:
+                            await asyncio.sleep(.1)
                             await client.delete_message(four_message)
                     else:
+                        await asyncio.sleep(.1)
                         await client.delete_message(three_message)
                 else:
+                    await asyncio.sleep(.1)
                     await client.delete_message(two_message)
 
                 embed = discord.Embed(
@@ -977,7 +993,7 @@ async def on_message(message):
                 finally:
                     pass
 
-        # TODO Roulette system
+        # Roulette system
         if message.content.upper().startswith(".ROULETTE"):
             if message.content.upper().startswith(".ROULETTE HELP"):
                 embed = discord.Embed(title="\u200b")
@@ -1033,17 +1049,17 @@ async def on_message(message):
                         user_add_karma(user_id, -int(bet_amount))
                         rolling_message = await client.send_message(message.channel, "Rolling")
                         await asyncio.sleep(.25)
-                        await client.edit_message(rolling_message, "Rolling.")
+                        await client.edit_message(rolling_message, "Spinning.")
                         await asyncio.sleep(.25)
-                        await client.edit_message(rolling_message, "Rolling..")
+                        await client.edit_message(rolling_message, "Spinning..")
                         await asyncio.sleep(.25)
-                        await client.edit_message(rolling_message, "Rolling...")
+                        await client.edit_message(rolling_message, "Spinning...")
 
                         spin = random.randint(0, 36)
                         await client.send_message(message.channel, "It landed on `#{}`!".format(spin))
 
                         if spin == 0:
-                            if int(outcomes_formatted) == 0:
+                            if outcomes_formatted == "zero":
                                 user_add_karma(user_id, int(bet_amount*14))
                                 await client.send_message(message.channel, "ZERO")
                                 return
@@ -1076,6 +1092,7 @@ async def on_message(message):
     if admin_role_id in [role.id for role in message.author.roles]:
         if message.content.upper().startswith(".SERVERRULES"):
             print("{0}: {1} requested '.SEVERRULES'".format(get_time(), user_name))
+            await asyncio.sleep(.1)
             await client.delete_message(message)
             embed = discord.Embed(title="Synaps Rules and Info",
                                   url="https://steamcommunity.com/groups/team_synaps", color=embed_color)
@@ -1100,12 +1117,9 @@ async def on_message(message):
         # TODO Mute Command
         role = discord.utils.get(message.server.roles, name=mute_role_name)
         if message.content.upper().startswith(".MUTE"):
-            mute_target_id = int(message.content[8:-1])
-            mute_target_name = discord.Server.get_member(user_id=mute_target_id)
-            await client.add_roles(mute_target_name, role)
+            mute_target = str(message.raw_mentions)[2:-2]
             print("{0}: {1} muted {2}".format(get_time(), user_name, mute_target))
-            await client.send_message(message.channel, "<@{0}> muted <@{1}> :zipper_mouth:"
-                                      .format(user_id, mute_target))
+            await client.add_roles(self.get_user_info(mute_target))
 
         if message.content.upper().startswith(".BAN"):
             ban_target = message.content[7:-1]
@@ -1140,6 +1154,7 @@ async def on_message(message):
 
     if message.content.startswith("This is an automated message to spawn Pokémon."):
         print("{0}: {1} sent the pokemon spam message".format(get_time(), user_name))
+        await asyncio.sleep(.1)
         await client.delete_message(message)
 
 
