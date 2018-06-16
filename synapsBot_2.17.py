@@ -518,16 +518,15 @@ async def on_message(message):
 
         # Leveling
         if message.content.upper().startswith(".LEVEL"):
-            level_target = message.content[6:-1]
+            level_target = message.content[7:]
             if level_target == "":
                 user_level_req = user_id
             else:
                 if not message.raw_mentions:
                     await client.send_message(message.channel, "You need to `@` a user")
                     return
-
                 else:
-                    user_level_req = message.content[9:-1]
+                    user_level_req = str(message.raw_mentions)[2:-2]
             print("{0}: {1} requested {2}'s level".format(get_time(), user_name, user_level_req))
             await client.send_message(message.channel, "<@{0}> is level `{1}`"
                                       .format(user_level_req, get_level(user_level_req)))
@@ -605,7 +604,7 @@ async def on_message(message):
 
         # Karma System
         if message.content.upper().startswith(".KARMA"):
-            karma_target = message.content[6:]
+            karma_target = message.content[7:]
             if karma_target == "":
                 user_req = user_id
             else:
@@ -613,8 +612,9 @@ async def on_message(message):
                     await client.send_message(message.channel, "You need to `@` a user")
                     return
                 else:
-                    user_req = message.content[9:-1]
-
+                    user_req = str(message.raw_mentions)[2:-2]
+                    # user_req = message.content[10:-1]
+            print("{0}: {1} requested {2}'s level".format(get_time(), user_name, user_req))
             await client.send_message(
                 message.channel, "<@{0}> has `{1}` karma".format(user_req, get_karma(user_req)))
 
@@ -979,10 +979,11 @@ async def on_message(message):
                 finally:
                     pass
 
+        # TODO Make betting seperate and return the user's karma to bet
         # Roulette system
         if message.content.upper().startswith(".ROULETTE"):
             if message.content.upper().startswith(".ROULETTE HELP"):
-                embed = discord.Embed(title="\u200b", color=embed_color)
+                embed = discord.Embed(title="Outcomes:", color=embed_color)
                 embed.set_author(name="Roulette Help")
                 embed.set_thumbnail(url="https://d30y9cdsu7xlg0.cloudfront.net/png/90386-200.png")
                 embed.add_field(name="Zero:", value="0", inline=True)
@@ -996,7 +997,7 @@ async def on_message(message):
                                 value="Type .roulette [BET AMOUNT]",
                                 inline=True)
                 embed.set_footer(text="Maximum bet is 250 karma. Winning on zero will quattuordecuple (x14) your bet"
-                                      " and odd and even will double it.")
+                                      " while odd and even will double your bet")
                 await client.send_message(message.channel, embed=embed)
             else:
                 message_split = message.content.split(" ")
@@ -1166,6 +1167,19 @@ async def uptime():
         elif minutes == 60:
             minutes = 0
             hours += 1
+
+            file_name = os.path.basename(sys.argv[0])  # Gets file name
+            r = random.randint(1, 3)
+            if r == 1:
+                await client.change_presence(game=discord.Game(name="Live for {0}:{1}:00".format(hours, minutes),
+                                                               url="https://twitch.tv/mehvix", type=1))
+            if r == 2:
+                await client.change_presence(game=discord.Game(name="Version {}".format(file_name[10:-3]),
+                                                               url="https://twitch.tv/mehvix", type=1))
+            if r == 3:
+                await client.change_presence(
+                    game=discord.Game(name="Created by Mehvix#7172", url="https://twitch.tv/mehvix",
+                                      type=1))
         elif hours == 24:
             hours = 0
             days += 1
