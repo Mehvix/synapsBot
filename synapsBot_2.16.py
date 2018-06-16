@@ -66,10 +66,10 @@ def get_time():
     return "{0}:{1}:{2} {3}".format(cur_hour, cur_min, cur_sec, am_or_pm)
 
 
-acc_name = "main"
+acc_name = "test"
 jsontoken = 0
 
-if acc_name == "test":
+if acc_name == "main":
     print("Using TEST account")
     jsontoken = get_json('C:/Users/maxla/PycharmProjects/synapsBot remastered/test_token.json')
     token = jsontoken.get("token")
