@@ -642,7 +642,6 @@ async def on_message(message):
                     print("{0}: Set title to {1}".format(get_time(), poll_title))
                     await asyncio.sleep(.1)
                     await client.delete_message(title)
-                #    await client.delete_message(title_bot)
                 except AttributeError:
                     await client.send_message(
                         message.channel, "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
@@ -662,15 +661,12 @@ async def on_message(message):
                 options_message = await client.send_message(message.channel, embed=options_embed)
 
                 # Number of Options
-                # num_bot = await client.send_message(
-                #     message.channel, "How many options do you want their to be? (No more than 6)")
                 options = await client.wait_for_message(
                     timeout=120, author=message.author, channel=message.channel)
 
                 try:
                     poll_options = int(options.content)
                     print("{0}: Number of options set to {1}".format(get_time(), poll_options))
-                    # await client.delete_message(num_bot)
                     await asyncio.sleep(.1)
                     await client.delete_message(options)
                 except ValueError:
@@ -705,8 +701,6 @@ async def on_message(message):
                 one_message = await client.send_message(message.channel, embed=one_embed)
 
                 # Gets Option 1
-                # bot_opt1 = await client.send_message(
-                #     message.channel, "What would you like option `one` to be called?")
                 option_1 = await client.wait_for_message(timeout=120, author=message.author,
                                                          channel=message.channel)
                 try:
@@ -739,8 +733,6 @@ async def on_message(message):
                 two_message = await client.send_message(message.channel, embed=two_embed)
 
                 # Gets Option 2
-                # bot_opt2 = await client.send_message(
-                #     message.channel, "What would you like option `two` to be called?")
                 option_2 = await client.wait_for_message(
                     timeout=120, author=message.author, channel=message.channel)
 
@@ -775,8 +767,6 @@ async def on_message(message):
                     three_message = await client.send_message(message.channel, embed=three_embed)
 
                     # Option 3
-                    # bot_opt3 = await client.send_message(
-                    #     message.channel, "What would you like option `three` to be called?")
                     option_3 = await client.wait_for_message(
                         timeout=120, author=message.author, channel=message.channel)
 
@@ -811,8 +801,6 @@ async def on_message(message):
                         four_message = await client.send_message(message.channel, embed=four_embed)
 
                         # Option 4
-                        # bot_opt4 = await client.send_message(
-                        #     message.channel, "What would you like option `four` to be called?")
                         option_4 = await client.wait_for_message(timeout=120, author=message.author,
                                                                  channel=message.channel)
 
@@ -850,8 +838,6 @@ async def on_message(message):
                             five_message = await client.send_message(message.channel, embed=five_embed)
 
                             # Option 5
-                            # bot_opt5 = await client.send_message(
-                            #     message.channel, "What would you like option `five` to be called?")
                             option_5 = await client.wait_for_message(
                                 timeout=120, author=message.author, channel=message.channel)
 
@@ -890,8 +876,6 @@ async def on_message(message):
                                 six_message = await client.send_message(message.channel, embed=six_embed)
 
                                 # Option 6
-                                # bot_opt6 = await client.send_message(
-                                #     message.channel, "What would you like option `six` to be called?")
                                 option_6 = await client.wait_for_message(
                                     timeout=120, author=message.author, channel=message.channel)
 
@@ -1029,9 +1013,8 @@ async def on_message(message):
                         await client.send_message(message.channel, "You don't have enough karma!")
                         return
                     outcomes = ["zero", "even", "odd"]
-                    outcome_message = await client.send_message(message.channel, "What outcome would you like to bet on"
-                                                                                 "? The options are `zero`, `even`, or"
-                                                                                 " `odd`")
+                    await client.send_message(message.channel, "What outcome would you like to bet on? The options are"
+                                                               " `zero`, `even`, or `odd`")
                     outcomes_response = await client.wait_for_message(
                         timeout=120, author=message.author, channel=message.channel)
 
@@ -1119,7 +1102,7 @@ async def on_message(message):
         if message.content.upper().startswith(".MUTE"):
             mute_target = str(message.raw_mentions)[2:-2]
             print("{0}: {1} muted {2}".format(get_time(), user_name, mute_target))
-            await client.add_roles(self.get_user_info(mute_target))
+            await client.add_roles(self.get_user_info(mute_target), role)
 
         if message.content.upper().startswith(".BAN"):
             ban_target = message.content[7:-1]
@@ -1142,8 +1125,8 @@ async def on_message(message):
                 await client.kick(member=server.get_member(kick_target))
 
         if message.content.upper().startswith(".UNBAN"):
-            unban_target = message.content[9:-1]
-            server = message.server
+            # unban_target = message.content[9:-1]
+            # server = message.server
             await client.send_message(message.channel, "Sorry, this command is coming soon.")
             # print("{0}: {1} unbanned {2}".format(get_time(), user_name, unban_target))
             # if not message.raw_mentions:
