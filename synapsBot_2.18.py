@@ -11,6 +11,7 @@ import math
 import discord
 from discord.ext import commands
 from urbandictionary_top import udtop
+import re
 
 # TODO New Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -185,7 +186,8 @@ async def on_ready():
     print(" /__  / /_/ / / / / /_/ / /_/ /__  / /_/ / /_/ / /_")
     print("/____/\__, /_/ /_/\__,_/ .___/____/_____/\____/\__/")
     print("     /____/           /_/\n")
-    print("• Version:                   {}".format(discord.__version__))
+    print("• Discord Version:           {}".format(discord.__version__))
+    print("• Python Version:            {}".format(sys.version))
     print("• Start Time:                {}".format(get_time()))
     print("• Client Name:               {}".format(client.user))
     print("• Client ID:                 {}".format(client.user.id))
@@ -253,9 +255,12 @@ async def on_reaction_add(reaction, user):
                 print("{0}: {1} upvoted there own link. NO CHANGE"
                       .format(get_time(), user))
             else:
-                user_add_karma(reaction.message.author.id, 5)
-                print("{0}: ADDED 5 karma to {1} for a UPVOTE from {2}"
-                      .format(get_time(), reaction.message.author, user))
+                try:
+                    user_add_karma(reaction.message.author.id, 5)
+                    print("{0}: ADDED 5 karma to {1} for a UPVOTE from {2}"
+                          .format(get_time(), reaction.message.author, user))
+                except AttributeError:
+                    print("{0}: User doesn't exist! (Probably a webhook)".format(get_time()))
 
         # If emote is the downvote emote
         if emoji_used == formated_down:
@@ -263,9 +268,12 @@ async def on_reaction_add(reaction, user):
                 print("{0}: {1} downvoted there post. NO CHANGE"
                       .format(get_time(), user))
             else:
-                user_add_karma(reaction.message.author.id, -5)
-                print("{0}: REMOVED 5 karma to {1} for a DOWNVOTE from {1}"
-                      .format(get_time(), reaction.message.author, user))
+                try:
+                    user_add_karma(reaction.message.author.id, -5)
+                    print("{0}: REMOVED 5 karma to {1} for a DOWNVOTE from {1}"
+                          .format(get_time(), reaction.message.author, user))
+                except AttributeError:
+                    print("{0}: User doesn't exist! (Probably a webhook)".format(get_time()))
     else:
         print("{0}: DIDN'T change {1}'s karma because they're in the Pokemon Channel!"
               .format(get_time(), user))
@@ -283,18 +291,24 @@ async def on_reaction_remove(reaction, user):
             if reaction.message.author.id == user.id:
                 print("{0}: {1} REMOVED their upvote to their post. NO CHANGE".format(get_time(), user.id))
             else:
-                user_add_karma(reaction.message.author.id, -5)
-                print("{0}: REMOVED 5 karma from {0} because {1} REMOVED there UPVOTE"
-                      .format(get_time(), reaction.message.author, user))
+                try:
+                    user_add_karma(reaction.message.author.id, -5)
+                    print("{0}: REMOVED 5 karma from {0} because {1} REMOVED there UPVOTE"
+                          .format(get_time(), reaction.message.author, user))
+                except AttributeError:
+                    print("{0}: User doesn't exist! (Probably a webhook)".format(get_time()))
 
         # If emote is the downvote emote
         if emoji_used == formated_down:
             if reaction.message.author.id == user.id:
                 print("{0}: {1} REMOVED their downvote to there own link. NO CHANGE".format(get_time(), user))
             else:
-                user_add_karma(reaction.message.author.id, 5)
-                print("{0}: RE-ADDED 5 karma to {1} for removal of downvote reaction from {2}"
-                      .format(get_time(), reaction.message.author, user))
+                try:
+                    user_add_karma(reaction.message.author.id, 5)
+                    print("{0}: RE-ADDED 5 karma to {1} for removal of downvote reaction from {2}"
+                          .format(get_time(), reaction.message.author, user))
+                except AttributeError:
+                    print("{0}: User doesn't exist! (Probably a webhook)".format(get_time()))
     else:
         print("{0}: DIDN'T change {1}'s karma because it was in the Pokemon Channel!"
               .format(get_time(), user))
@@ -309,9 +323,6 @@ async def on_message(message):
     user_id = message.author.id
     user_name = message.author
 
-    author_level = get_level(user_id)
-    author_karma = get_karma(user_id)
-
     # Because @xpoes#9244 spams the shit out of our pokemon channel
     if message.channel.id == pokemon_channel:
         print("{0}: DIDN'T give karma to {1} for message '{2}' because they sent a message in the Pokemon channel"
@@ -320,6 +331,9 @@ async def on_message(message):
         user_add_karma(user_id, 1)
         print("{0}: ADDED 1 karma to {1} for a message '{2}' in {3}"
               .format(get_time(), user_name, message.content, message.channel))
+
+    author_level = get_level(user_id)
+    author_karma = get_karma(user_id)
 
     # Checks Karma / Level
     new_level = author_level + 1
@@ -346,12 +360,20 @@ async def on_message(message):
                                   .format(new_cur_hour, new_cur_min, new_cur_sec, new_am_or_pm,
                                           random.choice(clock_emoji)))
 
-    # Upvote Code
-    if "HTTP" in message.content.upper():
-        try:
-            await client.add_reaction(message, upvote_emoji)
-        except AttributeError:
-            print("{0}: User has not role! (Probably a webhook)".format(get_time()))
+    # Finds if message is a link or a file attachment (PDF, image, etc.)
+    regex = re.compile(
+        r'^(?:http|ftp)s?://'  # http:// or https://
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
+        r'localhost|'  # localhost...
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+        r'(?::\d+)?'  # optional port
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    if re.match(regex, message.content) is not None:
+        await client.add_reaction(message, upvote_emoji)
+
+    if message.attachments:
+        await client.add_reaction(message, upvote_emoji)
+        print(message.attachments)
 
     # "Shut Up" code
     if shut_up_role in [role.id for role in message.author.roles]:
@@ -427,11 +449,15 @@ async def on_message(message):
             target_def = message.content[4:]
             target_def_link_format = target_def.replace(" ", "%20")
 
-            if "MAGGIE" in message.content.upper():
+            if "MAGGIE" in message.content.upper():  # Hey don't worry about these couple of lines
                 print("{0}: {1}  requested the UD for Maggie".format(get_time(), user_name))
                 embed = discord.Embed(title="Definition Page", url="https://goo.gl/j2DX9N", color=embed_color)
                 embed.set_author(name="Definition for Maggie", url="https://goo.gl/j2DX9N")
-                embed.set_footer(text="Girl with YUUUG milkers. Doesnt need a coat")
+                embed.add_field(name="Definition 📚", value="Girl with YUUUG milkers. Doesnt need a coat", inline=False)
+                embed.add_field(
+                    name="Example 💬",
+                    value="Maggie's got such big fun-fun milk bags, she doesn't need a coat! -Aidan Witkovsky 2018",
+                    inline=True)
                 await client.send_message(message.channel, embed=embed)
             else:
                 try:
@@ -443,8 +469,8 @@ async def on_message(message):
                     embed.set_author(name="Definition for {}".format(string.capwords(target_def)),
                                      url="https://www.urbandictionary.com/define.php?term={}"
                                      .format(target_def))
-                    embed.add_field(name="Definition", value=term.definition[:2000], inline=False)
-                    embed.add_field(name="Example", value=term.example, inline=True)
+                    embed.add_field(name="Definition 📚", value=term.definition[:2000], inline=False)
+                    embed.add_field(name="Example 💬", value=term.example, inline=True)
                     await client.send_message(message.channel, embed=embed)
                 except AttributeError:
                     await client.send_message(message.channel, "Sorry, that word doesnt have a definition :( . "
@@ -579,6 +605,15 @@ async def on_message(message):
             em.set_author(name="\u200b")
             em.set_footer(text="Server ID: {}".format(message.server.id))
             await client.send_message(message.channel, embed=em)
+
+        # Gives Server Emojis
+        if message.content.upper().startswith(".EMOTES"):
+            print("{0}: {1} activated the EMOTES command".format(user_name, get_time()))
+            emojis = [str(x) for x in message.server.emojis]
+            emojis_str = "".join(emojis)
+            await client.send_message(message.channel, emojis_str)
+
+
 
         # Gives link to beta testing server
         if message.content.upper().startswith(".BETA"):
@@ -979,7 +1014,6 @@ async def on_message(message):
                 finally:
                     pass
 
-        # TODO Make betting separate and return the user's karma to bet
         # Roulette system
         if message.content.upper().startswith(".ROULETTE"):
             if message.content.upper().startswith(".ROULETTE HELP"):
