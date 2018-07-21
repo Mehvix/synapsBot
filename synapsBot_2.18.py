@@ -225,6 +225,16 @@ async def on_member_ban(member):
                               "`NOTE:` You can check who banned them in the server audit log. :thumbsup: ")
 
 
+# When a user is unbanned from the server
+@client.event
+async def on_member_unban(member):
+    print("{}: Someone was unbanned".format(get_time()))
+    await client.send_message(discord.Object(id=notification_channel),
+                              "<@{}> was **unbanned** :unlock:".format(member.id))
+    await client.send_message(discord.Object(id=notification_channel),
+                              "`NOTE:` You can check who unbanned them in the server audit log. :thumbsup: ")
+
+
 # When a user is kicked or leaves the server
 @client.event
 async def on_member_remove(member):
@@ -393,8 +403,7 @@ async def on_message(message):
                          icon_url="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/08/080527004088"
                                   "e8e461d6fc9a4df248dfd3fa2dc8_full.jpg")
         embed.set_thumbnail(url="https://goo.gl/FCddaV")
-        embed.add_field(name="Creator:", value="\u200b", inline=True)
-        embed.add_field(name="Mehvix#7172", value="\u200b", inline=True)
+        embed.add_field(name="Creator:", value="Mehvix#7172", inline=True)
         await client.send_message(message.channel, embed=embed)
 
     # Help Command
@@ -422,6 +431,8 @@ async def on_message(message):
         embed.add_field(name=".serverrules (admin)", value="Outputs the Server Rules.", inline=False)
         embed.add_field(name=".roulette {BET}", value="Gamble your karma.", inline=False)
         embed.add_field(name=".roulette help", value="Self-explanatory", inline=False)
+        embed.add_field(name=".roulette outcomes", value="Self-explanatory", inline=False)
+        embed.add_field(name=".emotes", value="Returns all of the servers custom emotes", inline=False)
         await client.send_message(message.channel, embed=embed)
 
     # ".Accept" code
@@ -612,8 +623,6 @@ async def on_message(message):
             emojis = [str(x) for x in message.server.emojis]
             emojis_str = "".join(emojis)
             await client.send_message(message.channel, emojis_str)
-
-
 
         # Gives link to beta testing server
         if message.content.upper().startswith(".BETA"):
@@ -1034,6 +1043,22 @@ async def on_message(message):
                 embed.set_footer(text="Maximum bet is 250 karma. Winning on zero will quattuordecuple (x14) your bet"
                                       " while odd and even will double your bet")
                 await client.send_message(message.channel, embed=embed)
+
+            if message.content.upper().startswith(".ROULETTE OUTCOMES"):
+                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'r') as fp:
+                    outcomes = json.load(fp)
+                odd_total = outcomes['odd']
+                even_total = outcomes['even']
+                zero_total = outcomes['zero']
+                outcomes_list = [odd_total, even_total, zero_total]
+                total = sum(outcomes_list)
+                embed = discord.Embed(title="\u200b", color=embed_color)
+                embed.set_author(name="Roulette Outcomes 📊")
+                embed.add_field(name="Total number of times 'spun'", value=total, inline=False)
+                embed.add_field(name="Odd", value=odd_total, inline=True)
+                embed.add_field(name="Even", value=even_total, inline=True)
+                embed.add_field(name="Zero", value=zero_total, inline=True)
+                await client.send_message(message.channel, embed=embed)
             else:
                 await client.send_message(message.channel, "How much would you like to bet? It must be between `10` and"
                                                            " `250` and cannot be more than your karma (`{}`)"
@@ -1091,6 +1116,14 @@ async def on_message(message):
                         await client.send_message(message.channel, "It landed on `{}`!".format(spin))
 
                         if spin == 0:
+                            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                                      'r') as fp:
+                                outcomes = json.load(fp)
+                            outcomes['zero'] += 1
+                            with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                                      'w') as fp:
+                                json.dump(outcomes, fp, sort_keys=True, indent=4)
+
                             if outcomes_formatted == "zero":
                                 user_add_karma(user_id, int(bet_amount * 14))
                                 await client.send_message(message.channel, "Winner! :tada: You quattuordecuple up on "
@@ -1104,6 +1137,12 @@ async def on_message(message):
                                         get_karma(user_id)))
                         else:
                             if spin % 2 == 0:
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'r') as fp:
+                                    outcomes = json.load(fp)
+                                outcomes['even'] += 1
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'w') as fp:
+                                    json.dump(outcomes, fp, sort_keys=True, indent=4)
+
                                 if outcomes_formatted == "even":
                                     user_add_karma(user_id, int(bet_amount * 2))
                                     await client.send_message(message.channel, "Winner! :tada: You doubled up on karma"
@@ -1114,6 +1153,11 @@ async def on_message(message):
                                         message.channel, "Sorry, better luck next time. You now have `{}` karma".format(
                                             get_karma(user_id)))
                             else:
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'r') as fp:
+                                    outcomes = json.load(fp)
+                                outcomes['odd'] += 1
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'w') as fp:
+                                    json.dump(outcomes, fp, sort_keys=True, indent=4)
                                 if outcomes_formatted == "odd":
                                     user_add_karma(user_id, int(bet_amount * 2))
                                     await client.send_message(message.channel, "Winner! :tada: You doubled up on karma"
@@ -1123,7 +1167,6 @@ async def on_message(message):
                                     await client.send_message(
                                         message.channel, "Sorry, better luck next time. You now have `{}` karma".format(
                                             get_karma(user_id)))
-                        update_win(outcomes_formatted)
                     else:
                         await client.send_message(
                             message.channel, "`ERROR:` You needed to enter `zero`, `even`, or `odd`")
@@ -1287,10 +1330,6 @@ def get_level(user_id: int):
         except KeyError:
             return 0
 
-
-def update_win(outcome: int):
-    with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'r') as fp:
-        return json.load(fp)
 
 
 client.loop.create_task(uptime())
