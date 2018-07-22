@@ -12,11 +12,11 @@ import discord
 from discord.ext import commands
 from urbandictionary_top import udtop
 import re
+from contextlib import redirect_stdout
 
 # TODO New Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 >  jerma pirate song
->  gambling and poker (casino games)
 >  ban list
 >  Mute user
 >  Cool down
@@ -25,7 +25,7 @@ import re
 >  Create invite
 >  Invite info
 >  Give XP for voice channel usage
->  Remind me (x) x == time
+>  Remind me in x minutes
 >  save console to file
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -94,6 +94,8 @@ if acc_name == "test":
     four_emote = ":fourv2:442817606957924383"
     five_emote = ":fivev2:442817607188348938"
     six_emote = ":sixv2:442817607196868629"
+
+
 if acc_name == "main":
     print("Using MAIN account")
     jsontoken = get_json('C:/Users/maxla/PycharmProjects/synapsBot remastered/main_token.json')
@@ -218,21 +220,19 @@ async def on_member_join(member):
 async def on_member_ban(member):
     global ban_message
     ban_message += 1
-    print("{}: Someone was banned".format(get_time()))
+    print("{0}: {1} was banned".format(get_time(), member))
     await client.send_message(discord.Object(id=notification_channel),
-                              "<@{}> was **banned** :hammer:".format(member.id))
-    await client.send_message(discord.Object(id=notification_channel),
-                              "`NOTE:` You can check who banned them in the server audit log. :thumbsup: ")
+                              "<@{}> was **banned** :hammer: \nYou can find out who banned them by checking the audit "
+                              "log".format(member.id))
 
 
 # When a user is unbanned from the server
 @client.event
 async def on_member_unban(member):
-    print("{}: Someone was unbanned".format(get_time()))
+    print("{0}: {1} was unbanned".format(get_time(), member))
     await client.send_message(discord.Object(id=notification_channel),
-                              "<@{}> was **unbanned** :unlock:".format(member.id))
-    await client.send_message(discord.Object(id=notification_channel),
-                              "`NOTE:` You can check who unbanned them in the server audit log. :thumbsup: ")
+                              "<@{}> was **unbanned** :hammer: \nYou can find out who unbanned them by checking the "
+                              "audit log".format(member.id))
 
 
 # When a user is kicked or leaves the server
@@ -280,7 +280,7 @@ async def on_reaction_add(reaction, user):
             else:
                 try:
                     user_add_karma(reaction.message.author.id, -5)
-                    print("{0}: REMOVED 5 karma to {1} for a DOWNVOTE from {1}"
+                    print("{0}: REMOVED 5 karma from {1} for a DOWNVOTE from {2}"
                           .format(get_time(), reaction.message.author, user))
                 except AttributeError:
                     print("{0}: User doesn't exist! (Probably a webhook)".format(get_time()))
@@ -433,6 +433,7 @@ async def on_message(message):
         embed.add_field(name=".roulette help", value="Self-explanatory", inline=False)
         embed.add_field(name=".roulette outcomes", value="Self-explanatory", inline=False)
         embed.add_field(name=".emotes", value="Returns all of the servers custom emotes", inline=False)
+        embed.add_field(name=".banlist", value="Replies with list of who is banned on the server", inline=False)
         await client.send_message(message.channel, embed=embed)
 
     # ".Accept" code
@@ -443,7 +444,7 @@ async def on_message(message):
         if member_role_id not in [role.id for role in message.author.roles]:
             if message.content.upper().startswith(".ACCEPT"):
                 await client.add_roles(user_name, role)
-                await asyncio.sleep(.1)
+                await asyncio.sleep(1)
                 await client.delete_message(message)
                 await client.send_message(discord.Object(id=notification_channel),
                                           "<@{}> is now a Member :ok_hand:".format(user_id))
@@ -1137,10 +1138,12 @@ async def on_message(message):
                                         get_karma(user_id)))
                         else:
                             if spin % 2 == 0:
-                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'r') as fp:
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                                          'r') as fp:
                                     outcomes = json.load(fp)
                                 outcomes['even'] += 1
-                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'w') as fp:
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                                          'w') as fp:
                                     json.dump(outcomes, fp, sort_keys=True, indent=4)
 
                                 if outcomes_formatted == "even":
@@ -1153,10 +1156,12 @@ async def on_message(message):
                                         message.channel, "Sorry, better luck next time. You now have `{}` karma".format(
                                             get_karma(user_id)))
                             else:
-                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'r') as fp:
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                                          'r') as fp:
                                     outcomes = json.load(fp)
                                 outcomes['odd'] += 1
-                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json', 'w') as fp:
+                                with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                                          'w') as fp:
                                     json.dump(outcomes, fp, sort_keys=True, indent=4)
                                 if outcomes_formatted == "odd":
                                     user_add_karma(user_id, int(bet_amount * 2))
@@ -1200,20 +1205,42 @@ async def on_message(message):
                 message.channel, "• https://socialclub.rockstargames.com/crew/team_synaps")
             await client.send_message(message.channel, "• https://blizzard.com/invite/XKp33F07e)")
 
+        if message.content.upper().startswith(".BANLIST"):
+            ban_list = await client.get_bans(message.server)
+            if not ban_list:
+                await client.send_message(message.channel, "This server doesn't have anyone banned (yet)")
+            else:
+                message = await client.send_message(message.channel, "**Ban List:**\n• <@{}>"
+                                          .format(">\n• <@".join([user.id for user in ban_list])))
+                # await client.edit_message(message, message.content + ">")
+
         # TODO Mute Command
         role = discord.utils.get(message.server.roles, name=mute_role_name)
         if message.content.upper().startswith(".MUTE"):
-            mute_target = str(message.raw_mentions)[2:-2]
-            print("{0}: {1} muted {2}".format(get_time(), user_name, mute_target))
-            await client.add_roles(self.get_user_info(mute_target), role)
-
-        if message.content.upper().startswith(".BAN"):
-            ban_target = message.content[7:-1]
-            server = message.server
-            print("{0}: {1} banned {2}".format(get_time(), user_name, ban_target))
             if not message.raw_mentions:
                 await client.send_message(message.channel, "You need to `@` a user")
             else:
+                mute_target = message.content[8:-1]
+                print("{0}: {1} muted {2}".format(get_time(), user_name, mute_target))
+                await client.add_roles(message.mentions[0], role)
+                await client.send_message(message.channel, "<@{0}> muted <@{1}>".format(message.author.id, mute_target))
+
+        if message.content.upper().startswith(".UNMUTE"):
+            if not message.raw_mentions:
+                await client.send_message(message.channel, "You need to `@` a user")
+            else:
+                unmute_target = message.content[10:-1]
+                print("{0}: {1} unmuted {2}".format(get_time(), user_name, unmute_target))
+                await client.remove_roles(message.mentions[0], role)
+                await client.send_message(message.channel, "<@{0}> unmuted <@{1}>".format(message.author.id, unmute_target))
+
+
+        if ".BAN " in message.content.upper():
+            server = message.server
+            if not message.raw_mentions:
+                await client.send_message(message.channel, "You need to `@` a user")
+            else:
+                ban_target = message.content[7:-1]
                 print("{0}: {1} banned {2}".format(get_time(), user_name, ban_target))
                 await client.ban(member=server.get_member(ban_target), delete_message_days=0)
 
@@ -1228,15 +1255,15 @@ async def on_message(message):
                 await client.kick(member=server.get_member(kick_target))
 
         if message.content.upper().startswith(".UNBAN"):
-            # unban_target = message.content[9:-1]
-            # server = message.server
-            await client.send_message(message.channel, "Sorry, this command is coming soon.")
-            # print("{0}: {1} unbanned {2}".format(get_time(), user_name, unban_target))
-            # if not message.raw_mentions:
-            #     await client.send_message(message.channel, "You need to `@` a user")
-            # else:
-            #     print("{0}: {1} unbanned {2}".format(get_time(), user_name, unban_target))
-            #     await client.unban(member=server.get_member(unban_target))
+            server = message.server
+            if not message.raw_mentions:
+                await client.send_message(message.channel, "You need to `@` a user")
+            else:
+                unban_target = message.content[9:-1]
+                print("{0}: {1} unbanned {2}".format(get_time(), user_name, unban_target))
+                banned = await client.get_user_info(unban_target)
+                await client.unban(message.server, banned)
+                await client.send_message(message.channel, "<@{}> was unbanned :tada:".format(unban_target))
 
     if message.content.startswith("This is an automated message to spawn Pokémon."):
         print("{0}: {1} sent the pokemon spam message".format(get_time(), user_name))
@@ -1329,7 +1356,6 @@ def get_level(user_id: int):
             return users[user_id]['level']
         except KeyError:
             return 0
-
 
 
 client.loop.create_task(uptime())
