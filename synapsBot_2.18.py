@@ -386,9 +386,10 @@ async def on_message(message):
         print(message.attachments)
 
     # "Shut Up" code
-    if shut_up_role in [role.id for role in message.author.roles]:
-        print("{0}: Told {1} to shaddup".format(get_time(), user_name))
-        await client.send_message(message.channel, "Shut up <@{}>".format(user_id))
+    if member_role_id in [role.id for role in message.author.roles]:
+        if shut_up_role in [role.id for role in message.author.roles]:
+            print("{0}: Told {1} to shaddup".format(get_time(), user_name))
+            await client.send_message(message.channel, "Shut up <@{}>".format(user_id))
 
     # Ping Command
     if message.content.upper().startswith(".PING"):
