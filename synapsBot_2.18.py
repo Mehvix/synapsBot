@@ -421,8 +421,8 @@ async def on_message(message):
         embed.add_field(name=".level", value="Returns your level.", inline=False)
         embed.add_field(name=".level @name", value="Returns (name)'s level.", inline=False)
         embed.add_field(name=".sam", value="Gives you a picture of Sammy.", inline=False)
+        embed.add_field(name=".apu", value="Gives you a picture of Apu :)", inline=False)
         embed.add_field(name=".bear", value="Uploads a gif of a bear.", inline=False)
-        embed.add_field(name=".sam", value="Gives you a picture of Sammy.", inline=False)
         embed.add_field(name=".beta", value="Ask's Mehvix for access to beta server.", inline=False)
         embed.add_field(name=".serverinfo", value="For finding server statistics.", inline=False)
         embed.add_field(name=".version", value="Find the bot's version", inline=False)
@@ -578,6 +578,12 @@ async def on_message(message):
             print("{0}: {1} sent a sam".format(get_time(), user_name))
             fp = random.choice(os.listdir("sams"))
             await client.send_file(message.channel, "sams/{}".format(fp))
+
+        # Gets random Apu picture
+        if message.content.upper().startswith(".APU"):
+            print("{0}: {1} sent a apu".format(get_time(), user_name))
+            fp = random.choice(os.listdir("apus"))
+            await client.send_file(message.channel, "apus/{}".format(fp))
 
         # Server Info
         if message.content.upper().startswith(".SERVERINFO"):
@@ -1210,13 +1216,12 @@ async def on_message(message):
             if not ban_list:
                 await client.send_message(message.channel, "This server doesn't have anyone banned (yet)")
             else:
-                message = await client.send_message(message.channel, "**Ban List:**\n• <@{}>"
-                                          .format(">\n• <@".join([user.id for user in ban_list])))
+                message = await client.send_message(message.channel, "**Ban List:**\n• <@{}>".format(">\n• <@".join(
+                    [user.id for user in ban_list])))
                 # await client.edit_message(message, message.content + ">")
 
-        # TODO Mute Command
-        role = discord.utils.get(message.server.roles, name=mute_role_name)
         if message.content.upper().startswith(".MUTE"):
+            role = discord.utils.get(message.server.roles, name=mute_role_name)
             if not message.raw_mentions:
                 await client.send_message(message.channel, "You need to `@` a user")
             else:
@@ -1226,14 +1231,15 @@ async def on_message(message):
                 await client.send_message(message.channel, "<@{0}> muted <@{1}>".format(message.author.id, mute_target))
 
         if message.content.upper().startswith(".UNMUTE"):
+            role = discord.utils.get(message.server.roles, name=mute_role_name)
             if not message.raw_mentions:
                 await client.send_message(message.channel, "You need to `@` a user")
             else:
                 unmute_target = message.content[10:-1]
                 print("{0}: {1} unmuted {2}".format(get_time(), user_name, unmute_target))
                 await client.remove_roles(message.mentions[0], role)
-                await client.send_message(message.channel, "<@{0}> unmuted <@{1}>".format(message.author.id, unmute_target))
-
+                await client.send_message(message.channel, "<@{0}> unmuted <@{1}>".format(message.author.id,
+                                                                                          unmute_target))
 
         if ".BAN " in message.content.upper():
             server = message.server
@@ -1255,7 +1261,6 @@ async def on_message(message):
                 await client.kick(member=server.get_member(kick_target))
 
         if message.content.upper().startswith(".UNBAN"):
-            server = message.server
             if not message.raw_mentions:
                 await client.send_message(message.channel, "You need to `@` a user")
             else:
