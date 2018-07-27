@@ -17,13 +17,9 @@ from contextlib import redirect_stdout
 # TODO New Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 >  jerma pirate song
->  ban list
->  Mute user
 >  Cool down
 >  Hearthstone cards (import hearthstone)
->  delete messages
->  Create invite
->  Invite info
+>  delete messages.
 >  Give XP for voice channel usage
 >  Remind me in x minutes
 >  save console to file
@@ -435,6 +431,7 @@ async def on_message(message):
         embed.add_field(name=".roulette outcomes", value="Self-explanatory", inline=False)
         embed.add_field(name=".emotes", value="Returns all of the servers custom emotes", inline=False)
         embed.add_field(name=".banlist", value="Replies with list of who is banned on the server", inline=False)
+        embed.add_field(name=".createinvite", value="Creates an invite, then sends it in the channel", inline=False)
         await client.send_message(message.channel, embed=embed)
 
     # ".Accept" code
@@ -1031,6 +1028,11 @@ async def on_message(message):
                 finally:
                     pass
 
+        # Create an Invite
+        if message.content.upper().startswith(".CREATEINVITE"):
+            invite = await client.create_invite(message.channel)
+            await client.send_message(message.channel, invite)
+
         # Roulette system
         if message.content.upper().startswith(".ROULETTE"):
             if message.content.upper().startswith(".ROULETTE HELP"):
@@ -1058,11 +1060,14 @@ async def on_message(message):
                 odd_total = outcomes['odd']
                 even_total = outcomes['even']
                 zero_total = outcomes['zero']
+                total_total = outcomes['total']
+
                 outcomes_list = [odd_total, even_total, zero_total]
                 total = sum(outcomes_list)
                 embed = discord.Embed(title="\u200b", color=embed_color)
                 embed.set_author(name="Roulette Outcomes 📊")
-                embed.add_field(name="Total number of times 'spun'", value=total, inline=False)
+                embed.add_field(name="Total number of times 'spun'", value=total, inline=True)
+                embed.add_field(name="Total Bet", value=total_total, inline=False)
                 embed.add_field(name="Odd", value=odd_total, inline=True)
                 embed.add_field(name="Even", value=even_total, inline=True)
                 embed.add_field(name="Zero", value=zero_total, inline=True)
@@ -1089,6 +1094,15 @@ async def on_message(message):
                                                   "You don't have enough karma! You must bet under `{}`"
                                                   .format(get_karma(user_id)))
                         return
+
+                    with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                              'r') as fp:
+                        outcomes = json.load(fp)
+                    outcomes['total'] += bet_amount
+                    with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
+                              'w') as fp:
+                        json.dump(outcomes, fp, sort_keys=True, indent=4)
+
                     outcomes = ["zero", "even", "odd"]
                     await client.send_message(message.channel, "What outcome would you like to bet on? The options are"
                                                                " `zero`, `even`, or `odd`")
@@ -1187,6 +1201,8 @@ async def on_message(message):
                                               "Sorry, you need to bet a number between `10` and `250`")
                     return
 
+
+    # Admin only commands
     if admin_role_id in [role.id for role in message.author.roles]:
         if message.content.upper().startswith(".SERVERRULES"):
             print("{0}: {1} requested '.SEVERRULES'".format(get_time(), user_name))
