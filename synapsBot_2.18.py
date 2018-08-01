@@ -13,16 +13,20 @@ from discord.ext import commands
 from urbandictionary_top import udtop
 import re
 from contextlib import redirect_stdout
+# import hearthstone
+from itertools import *
+
 
 # TODO New Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
->  jerma pirate song
->  Cool down
->  Hearthstone cards (import hearthstone)
->  delete messages.
->  Give XP for voice channel usage
->  Remind me in x minutes
->  save console to file
+> jerma pirate song
+> Cool down
+> Hearthstone cards (import hearthstone)
+> delete messages.
+> Give XP for voice channel usage
+> Remind me in x minutes
+> save console to file
+> UI
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 # How to get custom values
@@ -704,7 +708,7 @@ async def on_message(message):
                 options_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                 options_embed.add_field(name="\u200b", value="\u200b", inline=False)
                 options_embed.add_field(
-                    name="Question", value="How many options do you want their to be? (No more than 6)",
+                    name="Question", value="How many options do you want their to be? (No more than 10)",
                     inline=False)
                 await asyncio.sleep(.1)
                 await client.delete_message(title_message)
@@ -733,8 +737,8 @@ async def on_message(message):
                 if poll_options <= 1:
                     await client.send_message(message.channel, "Sorry, You can't have 1 option")
                     return
-                if poll_options > 6:
-                    await client.send_message(message.channel, "Sorry, You can't have more than 6 options!")
+                if poll_options > 10:
+                    await client.send_message(message.channel, "Sorry, You can't have more than 10 options!")
                     return
 
                 one_embed = discord.Embed(title="\u200b", color=embed_color)
@@ -744,7 +748,7 @@ async def on_message(message):
                 one_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
                 one_embed.add_field(name="\u200b", value="\u200b", inline=False)
                 one_embed.add_field(
-                    name="Question", value="What should option one be called?",
+                    name="Question", value="What should Option 🇦 be?",
                     inline=False)
                 await asyncio.sleep(.1)
                 await client.delete_message(options_message)
@@ -773,10 +777,10 @@ async def on_message(message):
                                                                                      clock_emoji)))
                 two_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                 two_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
-                two_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
+                two_embed.add_field(name="🇦:", value=str(poll_option_1), inline=True)
                 two_embed.add_field(name="\u200b", value="\u200b", inline=False)
                 two_embed.add_field(
-                    name="Question", value="What should option two be called?",
+                    name="Question", value="What should Option 🇧 be?",
                     inline=False)
                 await asyncio.sleep(.1)
                 await client.delete_message(one_message)
@@ -806,11 +810,11 @@ async def on_message(message):
                         name="Generating a poll for {0} {1}".format(user_name, random.choice(clock_emoji)))
                     three_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                     three_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
-                    three_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
-                    three_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
+                    three_embed.add_field(name=" A:", value=str(poll_option_1), inline=True)
+                    three_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
                     three_embed.add_field(name="\u200b", value="\u200b", inline=False)
                     three_embed.add_field(
-                        name="Question", value="What should option three be called?",
+                        name="Question", value="What should Option 🇨 be called?",
                         inline=False)
                     await asyncio.sleep(.1)
                     await client.delete_message(two_message)
@@ -839,12 +843,12 @@ async def on_message(message):
                             name="Generating a poll for {0} {1}".format(user_name, random.choice(clock_emoji)))
                         four_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                         four_embed.add_field(name="Number of Options:", value=str(poll_options), inline=False)
-                        four_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
-                        four_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
-                        four_embed.add_field(name="Option 3:", value=str(poll_option_3), inline=True)
+                        four_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                        four_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                        four_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
                         four_embed.add_field(name="\u200b", value="\u200b", inline=False)
                         four_embed.add_field(
-                            name="Question", value="What should option four be called?",
+                            name="Question", value="What should Option 🇩 be called?",
                             inline=False)
                         await asyncio.sleep(.1)
                         await client.delete_message(three_message)
@@ -875,13 +879,13 @@ async def on_message(message):
                             five_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                             five_embed.add_field(name="Number of Options:", value=str(poll_options),
                                                  inline=False)
-                            five_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
-                            five_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
-                            five_embed.add_field(name="Option 3:", value=str(poll_option_3), inline=True)
-                            five_embed.add_field(name="Option 4:", value=str(poll_option_4), inline=True)
+                            five_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                            five_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                            five_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
+                            five_embed.add_field(name=" 🇩:", value=str(poll_option_4), inline=True)
                             five_embed.add_field(name="\u200b", value="\u200b", inline=False)
                             five_embed.add_field(
-                                name="Question", value="What should option five be called?",
+                                name="Question", value="What should Option 🇪 be called?",
                                 inline=False)
                             await asyncio.sleep(.1)
                             await client.delete_message(four_message)
@@ -904,7 +908,7 @@ async def on_message(message):
                                         message.author.id))
                                 return
 
-                            if poll_options == 6:
+                            if poll_options >= 6:
                                 six_embed = discord.Embed(title="\u200b", color=embed_color)
                                 six_embed.set_author(
                                     name="Generating a poll for {0} {1}".format(user_name,
@@ -912,14 +916,14 @@ async def on_message(message):
                                 six_embed.add_field(name="Title:", value=str(poll_title), inline=False)
                                 six_embed.add_field(name="Number of Options:", value=str(poll_options),
                                                     inline=False)
-                                six_embed.add_field(name="Option 1:", value=str(poll_option_1), inline=True)
-                                six_embed.add_field(name="Option 2:", value=str(poll_option_2), inline=True)
-                                six_embed.add_field(name="Option 3:", value=str(poll_option_3), inline=True)
-                                six_embed.add_field(name="Option 4:", value=str(poll_option_4), inline=True)
-                                six_embed.add_field(name="Option 5:", value=str(poll_option_5), inline=True)
+                                six_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                                six_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                                six_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
+                                six_embed.add_field(name=" 🇩:", value=str(poll_option_4), inline=True)
+                                six_embed.add_field(name=" 🇪:", value=str(poll_option_5), inline=True)
                                 six_embed.add_field(name="\u200b", value="\u200b", inline=True)
                                 six_embed.add_field(
-                                    name="Question", value="What should option six be called?",
+                                    name="Question", value="What should Option 🇫 be called?",
                                     inline=False)
                                 await asyncio.sleep(.1)
                                 await client.delete_message(five_message)
@@ -931,11 +935,9 @@ async def on_message(message):
 
                                 try:
                                     poll_option_6 = option_6.content
-                                    print("{0}: Option 6 set to {1}".format(get_time(), poll_option_6))
+                                    print("{0}: Option 🇫 set to {1}".format(get_time(), poll_option_6))
                                     await asyncio.sleep(.1)
                                     await client.delete_message(option_6)
-                                    await asyncio.sleep(.1)
-                                    await client.delete_message(six_message)
 
                                 except AttributeError:
                                     await client.send_message(
@@ -943,6 +945,171 @@ async def on_message(message):
                                         "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
                                         (message.author.id))
                                     return
+
+                                if poll_options >= 7:
+                                    seven_embed = discord.Embed(title="\u200b", color=embed_color)
+                                    seven_embed.set_author(
+                                        name="Generating a poll for {0} {1}".format(user_name,
+                                                                                    random.choice(clock_emoji)))
+                                    seven_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                                    seven_embed.add_field(name="Number of Options:", value=str(poll_options),
+                                                          inline=False)
+                                    seven_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                                    seven_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                                    seven_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
+                                    seven_embed.add_field(name=" 🇩:", value=str(poll_option_4), inline=True)
+                                    seven_embed.add_field(name=" 🇪:", value=str(poll_option_5), inline=True)
+                                    seven_embed.add_field(name=" 🇫:", value=str(poll_option_6), inline=True)
+                                    seven_embed.add_field(name="\u200b", value="\u200b", inline=True)
+                                    seven_embed.add_field(name="Question", value="What should Option 🇬 be called?",
+                                                          inline=False)
+                                    await asyncio.sleep(.1)
+                                    await client.delete_message(six_message)
+                                    seven_message = await client.send_message(message.channel, embed=seven_embed)
+
+                                    # Option 7
+                                    option_7 = await client.wait_for_message(
+                                        timeout=120, author=message.author, channel=message.channel)
+
+                                    try:
+                                        poll_option_7 = option_7.content
+                                        print("{0}: Option 🇬 set to {1}".format(get_time(), poll_option_7))
+                                        await asyncio.sleep(.1)
+                                        await client.delete_message(option_7)
+
+                                    except AttributeError:
+                                        await client.send_message(
+                                            message.channel,
+                                            "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
+                                            (message.author.id))
+                                        return
+
+                                    if poll_options >= 8:
+                                        eight_embed = discord.Embed(title="\u200b", color=embed_color)
+                                        eight_embed.set_author(
+                                            name="Generating a poll for {0} {1}".format(user_name,
+                                                                                        random.choice(clock_emoji)))
+                                        eight_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                                        eight_embed.add_field(name="Number of Options:", value=str(poll_options),
+                                                              inline=False)
+                                        eight_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                                        eight_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                                        eight_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
+                                        eight_embed.add_field(name=" 🇩:", value=str(poll_option_4), inline=True)
+                                        eight_embed.add_field(name=" 🇪:", value=str(poll_option_5), inline=True)
+                                        eight_embed.add_field(name=" 🇫:", value=str(poll_option_6), inline=True)
+                                        eight_embed.add_field(name=" 🇬:", value=str(poll_option_7), inline=True)
+                                        eight_embed.add_field(name="\u200b", value="\u200b", inline=True)
+                                        eight_embed.add_field(
+                                            name="Question", value="What should Option 🇭 be called?",
+                                            inline=False)
+                                        await asyncio.sleep(.1)
+                                        await client.delete_message(seven_message)
+                                        eight_embed = await client.send_message(message.channel, embed=eight_embed)
+
+                                        # Option 8
+                                        option_8 = await client.wait_for_message(
+                                            timeout=120, author=message.author, channel=message.channel)
+
+                                        try:
+                                            poll_option_8 = option_8.content
+                                            print("{0}: Option 🇬 set to {1}".format(get_time(), poll_option_8))
+                                            await asyncio.sleep(.1)
+                                            await client.delete_message(option_8)
+
+                                        except AttributeError:
+                                            await client.send_message(
+                                                message.channel,
+                                                "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
+                                                (message.author.id))
+                                            return
+
+                                        if poll_options >= 9:
+                                            nine_embed = discord.Embed(title="\u200b", color=embed_color)
+                                            nine_embed.set_author(
+                                                name="Generating a poll for {0} {1}".format(user_name,
+                                                                                            random.choice(
+                                                                                                clock_emoji)))
+                                            nine_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                                            nine_embed.add_field(name="Number of Options:", value=str(poll_options),
+                                                                 inline=False)
+                                            nine_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                                            nine_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                                            nine_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
+                                            nine_embed.add_field(name=" 🇩:", value=str(poll_option_4), inline=True)
+                                            nine_embed.add_field(name=" 🇪:", value=str(poll_option_5), inline=True)
+                                            nine_embed.add_field(name=" 🇫:", value=str(poll_option_6), inline=True)
+                                            nine_embed.add_field(name=" 🇬:", value=str(poll_option_7), inline=True)
+                                            nine_embed.add_field(name=" 🇭:", value=str(poll_option_8), inline=True)
+                                            nine_embed.add_field(name="\u200b", value="\u200b", inline=True)
+                                            nine_embed.add_field(name="Question",
+                                                                 value="What should Option 🇮 be called?", inline=False)
+                                            await asyncio.sleep(.1)
+                                            nine_embed = await client.send_message(message.channel, embed=nine_embed)
+
+                                            # Option 9
+                                            option_9 = await client.wait_for_message(
+                                                timeout=120, author=message.author, channel=message.channel)
+
+                                            try:
+                                                poll_option_9 = option_9.content
+                                                print("{0}: Option 🇮 set to {1}".format(get_time(), poll_option_9))
+                                                await asyncio.sleep(.1)
+                                                await client.delete_message(option_9)
+
+                                            except AttributeError:
+                                                await client.send_message(
+                                                    message.channel,
+                                                    "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
+                                                    (message.author.id))
+                                                return
+
+                                            if poll_options >= 10:
+                                                ten_embed = discord.Embed(title="\u200b", color=embed_color)
+                                                ten_embed.set_author(
+                                                    name="Generating a poll for {0} {1}".format(user_name,
+                                                                                                random.choice(
+                                                                                                    clock_emoji)))
+                                                ten_embed.add_field(name="Title:", value=str(poll_title), inline=False)
+                                                ten_embed.add_field(name="Number of Options:", value=str(poll_options),
+                                                                    inline=False)
+                                                ten_embed.add_field(name=" 🇦:", value=str(poll_option_1), inline=True)
+                                                ten_embed.add_field(name=" 🇧:", value=str(poll_option_2), inline=True)
+                                                ten_embed.add_field(name=" 🇨:", value=str(poll_option_3), inline=True)
+                                                ten_embed.add_field(name=" 🇩:", value=str(poll_option_4), inline=True)
+                                                ten_embed.add_field(name=" 🇪:", value=str(poll_option_5), inline=True)
+                                                ten_embed.add_field(name=" 🇫:", value=str(poll_option_6), inline=True)
+                                                ten_embed.add_field(name=" 🇬:", value=str(poll_option_7), inline=True)
+                                                ten_embed.add_field(name=" 🇭:", value=str(poll_option_8), inline=True)
+                                                ten_embed.add_field(name=" 🇮:", value=str(poll_option_9), inline=True)
+                                                ten_embed.add_field(name="\u200b", value="\u200b", inline=True)
+                                                ten_embed.add_field(name="Question",
+                                                                    value="What should Option 🇯 be called?",
+                                                                    inline=False)
+                                                await asyncio.sleep(.1)
+                                                ten_message = await client.send_message(message.channel, embed=ten_embed)
+
+                                                # Option 10
+                                                option_10 = await client.wait_for_message(
+                                                    timeout=120, author=message.author, channel=message.channel)
+
+                                                try:
+                                                    poll_option_10 = option_10.content
+                                                    print("{0}: Option 🇯 set to {1}".format(get_time(), poll_option_10))
+                                                    await asyncio.sleep(.1)
+                                                    await client.delete_message(option_10)
+
+                                                except AttributeError:
+                                                    await client.send_message(
+                                                        message.channel,
+                                                        "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
+                                                        (message.author.id))
+                                                    return
+
+                                                # TODO KEEP THIS FOR DELETING LAST MESSAGE
+                                                await asyncio.sleep(.1)
+                                                await client.delete_message(ten_message)
+
                         else:
                             await asyncio.sleep(.1)
                             await client.delete_message(four_message)
@@ -955,43 +1122,71 @@ async def on_message(message):
 
                 embed = discord.Embed(
                     title=string.capwords(poll_title),
-                    description="Created by {}".format(user_name), color=embed_color)
+                    description="Created by `{}`".format(user_name), color=embed_color)
                 embed.set_thumbnail(
                     url="https://png.icons8.com/metro/1600/poll-topic.png")
                 embed.add_field(
-                    name="Option 1:", value=string.capwords(poll_option_1), inline=True)
+                    name=" 🇦:", value=string.capwords(poll_option_1), inline=True)
                 embed.add_field(
-                    name="Option 2:", value=string.capwords(poll_option_2), inline=True)
+                    name=" 🇧:", value=string.capwords(poll_option_2), inline=True)
                 if poll_options >= 3:
                     embed.add_field(
-                        name="Option 3:", value=string.capwords(poll_option_3), inline=True)
+                        name=" 🇨:", value=string.capwords(poll_option_3), inline=True)
                     if poll_options >= 4:
                         embed.add_field(
-                            name="Option 4:", value=string.capwords(poll_option_4), inline=True)
+                            name=" 🇩:", value=string.capwords(poll_option_4), inline=True)
                         if poll_options >= 5:
                             embed.add_field(
-                                name="Option 5:", value=string.capwords(poll_option_5), inline=True)
-                            if poll_options == 6:
+                                name=" 🇪:", value=string.capwords(poll_option_5), inline=True)
+                            if poll_options >= 6:
                                 embed.add_field(
-                                    name="Option 6:", value=string.capwords(poll_option_6),
+                                    name=" 🇫:", value=string.capwords(poll_option_6),
                                     inline=True)
+                                if poll_options >= 7:
+                                    embed.add_field(
+                                        name=" 🇬:", value=string.capwords(poll_option_7),
+                                        inline=True)
+                                    if poll_options >= 8:
+                                        embed.add_field(
+                                            name=" 🇭:", value=string.capwords(poll_option_8),
+                                            inline=True)
+                                        if poll_options >= 9:
+                                            embed.add_field(
+                                                name=" 🇮:", value=string.capwords(poll_option_9),
+                                                inline=True)
+                                            if poll_options >= 10:
+                                                embed.add_field(
+                                                    name=" 🇯:", value=string.capwords(poll_option_10),
+                                                    inline=True)
                 poll_message = await client.send_message(message.channel, embed=embed)
 
-                await client.add_reaction(poll_message, one_emote)
+                await client.add_reaction(poll_message, "🇦")
                 await asyncio.sleep(.1)
-                await client.add_reaction(poll_message, two_emote)
+                await client.add_reaction(poll_message, "🇧")
                 if poll_options >= 3:
                     await asyncio.sleep(.1)
-                    await client.add_reaction(poll_message, three_emote)
+                    await client.add_reaction(poll_message, "🇨")
                     if poll_options >= 4:
                         await asyncio.sleep(.1)
-                        await client.add_reaction(poll_message, four_emote)
+                        await client.add_reaction(poll_message, "🇩")
                         if poll_options >= 5:
                             await asyncio.sleep(.1)
-                            await client.add_reaction(poll_message, five_emote)
-                            if poll_options == 6:
+                            await client.add_reaction(poll_message, "🇪")
+                            if poll_options >= 6:
                                 await asyncio.sleep(.1)
-                                await client.add_reaction(poll_message, six_emote)
+                                await client.add_reaction(poll_message, "🇫")
+                                if poll_options >= 7:
+                                    await asyncio.sleep(.1)
+                                    await client.add_reaction(poll_message, "🇬")
+                                    if poll_options >= 8:
+                                        await asyncio.sleep(.1)
+                                        await client.add_reaction(poll_message, "🇭")
+                                        if poll_options >= 9:
+                                            await asyncio.sleep(.1)
+                                            await client.add_reaction(poll_message, "🇮")
+                                            if poll_options >= 10:
+                                                await asyncio.sleep(.1)
+                                                await client.add_reaction(poll_message, "🇯")
                 vote_phase -= 1
             else:
                 await client.send_message(message.channel, "Sorry, another vote is taking place right now!")
@@ -1233,9 +1428,34 @@ async def on_message(message):
             if not ban_list:
                 await client.send_message(message.channel, "This server doesn't have anyone banned (yet)")
             else:
-                message = await client.send_message(message.channel, "**Ban List:**\n• <@{}>".format(">\n• <@".join(
-                    [user.id for user in ban_list])))
-                # await client.edit_message(message, message.content + ">")
+                userid = [user.id for user in ban_list]
+                name = [user.name for user in ban_list]
+                discriminator = [user.discriminator for user in ban_list]
+                bot = [user.bot for user in ban_list]
+
+                print(bot)
+
+                newlist = []
+                for item in bot:
+                    if item:
+                        item = "<:bottag:473742770671058964>"
+                    else:
+                        item = ""
+                    newlist.append(item)
+                bot = newlist
+
+                print(bot)
+
+                total = list((zip(userid, name, discriminator, bot)))
+                print(total)
+
+                # Thanks to happypetsy on stackoverflow for helping me with this!
+                pretty_list = set()
+                for details in total:
+                    data = "•<@{}>{} ({}#{}) ".format(details[0], details[3], details[1], details[2])
+                    pretty_list.add(data)
+
+                await client.send_message(message.channel, "**Ban list:** \n{}".format("\n".join(pretty_list)))
 
         if message.content.upper().startswith(".MUTE"):
             role = discord.utils.get(message.server.roles, name=mute_role_name)
