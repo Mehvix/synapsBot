@@ -15,6 +15,16 @@ import re
 from contextlib import redirect_stdout
 # import hearthstone
 from itertools import *
+import youtube_dl
+
+
+if not discord.opus.is_loaded():
+    # the 'opus' library here is opus.dll on windows
+    # or libopus.so on linux in the current directory
+    # you should replace this with the location the
+    # opus library is located in and with the proper filename.
+    # note that on windows this DLL is automatically provided for you
+    discord.opus.load_opus('opus')
 
 
 # TODO New Commands
@@ -26,7 +36,9 @@ from itertools import *
 > Give XP for voice channel usage
 > Remind me in x minutes
 > save console to file
-> UI
+> GUI
+> dont down these files
+> ud terms with spaces
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 # How to get custom values
@@ -152,6 +164,10 @@ ban_message = 0
 # Selects random clock emoji for '.uptime' command
 clock_emoji = ["🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"]  # Use random.choice(clock_emoji)
 
+# Music bot setting(s)
+players = {}
+queues = {}
+
 # Roulette Settings
 roulette_red = {1, 3, 5, 7, 9, 12, 14, 16, 18, 21, 23, 25, 27, 30, 32, 34, 36}
 roulette_black = {2, 4, 6, 8, 10, 11, 13, 15, 17, 19, 20, 22, 24, 26, 28, 29, 31, 33, 35}
@@ -261,6 +277,10 @@ async def on_reaction_add(reaction, user):
 
     if reaction.message.channel.id != pokemon_channel:
         if emoji_used == formated_up:  # If emote is the upvote emote
+
+            id = await client.get_user_info('240608458888445953')  # this dm's david
+            await client.send_message(id, "Someone used the upvote/downvote system :o")
+
             if reaction.message.author.id == user.id:
                 print("{0}: {1} upvoted there own link. NO CHANGE"
                       .format(get_time(), user))
@@ -274,6 +294,9 @@ async def on_reaction_add(reaction, user):
 
         # If emote is the downvote emote
         if emoji_used == formated_down:
+            id = await client.get_user_info('240608458888445953')  # this dm's david
+            await client.send_message(id, "Someone used the upvote/downvote system :o")
+
             if reaction.message.author.id == user.id:
                 print("{0}: {1} downvoted there post. NO CHANGE"
                       .format(get_time(), user))
@@ -326,12 +349,22 @@ async def on_reaction_remove(reaction, user):
 
 @client.event
 async def on_message(message):
+    server = message.server
+
     if message.author == client.user:
         return
 
     # Message author variables
     user_id = message.author.id
     user_name = message.author
+
+    # Banned Words
+    banned_words = get_json("C:/Users/maxla/PycharmProjects/synapsBot remastered/banned_words.json")
+
+    if any(word in message.content.upper() for word in banned_words):
+        user_add_karma(user_id, -50)
+        await client.delete_message(message)
+        return
 
     # Because @xpoes#9244 spams the shit out of our pokemon channel
     if message.channel.id == pokemon_channel:
@@ -477,20 +510,16 @@ async def on_message(message):
                 try:
                     term = udtop(target_def)
                     print("{0}: {1} requested the UD for {2}".format(get_time(), user_name, target_def))
-                    embed = discord.Embed(title="Definition Page",
-                                          url="https://www.urbandictionary.com/define.php?term={}"
-                                          .format(target_def.replace(" ", "%20")), color=embed_color)
-                    embed.set_author(name="Definition for {}".format(string.capwords(target_def)),
-                                     url="https://www.urbandictionary.com/define.php?term={}"
-                                     .format(target_def))
-                    embed.add_field(name="Definition 📚", value=term.definition[:2000], inline=False)
-                    embed.add_field(name="Example 💬", value=term.example, inline=True)
+                    embed = discord.Embed(title="Definition Page", color=embed_color)
+                    embed.set_author(name="Definition for {}".format(string.capwords(target_def)))
+                    embed.add_field(name="Definition 📚", value=term.definition[:1024], inline=False)
+                    embed.add_field(name="Example 💬", value=term.example[:1024], inline=True)
                     await client.send_message(message.channel, embed=embed)
                 except AttributeError:
-                    await client.send_message(message.channel, "Sorry, that word doesnt have a definition :( . "
-                                                               "You can add your own here: ")
-                    await client.send_message(message.channel, "https://www.urbandictionary.com/add.php?word="
-                                              + target_def_link_format)
+                    await client.send_message(message.channel, "Sorry, that word doesnt have a definition :( . You can "
+                                                               "add your own here: ")
+                    await client.send_message(message.channel, "https://www.urbandictionary.com/add.php?word=" +
+                                              target_def_link_format)
 
         # 8Ball Code
         elif message.content.upper().startswith(".8BALL"):
@@ -1005,7 +1034,6 @@ async def on_message(message):
                                             inline=False)
                                         await asyncio.sleep(.1)
                                         await client.delete_message(seven_message)
-                                        eight_embed = await client.send_message(message.channel, embed=eight_embed)
 
                                         # Option 8
                                         option_8 = await client.wait_for_message(
@@ -1045,7 +1073,6 @@ async def on_message(message):
                                             nine_embed.add_field(name="Question",
                                                                  value="What should Option 🇮 be called?", inline=False)
                                             await asyncio.sleep(.1)
-                                            nine_embed = await client.send_message(message.channel, embed=nine_embed)
 
                                             # Option 9
                                             option_9 = await client.wait_for_message(
@@ -1087,7 +1114,6 @@ async def on_message(message):
                                                                     value="What should Option 🇯 be called?",
                                                                     inline=False)
                                                 await asyncio.sleep(.1)
-                                                ten_message = await client.send_message(message.channel, embed=ten_embed)
 
                                                 # Option 10
                                                 option_10 = await client.wait_for_message(
@@ -1100,13 +1126,12 @@ async def on_message(message):
                                                     await client.delete_message(option_10)
 
                                                 except AttributeError:
-                                                    await client.send_message(
-                                                        message.channel,
-                                                        "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
-                                                        (message.author.id))
+                                                    await client.send_message(message.channel,
+                                                                              "<@{}> DIDN'T respond fast enough, so the"
+                                                                              " poll was cancelled".format(
+                                                                                  message.author.id))
                                                     return
 
-                                                # TODO KEEP THIS FOR DELETING LAST MESSAGE
                                                 await asyncio.sleep(.1)
                                                 await client.delete_message(ten_message)
 
@@ -1223,9 +1248,74 @@ async def on_message(message):
                 finally:
                     pass
 
+        # Join VC (test)
+        if message.content.upper().startswith(".SVOICETEST"):
+            if client.is_voice_connected(server):
+                pass
+            else:
+                voice = await client.join_voice_channel(message.author.voice.voice_channel)
+
+            try:
+                vchannel = client.voice_client_in(server)
+
+                player = voice.create_ffmpeg_player('jerma.mp3')
+                player.start()
+
+            except discord.ClientException:
+                await client.send_message(
+                    message.channel, "I am already playing in  `{}`".format(vchannel.channel.name))
+
+            except UnboundLocalError:
+                await client.send_message(
+                    message.channel, "I am already playing in `{}`".format(vchannel.channel.name))
+
+        if message.content.upper().startswith(".SPLAY"):
+            if client.is_voice_connected(server):
+                pass
+            else:
+                await client.join_voice_channel(message.author.voice.voice_channel)
+            url = message.content.split
+            url = url()[1]
+            voice_client = client.voice_client_in(server)
+            player = await voice_client.create_ytdl_player(url)
+            players[server.id] = player
+            player.start()
+
+        if message.content.upper().startswith(".SPAUSE"):
+            id = message.server.id
+            players[id].pause()
+
+        if message.content.upper().startswith(".SSTOP"):
+            id = message.server.id
+            players[id].stop()
+
+        if message.content.upper().startswith(".SRESUME"):
+            id = message.server.id
+            players[id].resume()
+
+        if message.content.upper().startswith(".SQUEUE"):
+            url = message.content.split
+            url = url()[1]
+
+            voice_client = client.voice_client_in(server)
+            player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(sever.id))
+
+            if server.id in queues:
+                queues[server.id].append(player)
+            else:
+                queues[server.id] = [player]
+
+            await client.send_message(message.channel, "Video added to que!")
+
+        if message.content.upper().startswith(".SDISCONNECT"):
+            for x in client.voice_clients:
+                if x.server == message.server:
+                    return await x.disconnect()
+            await client.send_message(message.channel, "I am not connected to any voice channel on this server.")
+
         # Create an Invite
         if message.content.upper().startswith(".CREATEINVITE"):
-            invite = await client.create_invite(message.channel)
+            invite = await client.create_invite(destination=message.channel, max_age=0, temporary=False, unique=True)
             await client.send_message(message.channel, invite)
 
         # Roulette system
@@ -1396,9 +1486,13 @@ async def on_message(message):
                                               "Sorry, you need to bet a number between `10` and `250`")
                     return
 
+        if message.content.upper().startswith(".BANNEDWORDS"):
+            banned_words = get_json("C:/Users/maxla/PycharmProjects/synapsBot remastered/banned_words.json")
+            await client.send_message(message.channel,
+                                      "**Banned Words List:** \n• `{}`".format("`\n• `".join(banned_words)))
 
     # Admin only commands
-    if admin_role_id in [role.id for role in message.author.roles]:
+    if message.author.server_permissions.administrator:
         if message.content.upper().startswith(".SERVERRULES"):
             print("{0}: {1} requested '.SEVERRULES'".format(get_time(), user_name))
             await asyncio.sleep(.1)
@@ -1411,7 +1505,7 @@ async def on_message(message):
             embed.add_field(name="🎵 Rules 3.)", value="Please keep music requests in the music que channel.",
                             inline=True)
             embed.add_field(name="🔰 Getting Verified:",
-                            value="Just add '[TS]' to your steam name and DM a Admin.", inline=True)
+                            value="Just add '[Synaps]' to your steam name and DM a Admin.", inline=True)
             embed.add_field(
                 name="🔸 Getting Member:",
                 value="Read the rules above and type '.accept' in here. If for whatever reason it doesnt work, "
@@ -1457,6 +1551,24 @@ async def on_message(message):
 
                 await client.send_message(message.channel, "**Ban list:** \n{}".format("\n".join(pretty_list)))
 
+        if message.content.upper().startswith(".GIVEKARMA"):
+            if not message.raw_mentions:
+                await client.send_message(
+                    message.channel, "You need to `@` a user and give an amount. Example: `.givekarma @Mehvix#7172 10`")
+            else:
+                try:
+                    target = message.content.split(" ")
+                    target_user = target[1]
+                    target_amount = target[2]
+                    target_user = target_user[3:-1]
+                    user_add_karma(target_user, int(target_amount))
+                    await client.send_message(
+                        message.channel, "You gave <@{}> `{}` karma. THey now have a total of `{}` karma".format(
+                            target_user, target_amount, get_karma(target_user)))
+                except IndexError:
+                    await client.send_message(
+                        message.channel, "You either didn't correctly `@` a user or enter in a amount.")
+
         if message.content.upper().startswith(".MUTE"):
             role = discord.utils.get(message.server.roles, name=mute_role_name)
             if not message.raw_mentions:
@@ -1478,8 +1590,23 @@ async def on_message(message):
                 await client.send_message(message.channel, "<@{0}> unmuted <@{1}>".format(message.author.id,
                                                                                           unmute_target))
 
-        if ".BAN " in message.content.upper():
-            server = message.server
+        if message.content.upper().startswith(".ADDBANWORD "):
+            word_reg = message.content.split(" ")
+            word = str(word_reg[1]).upper()
+            print("0 {}".format(word))
+            fp = "C:/Users/maxla/PycharmProjects/synapsBot remastered/banned_words.json"
+            banned_words = get_json(fp)
+            print("1 {}".format(banned_words))
+            banned_words.insert(0, word)
+            print("2 {}".format(banned_words))
+            with open(fp, 'w') as outfile:
+                json.dump(banned_words, outfile)
+            await client.send_message(
+                message.channel,
+                "The word `{}` was banned. The full list of banned words can be found via `.bannedwords`".format(
+                    word_reg[1]))
+
+        if message.content.upper() == ".BAN":
             if not message.raw_mentions:
                 await client.send_message(message.channel, "You need to `@` a user")
             else:
@@ -1489,7 +1616,6 @@ async def on_message(message):
 
         if message.content.upper().startswith(".KICK"):
             kick_target = message.content[8:-1]
-            server = message.server
             print("{0}: {1} kicked {2}".format(get_time(), user_name, kick_target))
             if not message.raw_mentions:
                 await client.send_message(message.channel, "You need to `@` a user")
