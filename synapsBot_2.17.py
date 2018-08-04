@@ -979,7 +979,7 @@ async def on_message(message):
                 finally:
                     pass
 
-        # TODO Make betting seperate and return the user's karma to bet
+        # TODO Make betting separate and return the user's karma to bet
         # Roulette system
         if message.content.upper().startswith(".ROULETTE"):
             if message.content.upper().startswith(".ROULETTE HELP"):
