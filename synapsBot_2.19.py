@@ -84,7 +84,7 @@ jsontoken = 0
 if acc_name == "test":
     print("Using TEST account")
     jsontoken = get_json('C:/Users/maxla/PycharmProjects/synapsBot remastered/test_token.json')
-    token = jsontoken.get("token")
+    token = jsontoken.get("test")
     upvote_emoji = ":upvote:414204250642579488"
     downvote_emoji = ":downvote:414204250948894721"
     notification_channel = "414974032048553984"
@@ -99,19 +99,11 @@ if acc_name == "test":
     mute_role_id = "445059188973109259"
     mute_role_name = "Text Muted"
 
-    # Number Emojis (because unicode is hard)
-    one_emote = ":onev2:442817606961987585"
-    two_emote = ":twov2:442817607020838913"
-    three_emote = ":threev2:442817607301726208"
-    four_emote = ":fourv2:442817606957924383"
-    five_emote = ":fivev2:442817607188348938"
-    six_emote = ":sixv2:442817607196868629"
-
 
 if acc_name == "main":
     print("Using MAIN account")
     jsontoken = get_json('C:/Users/maxla/PycharmProjects/synapsBot remastered/main_token.json')
-    token = jsontoken.get("token")
+    token = jsontoken.get("main")
     upvote_emoji = ":upvote:412119803034075157"
     downvote_emoji = ":downvote:412119802904313858"
     notification_channel = "412075980094570506"
@@ -126,13 +118,6 @@ if acc_name == "main":
     mute_role_id = "363900817805148160"
     mute_role_name = "Text Muted"
 
-    # Number Emojis (because unicode is hard)
-    one_emote = ":one2:442836971161649152"
-    two_emote = ":two2:442836971145134080"
-    three_emote = ":three2:442836970935156738"
-    four_emote = ":four2:442836971145003025"
-    five_emote = ":five2:442836971153522688"
-    six_emote = ":six2:442836970843013131"
 
 if jsontoken == 0:
     print("WOAH!!! You need a token to go online. Use 'Main' or 'Test")
@@ -214,7 +199,7 @@ async def on_ready():
     print("• Connected to " + str(len(client.servers)) + " server(s):")
     for x in range(len(server_list)):
         print("     > " + server_list[x - 1].name)
-    print("============================================================")
+    print("============================================================\n")
 
 
 # Tbh I have no idea what resumed is. If you know hmu on discord @ Mehvix#7172
@@ -256,7 +241,7 @@ async def on_member_unban(member):
 async def on_member_remove(member):
     global ban_message
     if ban_message == 1:
-        print("Canceled kick message")
+        print("{}: Canceled kick message".format(get_time()))
         ban_message = 0
     else:
         print("{0}: {1} left or was kicked".format(get_time(), member))
@@ -414,9 +399,9 @@ async def on_message(message):
     if re.match(regex, message.content) is not None:
         await client.add_reaction(message, upvote_emoji)
 
+    # Adds upvote to images / uploads
     if message.attachments:
         await client.add_reaction(message, upvote_emoji)
-        print(message.attachments)
 
     # "Shut Up" code
     if member_role_id in [role.id for role in message.author.roles]:
@@ -556,6 +541,7 @@ async def on_message(message):
             await client.send_message(message.channel, "The bot is currently running version `{}`"
                                       .format(file_name[10:-3]))
 
+        # TODO fix this
         # Uptime Code
         if message.content.upper().startswith(".UPTIME"):
             print("{0}: {1} requested '.UPTIME'".format(get_time(), user_name))
@@ -647,10 +633,7 @@ async def on_message(message):
             em.add_field(name="AFK Channel:", value=message.server.afk_channel)
             em.add_field(name="Voice Client:", value=message.server.voice_client)
             em.add_field(name="Icon URL", value=message.server.icon_url)
-            if message.server.icon_url is None:
-                print("There is no server URL!")
-            else:
-                em.set_thumbnail(url=message.server.icon_url)
+            em.set_thumbnail(url=message.server.icon_url)
             em.set_author(name="\u200b")
             em.set_footer(text="Server ID: {}".format(message.server.id))
             await client.send_message(message.channel, embed=em)
@@ -1313,6 +1296,40 @@ async def on_message(message):
                     return await x.disconnect()
             await client.send_message(message.channel, "I am not connected to any voice channel on this server.")
 
+        if message.content.upper().startswith(".BANLIST"):
+            ban_list = await client.get_bans(message.server)
+            if not ban_list:
+                await client.send_message(message.channel, "This server doesn't have anyone banned (yet)")
+            else:
+                userid = [user.id for user in ban_list]
+                name = [user.name for user in ban_list]
+                discriminator = [user.discriminator for user in ban_list]
+                bot = [user.bot for user in ban_list]
+
+                print(bot)
+
+                newlist = []
+                for item in bot:
+                    if item:
+                        item = "<:bottag:473742770671058964>"
+                    else:
+                        item = ""
+                    newlist.append(item)
+                bot = newlist
+
+                print(bot)
+
+                total = list((zip(userid, name, discriminator, bot)))
+                print(total)
+
+                # Thanks to happypetsy on stackoverflow for helping me with this!
+                pretty_list = set()
+                for details in total:
+                    data = "•<@{}>{} ({}#{}) ".format(details[0], details[3], details[1], details[2])
+                    pretty_list.add(data)
+
+                await client.send_message(message.channel, "**Ban list:** \n{}".format("\n".join(pretty_list)))
+
         # Create an Invite
         if message.content.upper().startswith(".CREATEINVITE"):
             invite = await client.create_invite(destination=message.channel, max_age=0, temporary=False, unique=True)
@@ -1517,40 +1534,6 @@ async def on_message(message):
                 message.channel, "• https://socialclub.rockstargames.com/crew/team_synaps")
             await client.send_message(message.channel, "• https://blizzard.com/invite/XKp33F07e)")
 
-        if message.content.upper().startswith(".BANLIST"):
-            ban_list = await client.get_bans(message.server)
-            if not ban_list:
-                await client.send_message(message.channel, "This server doesn't have anyone banned (yet)")
-            else:
-                userid = [user.id for user in ban_list]
-                name = [user.name for user in ban_list]
-                discriminator = [user.discriminator for user in ban_list]
-                bot = [user.bot for user in ban_list]
-
-                print(bot)
-
-                newlist = []
-                for item in bot:
-                    if item:
-                        item = "<:bottag:473742770671058964>"
-                    else:
-                        item = ""
-                    newlist.append(item)
-                bot = newlist
-
-                print(bot)
-
-                total = list((zip(userid, name, discriminator, bot)))
-                print(total)
-
-                # Thanks to happypetsy on stackoverflow for helping me with this!
-                pretty_list = set()
-                for details in total:
-                    data = "•<@{}>{} ({}#{}) ".format(details[0], details[3], details[1], details[2])
-                    pretty_list.add(data)
-
-                await client.send_message(message.channel, "**Ban list:** \n{}".format("\n".join(pretty_list)))
-
         if message.content.upper().startswith(".GIVEKARMA"):
             if not message.raw_mentions:
                 await client.send_message(
@@ -1560,7 +1543,7 @@ async def on_message(message):
                     target = message.content.split(" ")
                     target_user = target[1]
                     target_amount = target[2]
-                    target_user = target_user[3:-1]
+                    target_user = str(target_user)[2:-1]
                     user_add_karma(target_user, int(target_amount))
                     await client.send_message(
                         message.channel, "You gave <@{}> `{}` karma. They now have a total of `{}` karma".format(
