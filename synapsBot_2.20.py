@@ -48,7 +48,7 @@ clicking "reveal".
 '''''
 Make sure to change this to either 'test' or 'main'
 '''''
-settings.server("test")
+settings.set_server("main")
 
 ban_message = 0
 

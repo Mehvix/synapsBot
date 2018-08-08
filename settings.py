@@ -16,7 +16,7 @@ def get_json(file_path):
         return json.load(fp)
 
 
-def server(server):
+def set_server(server):
     global token
     global upvote_emoji
     global downvote_emoji

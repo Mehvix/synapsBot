@@ -1,0 +1,4 @@
+youtube_dl
+discord
+Eel>=0.9.1
+PyInstaller>=3.3.1
