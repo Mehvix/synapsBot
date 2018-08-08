@@ -1,2 +1,7 @@
 .idea/
 venv/
+media/
+tokens.json
+users.json
+users backup.json
+test_token.json
