@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time
 from datetime import datetime, timedelta
+
+start_time = time.time()
 
 
 def uptime():
@@ -10,8 +13,7 @@ def uptime():
     sec = timedelta(seconds=int(sec[0]))
     d = datetime(1, 1, 1) + sec
 
-    # DAYS:HOURS:MIN:SEC
-    return "{}:{}:{}:{}".format(d.day - 1, d.hour, d.minute, d.second)
+    return "{}:{}:{}:{} (DAYS:HOURS:MIN:SEC)".format(d.day - 1, d.hour, d.minute, d.second)
 
 
 def get_time():

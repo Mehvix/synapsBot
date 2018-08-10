@@ -25,9 +25,6 @@ extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpol
 # Defines Client
 client = commands.Bot(description="synapsBot", command_prefix='.')
 
-# Use this to find uptime
-start_time = time.time()
-uptime = 0
 
 # TODO New Commands
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -53,7 +50,7 @@ clicking "reveal".
 '''''
 Make sure to change this to either 'test' or 'main'
 '''''
-settings.set_server("test")
+settings.set_server("main")
 
 ban_message = 0
 
