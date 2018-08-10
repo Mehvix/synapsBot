@@ -25,8 +25,12 @@ extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpol
 # Defines Client
 client = commands.Bot(description="synapsBot", command_prefix='.')
 
+# Use this to find uptime
+start_time = time.time()
+uptime = 0
+
 # TODO New Commands
-'''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 > Cool down
 > Hearthstone cards (import hearthstone)
 > Give XP for voice channel usage
@@ -35,7 +39,8 @@ client = commands.Bot(description="synapsBot", command_prefix='.')
 > GUI
 > dont down these files
 > .invite @user (dm user)
-'''
+> change bot avatar every hour/launch 
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 # How to get custom values
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -48,7 +53,7 @@ clicking "reveal".
 '''''
 Make sure to change this to either 'test' or 'main'
 '''''
-settings.set_server("main")
+settings.set_server("test")
 
 ban_message = 0
 
@@ -58,7 +63,7 @@ def get_json(file_path):
         return json.load(fp)
 
 
-async def uptime():
+async def timer():
     await client.wait_until_ready()
     global seconds
     seconds = 0
@@ -74,14 +79,10 @@ async def uptime():
         if seconds == 60:
             seconds = 0
             minutes += 1
-        elif minutes == 60:
-            minutes = 0
-            hours += 1
-
             file_name = os.path.basename(sys.argv[0])  # Gets file name
             r = random.randint(1, 3)
             if r == 1:
-                await client.change_presence(game=discord.Game(name="Live for {0}:{1}:00".format(hours, minutes),
+                await client.change_presence(game=discord.Game(name="Live for {0}".format(curtime.uptime()),
                                                                url="https://twitch.tv/mehvix", type=1))
             if r == 2:
                 await client.change_presence(game=discord.Game(name="Version {}".format(file_name[10:-3]),
@@ -90,6 +91,9 @@ async def uptime():
                 await client.change_presence(
                     game=discord.Game(name="Created by Mehvix#7172", url="https://twitch.tv/mehvix",
                                       type=1))
+        elif minutes == 60:
+            minutes = 0
+            hours += 1
         elif hours == 24:
             hours = 0
             days += 1
@@ -101,11 +105,7 @@ async def on_ready():
     channels = len([c for c in client.get_all_channels()])
     file_name = os.path.basename(sys.argv[0])  # Gets file name
 
-    # TODO Make #1 work again
     r = random.randint(2, 3)
-    if r == 1:
-        await client.change_presence(game=discord.Game(name="Live for {0}:{1}:00".format(hours, minutes),
-                                                       url="https://twitch.tv/mehvix", type=1))
     if r == 2:
         await client.change_presence(game=discord.Game(name="Version {}".format(file_name[10:-3]),
                                                        url="https://twitch.tv/mehvix", type=1))
@@ -166,8 +166,8 @@ async def load(extension_name: str):
     try:
         client.load_extension(extension_name)
         print("LOADED {}".format(extension_name))
-    except (AttributeError, ImportError) as e:
-        await print("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
+    except (AttributeError, ImportError) as error:
+        await print("```py\n{}: {}\n```".format(type(error).__name__, str(error)))
         return
     print("{} loaded.".format(extension_name))
 
@@ -186,5 +186,5 @@ if __name__ == "__main__":
             exc = '{}: {}'.format(type(e).__name__, e)
             print('Failed to load extension {}\n{}'.format(extension, exc))
 
-    client.loop.create_task(uptime())
+    client.loop.create_task(timer())
     client.run(settings.token)

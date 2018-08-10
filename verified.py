@@ -14,7 +14,6 @@ import settings
 from discord.ext import commands
 from urbandictionary_top import udtop
 
-start_time = time.time()
 clock_emoji = ["🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛"]  # Use random.choice(clock_emoji)
 
 
@@ -58,8 +57,8 @@ class Verified:
                         embed.add_field(name="Example 💬", value=term.example[:1024], inline=True)
                         await self.client.send_message(message.channel, embed=embed)
                     except AttributeError:
-                        await self.client.send_message(message.channel, "Sorry, that word doesnt have a definition :( . You"
-                                                                        " can add your own here: ")
+                        await self.client.send_message(message.channel, "Sorry, that word doesnt have a definition :( "
+                                                                        ". You can add your own here: ")
                         await self.client.send_message(
                             message.channel, "https://www.urbandictionary.com/add.php?word=" + target_def_link_format)
 
@@ -101,9 +100,9 @@ class Verified:
             # Uptime Code
             if message.content.upper().startswith(".UPTIME"):
                 print("{0}: {1} requested '.UPTIME'".format(curtime.get_time(), user_name))
-                uptime = time.time() - start_time
-                await self.client.send_message(message.channel, "The bot has been live for `{}` seconds {}".format(
-                    uptime, random.choice(clock_emoji)))
+
+                await self.client.send_message(message.channel, "The bot has been live for `{}` {}".format(
+                    curtime.uptime(), random.choice(clock_emoji)))
 
             # Gets random bear picture
             if message.content.upper().startswith(".BEAR"):

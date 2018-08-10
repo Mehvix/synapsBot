@@ -2,7 +2,6 @@
 
 import os
 import sys
-import cogs
 import json
 import time
 import karma
