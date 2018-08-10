@@ -36,7 +36,7 @@ class Basic:
             if settings.shut_up_role in [role.id for role in message.author.roles]:
                 print("{0}: Told {1} to shaddup".format(curtime.get_time(), user_name))
                 await self.client.send_message(message.channel, "Shut up <@{}>".format(user_id))
-        except AttributeError:
+        except (IndexError, AttributeError):
             print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(
                 curtime.get_time()))
 

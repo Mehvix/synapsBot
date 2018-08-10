@@ -157,7 +157,7 @@ async def on_message(message):
                 await asyncio.sleep(.1)
                 await client.delete_message(message)
                 print("{0}: DIDN'T type '.accept'".format(curtime.get_time(), user_name))
-    except AttributeError:
+    except (IndexError, AttributeError):
         print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(curtime.get_time()))
 
 

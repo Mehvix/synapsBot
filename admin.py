@@ -164,7 +164,7 @@ class Admin:
                     except discord.ClientException:
                         await self.client.send_message(channel,
                                                        "You need to give a number between `2` and `99`")
-        except AttributeError:
+        except (IndexError, AttributeError):
             print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".
                   format(curtime.get_time()))
 
