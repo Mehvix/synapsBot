@@ -7,10 +7,12 @@ import math
 import time
 import random
 import asyncio
+import aiohttp
 import curtime
 import discord
 import datetime
 import settings
+import numpy as np
 from discord.ext import commands
 
 '''''
@@ -31,6 +33,7 @@ extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpol
 # Defines Client
 client = commands.Bot(description="synapsBot", command_prefix='.')
 
+aiosession = aiohttp.ClientSession(loop=client.loop)
 
 # TODO New Commands
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -42,6 +45,9 @@ client = commands.Bot(description="synapsBot", command_prefix='.')
 > GUI
 > dont down these files
 > change bot avatar every hour/launch 
+> more roulette options (red/green/black/numbers)
+> logging
+> embeds for on_member_x (join/leave/ban/etc)
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 # How to get custom values
@@ -89,14 +95,16 @@ async def timer():
                 await client.change_presence(
                     game=discord.Game(name="Created by Mehvix#7172", url="https://twitch.tv/mehvix",
                                       type=1))
-
-            fp = random.choice(os.listdir("media/avatars"))
-            with open('media/avatars/{}'.format(fp), 'rb') as f:
-                await client.edit_profile(avatar=f.read())
-
         elif minutes == 60:
             minutes = 0
             hours += 1
+
+            fp = random.choice(os.listdir("media/avatars"))
+            with open('media/avatars/{}'.format(fp), 'rb') as f:
+                try:
+                    await client.edit_profile(avatar=f.read())
+                except discord.HTTPException:
+                    pass  # Sometimes discord gets angry when the profile pic is changed a lot
         elif hours == 24:
             hours = 0
             days += 1
@@ -124,8 +132,10 @@ async def on_ready():
     print(" /__  / /_/ / / / / /_/ / /_/ /__  / /_/ / /_/ / /_")
     print("/____/\__  /_/ /_/\___,/ ____/____/_____/\____/\__/")
     print("     /____/           /_/\n")
+    print("• Bot Version:               {}".format(file_name[10:-3]))
     print("• Discord Version:           {}".format(discord.__version__))
-    print("• Python Version:            {}".format(sys.version))
+    print("• Python Version:            {}".format(sys.version.split()[0]))
+    print("• Client Version:            {}".format(settings.get_version()))
     print("• Start Time:                {}".format(curtime.get_time()))
     print("• Client Name:               {}".format(client.user))
     print("• Client ID:                 {}".format(client.user.id))
@@ -144,6 +154,8 @@ async def on_resumed():
 
 @client.event
 async def on_message(message):
+    times = 1
+
     # Message author variables
     user_id = message.author.id
     user_name = message.author
@@ -159,12 +171,43 @@ async def on_message(message):
                 await client.send_message(discord.Object(id=settings.notification_channel),
                                           "<@{}> is now a Member :ok_hand:".format(user_id))
                 print("{0}: {1} joined the server (.accept)".format(curtime.get_time(), user_name))
+
+            if message.content == '':
+                pass
             else:
                 await asyncio.sleep(.1)
-                await client.delete_message(message)
-                print("{0}: DIDN'T type '.accept'".format(curtime.get_time(), user_name))
+                try:
+                    await client.delete_message(message)
+                    print("{0}: DIDN'T type '.accept'".format(curtime.get_time(), user_name))
+                except discord.NotFound:  # If user types .accept it already deletes the message
+                    pass
     except (IndexError, AttributeError):
-        print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(curtime.get_time()))
+        print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (synapsBot)".format(
+            curtime.get_time()))
+
+    if message.content.upper().startswith(".PING"):
+        print("{0}: {1} activated 'PING".format(curtime.get_time(), user_name))
+        msg = await client.send_message(message.channel, "Pinging...")
+
+        start = time.time()
+        async with aiosession.get("https://discordapp.com"):
+            duration = time.time() - start
+        duration = round(duration * 1000)
+        await client.edit_message(msg, "I have a ping of `{}` ms (`1` try)".format(duration))
+        ping = [duration]
+        print(duration)
+
+        while times < 5:
+            start = time.time()
+            async with aiosession.get("https://discordapp.com"):
+                duration = time.time() - start
+            duration = round(duration * 1000)
+            print(duration)
+            ping.append(duration)
+            print(ping)
+            mean = np.mean(ping)
+            await client.edit_message(msg, "I have a ping of `{}` ms (`{}` / `4` tries)".format(mean, times))
+            times += 1
 
 
 @client.command()
