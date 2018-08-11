@@ -48,7 +48,6 @@ class Basic:
             embed.add_field(name="Creator:", value="Mehvix#7172", inline=True)
             await self.client.send_message(message.channel, embed=embed)
 
-        # TODO finish this after importing basic / verified / admin commands
         if message.content.upper().startswith(".HELP"):
             if message.content.upper().startswith(".HELP BASIC"):
                 embed = discord.Embed(title="Basic Commands", description="Everyone can use these commands.",
@@ -118,6 +117,12 @@ class Basic:
                 embed.add_field(name=".help verified", value="Commands only verified members can use.", inline=False)
                 embed.add_field(name=".help admin", value="Commands only admins can use.", inline=False)
                 await self.client.send_message(message.channel, embed=embed)
+
+        if message.content.upper().startswith(".MENTION"):
+            if not message.raw_mentions:
+                await self.client.send_message(message.channel, "You need to `@` a user")
+            else:
+                await self.client.send_message(message.channel, "You mentioned: <@{}>".format("".join(message.raw_mentions)))
 
 
 def setup(client):
