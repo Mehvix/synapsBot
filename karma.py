@@ -127,7 +127,7 @@ class Karma:
                     await self.client.send_message(message.channel, "You need to `@` a user")
                     return
                 else:
-                    user_req = "".join(message.raw_mentions)
+                    user_req = message.raw_mentions[0]
             print("{0}: {1} requested {2}'s level".format(curtime.get_time(), user_name, user_req))
             await self.client.send_message(
                 message.channel, "<@{0}> has `{1}` karma".format(user_req, get_karma(user_req)))
@@ -142,7 +142,7 @@ class Karma:
                     await self.client.send_message(message.channel, "You need to `@` a user")
                     return
                 else:
-                    user_level_req = "".join(message.raw_mentions)
+                    user_level_req = message.raw_mentions[0]
             print("{0}: {1} requested {2}'s level".format(curtime.get_time(), user_name, user_level_req))
             await self.client.send_message(message.channel, "<@{0}> is level `{1}`".format(user_level_req,
                                                                                            get_level(user_level_req)))

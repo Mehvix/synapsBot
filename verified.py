@@ -162,7 +162,7 @@ class Verified:
                     em.set_footer(text="Server ID: {}".format(message.server.id))
                     await self.client.send_message(message.channel, embed=em)
 
-                    # Gives Server Emojis
+                # Gives Server Emojis
                 if message.content.upper().startswith(".EMOTES"):
                     print("{0}: {1} activated the EMOTES command".format(curtime.get_time(), user_name))
                     emojis = [str(x) for x in message.server.emojis]
@@ -240,8 +240,6 @@ class Verified:
                         discriminator = [user.discriminator for user in ban_list]
                         bot = [user.bot for user in ban_list]
 
-                        print(bot)
-
                         newlist = []
                         for item in bot:
                             if item:
@@ -251,10 +249,7 @@ class Verified:
                             newlist.append(item)
                         bot = newlist
 
-                        print(bot)
-
                         total = list((zip(userid, name, discriminator, bot)))
-                        print(total)
 
                         # Thanks to happypetsy on stackoverflow for helping me with this!
                         pretty_list = set()
@@ -276,7 +271,7 @@ class Verified:
                         await self.client.send_message(message.channel, 'You need to `@` a user (maybe you meant '
                                                                         '`.createinvite` :thinking:')
                     else:
-                        invite_target = message.content[11:-1]
+                        invite_target = message.raw_mentions[0]
                         user = await self.client.get_user_info(invite_target)
                         invite = await self.client.create_invite(destination=message.channel, max_age=0,
                                                                  temporary=False,
@@ -290,7 +285,7 @@ class Verified:
                 if message.content.upper().startswith(".ROULETTE"):
                     if message.content.upper().startswith(".ROULETTE HELP"):
                         print("{0}: {1} requested roulette help")
-                        embed = discord.Embed(title="Outcomes:", color=embed_color)
+                        embed = discord.Embed(title="Outcomes:", color=settings.embed_color)
                         embed.set_author(name="Roulette Help")
                         embed.set_thumbnail(url="https://d30y9cdsu7xlg0.cloudfront.net/png/90386-200.png")
                         embed.add_field(name="Zero:", value="0", inline=True)
@@ -307,7 +302,7 @@ class Verified:
                             text="Maximum bet is 250 karma. Winning on zero will quattuordecuple (x14) your "
                                  "bet while odd and even will double your bet")
                         await self.client.send_message(message.channel, embed=embed)
-
+                        return None
                     if message.content.upper().startswith(".ROULETTE OUTCOMES"):
                         with open('C:/Users/maxla/PycharmProjects/synapsBot remastered/roulette_outcomes.json',
                                   'r') as fp:
@@ -319,7 +314,7 @@ class Verified:
 
                         outcomes_list = [odd_total, even_total, zero_total]
                         total = sum(outcomes_list)
-                        embed = discord.Embed(title="\u200b", color=embed_color)
+                        embed = discord.Embed(title="\u200b", color=settings.embed_color)
                         embed.set_author(name="Roulette Outcomes 📊")
                         embed.add_field(name="Total number of times 'spun'", value=total, inline=True)
                         embed.add_field(name="Total Bet", value=total_total, inline=False)
@@ -327,6 +322,7 @@ class Verified:
                         embed.add_field(name="Even", value=even_total, inline=True)
                         embed.add_field(name="Zero", value=zero_total, inline=True)
                         await self.client.send_message(message.channel, embed=embed)
+                        return None
                     else:
                         await self.client.send_message(
                             message.channel,
@@ -371,6 +367,7 @@ class Verified:
 
                             try:
                                 outcomes_formatted = outcomes_response.content
+                                outcomes_formatted = outcomes_formatted.lower()
                                 print("{0}: Outcome set to {1}".format(curtime.get_time(), outcomes_formatted))
                             except AttributeError:
                                 await self.client.send_message(
@@ -416,11 +413,12 @@ class Verified:
 
                                     if outcomes_formatted == "zero":
                                         karma.user_add_karma(user_id, int(bet_amount * 14))
-                                        await self.client.send_message(
+                                        msg = await self.client.send_message(
                                             message.channel,
-                                            "Winner! :tada: You quattuordecuple up on karma for a total of "
+                                            "Winner! :tada:\n You quattuordecuple up on karma for a total of "
                                             "`{}`!".format(karma.get_karma(user_id)))
                                         print("{0}: won on zero! {1}".format(curtime.get_time(), bet_amount))
+                                        await self.client.pin_message(msg)
                                         return
                                     else:
                                         await self.client.send_message(
@@ -444,7 +442,7 @@ class Verified:
                                         if outcomes_formatted == "even":
                                             karma.user_add_karma(user_id, int(bet_amount * 2))
                                             await self.client.send_message(message.channel,
-                                                                           "Winner! :tada: You doubled up on karma "
+                                                                           "Winner! :tada:\n You doubled up on karma "
                                                                            "for a total of `{}`!".format(
                                                                                karma.get_karma(user_id)))
                                         else:
@@ -465,7 +463,7 @@ class Verified:
                                         if outcomes_formatted == "odd":
                                             karma.user_add_karma(user_id, int(bet_amount * 2))
                                             await self.client.send_message(message.channel,
-                                                                           "Winner! :tada: You doubled up on karma "
+                                                                           "Winner! :tada:\n You doubled up on karma "
                                                                            "for a total of `{}`!".format(
                                                                                karma.get_karma(user_id)))
                                         else:

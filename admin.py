@@ -65,7 +65,7 @@ class Admin:
                     else:
                         try:
                             target = message.content.split(" ")
-                            target_user = "".join(message.raw_mentions)
+                            target_user = message.raw_mentions[0]
                             target_amount = target[2]
                             karma.user_add_karma(target_user, int(target_amount))
                             await self.client.send_message(message.channel,
@@ -81,7 +81,7 @@ class Admin:
                     if not message.raw_mentions:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        mute_target = "".join(message.raw_mentions)
+                        mute_target = message.raw_mentions[0]
                         person = await self.client.get_user_info(mute_target)
                         print("{0}: {1} muted {2}".format(curtime.get_time(), user_name, person.name))
                         await self.client.add_roles(message.mentions[0], role)
@@ -94,7 +94,7 @@ class Admin:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
                         unmute_target = message.content[10:-1]
-                        person = await self.client.get_user_info("".join(message.raw_mentions))
+                        person = await self.client.get_user_info(message.raw_mentions[0])
                         print("{0}: {1} unmuted {2}".format(curtime.get_time(), user_name, person.name))
                         await self.client.remove_roles(message.mentions[0], role)
                         await self.client.send_message(
@@ -113,14 +113,15 @@ class Admin:
                             message.channel, "The word / sentence `{}` was banned. The full list of banned words can be"
                                              " found via `.bannedwords`".format(word))
                     if message.content.upper().startswith(".BANLIST"):
-                        pass  # Because both 'banlist' and 'bannedwords' are verified roles, but would activate '.ban'
+                        return None  # Because both 'banlist' and 'bannedwords' are verified roles, but would
+                        # activate '.ban'
                     if message.content.upper().startswith(".BANNEDWORDS"):
-                        pass
+                        return None
                     else:
                         if not message.raw_mentions:
                             await self.client.send_message(message.channel, "You need to `@` a user")
                         else:
-                            ban_target = "".join(message.raw_mentions)
+                            ban_target = message.raw_mentions[0]
                             print("{0}: {1} banned {2}".format(curtime.get_time(), user_name, ban_target))
                             await self.client.ban(member=server.get_member(ban_target), delete_message_days=0)
 
@@ -128,7 +129,7 @@ class Admin:
                     if not message.raw_mentions:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        kick_target = "".join(message.raw_mentions)
+                        kick_target = message.raw_mentions[0]
                         print("{0}: {1} kicked {2}".format(curtime.get_time(), user_name, kick_target))
                         await self.client.kick(member=server.get_member(kick_target))
 
@@ -136,7 +137,7 @@ class Admin:
                     if not message.raw_mentions:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        unban_target = "".join(message.raw_mentions)
+                        unban_target = message.raw_mentions[0]
                         print("{0}: {1} unbanned {2}".format(curtime.get_time(), user_name, unban_target))
                         banned = await self.client.get_user_info(unban_target)
                         await self.client.unban(message.server, banned)

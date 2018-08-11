@@ -122,7 +122,7 @@ class Basic:
             if not message.raw_mentions:
                 await self.client.send_message(message.channel, "You need to `@` a user")
             else:
-                await self.client.send_message(message.channel, "You mentioned: <@{}>".format("".join(message.raw_mentions)))
+                await self.client.send_message(message.channel, "You mentioned: <@{}>".format(message.raw_mentions[0]))
 
 
 def setup(client):
