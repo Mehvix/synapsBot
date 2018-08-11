@@ -6,6 +6,7 @@ import sys
 import time
 import json
 import discord
+import subprocess
 from discord.ext import commands
 
 Client = discord.Client()
@@ -15,6 +16,11 @@ client = commands.Bot(command_prefix=".")
 def get_json(file_path):
     with open(file_path, 'r') as fp:
         return json.load(fp)
+
+
+def get_version():
+    args = ['git', 'describe', '--tags', '--always']
+    return subprocess.check_output(args).decode('utf-8', 'ignore').strip()
 
 
 def set_server(server):
