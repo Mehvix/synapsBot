@@ -3,8 +3,11 @@
 
 import os
 import sys
+import time
 import random
 import curtime
+import aiohttp
+import asyncio
 import discord
 import settings
 from discord.ext import commands
@@ -23,10 +26,6 @@ class Basic:
         user_id = message.author.id
         user_name = message.author
 
-        if message.content.upper().startswith(".PING"):
-            print("{0}: {1} activated 'PING".format(curtime.get_time(), user_name))
-            await self.client.send_message(message.channel, "Pong!! :ping_pong:")
-
         if message.content.upper().startswith(".TIME"):
             print("{0}: {1} requested the time".format(curtime.get_time(), user_name))
             await self.client.send_message(
@@ -37,15 +36,21 @@ class Basic:
                 print("{0}: Told {1} to shaddup".format(curtime.get_time(), user_name))
                 await self.client.send_message(message.channel, "Shut up <@{}>".format(user_id))
         except (IndexError, AttributeError):
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(
+            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Basic)".format(
                 curtime.get_time()))
 
         if message.content.upper().startswith(".ABOUT"):
+            file_name = os.path.basename(sys.argv[0])  # Gets file name
+
             print("{0}: {1} requested '.ABOUT'".format(curtime.get_time(), user_name))
             embed = discord.Embed(title="Github", url="https://github.com/Mehvix/synapsBot", color=settings.embed_color)
             embed.set_author(name="About:", url="https://steamcommunity.com/id/Mehvix/")
             embed.set_thumbnail(url="https://goo.gl/FCddaV")
             embed.add_field(name="Creator:", value="Mehvix#7172", inline=True)
+            embed.add_field(name="File Version:", value=file_name[10:-3])
+            embed.add_field(name="Python Version:", value=sys.version.split()[0])
+            embed.add_field(name="Discord.py Version:", value=discord.__version__)
+            embed.add_field(name="Client Version:", value=settings.get_version())
             await self.client.send_message(message.channel, embed=embed)
 
         if message.content.upper().startswith(".HELP"):
