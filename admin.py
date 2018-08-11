@@ -37,7 +37,7 @@ class Admin:
             await self.client.send_message(dm_id, "Sorry, but you used a word / phrase that is banned!\nYou can see wha"
                                                   "t is banned via the `.banwordlist` command.")
             return
-        try:
+        if message.server:
             if message.author.server_permissions.administrator:
                 if message.content.upper().startswith(".SERVERRULES"):
                     await self.client.delete_message(message)
@@ -100,30 +100,31 @@ class Admin:
                         await self.client.send_message(
                             message.channel, "<@{0}> unmuted <@{1}>".format(message.author.id, unmute_target))
 
-                if message.content.upper().startswith(".BAN"):
-                    if message.content.upper().startswith(".BANWORD "):
-                        word = message.content[9:]
-                        word = word.upper()
-                        fp = "banned_words.json"
-                        banned_words = settings.get_json(fp)
-                        banned_words.insert(0, word)
-                        with open(fp, 'w') as outfile:
-                            json.dump(banned_words, outfile)
-                        await self.client.send_message(
-                            message.channel, "The word / sentence `{}` was banned. The full list of banned words can be"
-                                             " found via `.bannedwords`".format(word))
-                    if message.content.upper().startswith(".BANLIST"):
-                        return None  # Because both 'banlist' and 'bannedwords' are verified roles, but would
-                        # activate '.ban'
-                    if message.content.upper().startswith(".BANNEDWORDS"):
-                        return None
+                if message.content.upper().startswith(".BAN "):
+                    if not message.raw_mentions:
+                        await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        if not message.raw_mentions:
-                            await self.client.send_message(message.channel, "You need to `@` a user")
-                        else:
-                            ban_target = message.raw_mentions[0]
-                            print("{0}: {1} banned {2}".format(curtime.get_time(), user_name, ban_target))
-                            await self.client.ban(member=server.get_member(ban_target), delete_message_days=0)
+                        reason = message.content.split(" ")
+                        try:
+                            reason = reason[2]
+                        except IndexError:
+                            reason = False
+                        print(reason)
+                        ban_target = message.raw_mentions[0]
+                        print("{0}: {1} banned {2}".format(curtime.get_time(), user_name, ban_target))
+                        await self.client.ban(member=server.get_member(ban_target), delete_message_days=0)
+
+                if message.content.upper().startswith(".BANWORD "):
+                    word = message.content[9:]
+                    word = word.upper()
+                    fp = "banned_words.json"
+                    banned_words = settings.get_json(fp)
+                    banned_words.insert(0, word)
+                    with open(fp, 'w') as outfile:
+                        json.dump(banned_words, outfile)
+                    await self.client.send_message(
+                        message.channel, "The word / sentence `{}` was banned. The full list of banned words can be"
+                                         " found via `.bannedwords`".format(word))
 
                 if message.content.upper().startswith(".KICK"):
                     if not message.raw_mentions:
@@ -160,8 +161,8 @@ class Admin:
                     except (ValueError, discord.ClientException):
                         await self.client.send_message(channel,
                                                        "You need to give a number between `2` and `99`")
-        except (IndexError, AttributeError):
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(
+        else:
+            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Admin)".format(
                 curtime.get_time()))
 
 
