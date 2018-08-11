@@ -18,9 +18,20 @@ class Notifications:
     print("Loading Notifications...")
 
     async def on_member_join(self, member):
-        print("{0}: {1} joined".format(curtime.get_time(), member))
+        member_created_at_date = str(member.created_at).split('.', 1)[0]
+        avatar = member.avatar_url if member.avatar else member.default_avatar_url
+
+        print("{0}: {1} joined".format(curtime.get_time(), member.name))
+        embed = discord.Embed(color=settings.embed_color)
+        embed.set_author(name="{} joined the server!".format(member.name))
+        embed.add_field(name="Username:", value="{}#{}".format(member.name, member.discriminator), inline=False)
+        embed.add_field(name="Time Joined:", value=curtime.get_time(), inline=False)
+        embed.add_field(name="Account Created at:", value=member_created_at_date, inline=False)
+        embed.add_field(name="User Avatar URL", value=member.avatar_url)
+        embed.set_thumbnail(url=avatar)
+
         await self.client.send_message(
-            discord.Object(id=settings.notification_channel), "<@{}> joined the server :tada:".format(member.id))
+            discord.Object(id=settings.notification_channel), embed=embed)
 
     async def on_member_ban(self, member):
         global ban_message
