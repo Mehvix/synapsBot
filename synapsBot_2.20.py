@@ -13,6 +13,12 @@ import datetime
 import settings
 from discord.ext import commands
 
+'''''
+Make sure to change this to either 'test' or 'main'
+'''''
+settings.set_server("test")
+
+
 # Resets uptime settings
 seconds = 0
 minutes = 0
@@ -35,7 +41,6 @@ client = commands.Bot(description="synapsBot", command_prefix='.')
 > save console to file
 > GUI
 > dont down these files
-> .invite @user (dm user)
 > change bot avatar every hour/launch 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -47,10 +52,6 @@ For your token go to https://discordapp.com/developers/applications/me, creating
 clicking "reveal".
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-'''''
-Make sure to change this to either 'test' or 'main'
-'''''
-settings.set_server("main")
 
 ban_message = 0
 
@@ -88,6 +89,11 @@ async def timer():
                 await client.change_presence(
                     game=discord.Game(name="Created by Mehvix#7172", url="https://twitch.tv/mehvix",
                                       type=1))
+
+            fp = random.choice(os.listdir("media/avatars"))
+            with open('media/avatars/{}'.format(fp), 'rb') as f:
+                await client.edit_profile(avatar=f.read())
+
         elif minutes == 60:
             minutes = 0
             hours += 1
