@@ -58,16 +58,15 @@ class Admin:
                     await self.client.send_message(message.channel, embed=embed)
 
                 if message.content.upper().startswith(".GIVEKARMA"):
-                    if not message.raw_mentions:
+                    if not message.raw_mentions:  # For if user doesnt send a message that '@'s someone
                         await self.client.send_message(
                             message.channel,
                             "You need to `@` a user and give an amount. Example: `.givekarma @Mehvix#7172 10`")
                     else:
                         try:
                             target = message.content.split(" ")
-                            target_user = target[1]
+                            target_user = "".join(message.raw_mentions)
                             target_amount = target[2]
-                            target_user = target_user[2:-1]
                             karma.user_add_karma(target_user, int(target_amount))
                             await self.client.send_message(message.channel,
                                                            "You gave <@{}> `{}` karma. They now have a total of `{}` "
@@ -82,7 +81,7 @@ class Admin:
                     if not message.raw_mentions:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        mute_target = message.content[8:-1]
+                        mute_target = "".join(message.raw_mentions)
                         person = await self.client.get_user_info(mute_target)
                         print("{0}: {1} muted {2}".format(curtime.get_time(), user_name, person.name))
                         await self.client.add_roles(message.mentions[0], role)
@@ -95,7 +94,7 @@ class Admin:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
                         unmute_target = message.content[10:-1]
-                        person = await self.client.get_user_info(unmute_target)
+                        person = await self.client.get_user_info("".join(message.raw_mentions))
                         print("{0}: {1} unmuted {2}".format(curtime.get_time(), user_name, person.name))
                         await self.client.remove_roles(message.mentions[0], role)
                         await self.client.send_message(
@@ -114,23 +113,22 @@ class Admin:
                             message.channel, "The word / sentence `{}` was banned. The full list of banned words can be"
                                              " found via `.bannedwords`".format(word))
                     if message.content.upper().startswith(".BANLIST"):
-                        pass
+                        pass  # Because both 'banlist' and 'bannedwords' are verified roles, but would activate '.ban'
                     if message.content.upper().startswith(".BANNEDWORDS"):
                         pass
                     else:
                         if not message.raw_mentions:
                             await self.client.send_message(message.channel, "You need to `@` a user")
                         else:
-                            ban_target = message.content[7:-1]
+                            ban_target = "".join(message.raw_mentions)
                             print("{0}: {1} banned {2}".format(curtime.get_time(), user_name, ban_target))
                             await self.client.ban(member=server.get_member(ban_target), delete_message_days=0)
 
                 if message.content.upper().startswith(".KICK"):
-                    kick_target = message.content[8:-1]
-                    print("{0}: {1} kicked {2}".format(curtime.get_time(), user_name, kick_target))
                     if not message.raw_mentions:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
+                        kick_target = "".join(message.raw_mentions)
                         print("{0}: {1} kicked {2}".format(curtime.get_time(), user_name, kick_target))
                         await self.client.kick(member=server.get_member(kick_target))
 
@@ -138,7 +136,7 @@ class Admin:
                     if not message.raw_mentions:
                         await self.client.send_message(message.channel, "You need to `@` a user")
                     else:
-                        unban_target = message.content[9:-1]
+                        unban_target = "".join(message.raw_mentions)
                         print("{0}: {1} unbanned {2}".format(curtime.get_time(), user_name, unban_target))
                         banned = await self.client.get_user_info(unban_target)
                         await self.client.unban(message.server, banned)
@@ -158,15 +156,12 @@ class Admin:
                     except discord.HTTPException:
                         await self.client.send_message(
                             channel, "You can only bulk delete messages that are less than 14 days old.")
-                    except ValueError:
-                        await self.client.send_message(channel,
-                                                       "You need to give a number between `2` and `99`")
-                    except discord.ClientException:
+                    except (ValueError, discord.ClientException):
                         await self.client.send_message(channel,
                                                        "You need to give a number between `2` and `99`")
         except (IndexError, AttributeError):
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".
-                  format(curtime.get_time()))
+            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(
+                curtime.get_time()))
 
 
 def setup(client):
