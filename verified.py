@@ -31,7 +31,7 @@ class Verified:
         author_level = karma.get_level(user_id)
         author_karma = karma.get_karma(user_id)
 
-        try:
+        if message.server:
             if settings.verified_role_id in [role.id for role in message.author.roles]:
                 # UD Code
                 if message.content.upper().startswith(".UD"):
@@ -93,13 +93,6 @@ class Verified:
                     r = random.randint(1, 9)
                     fortune = get_answer(r)
                     await self.client.send_message(message.channel, fortune)
-
-                # Version Game
-                file_name = os.path.basename(sys.argv[0])  # Gets file name
-                if message.content.upper().startswith(".VERSION"):
-                    print("{0}: {1} requested '.VERSION'".format(curtime.get_time(), user_name))
-                    await self.client.send_message(message.channel, "The bot is currently running version `{}`".format(
-                        file_name[10:-3]))
 
                 # Uptime Code
                 if message.content.upper().startswith(".UPTIME"):
@@ -200,7 +193,10 @@ class Verified:
                 # Assistance from https://gist.github.com/Grewoss/c0601832982a99f59cc73510f7841fe4
                 if message.content.upper().startswith(".WHOIS"):
                     print("{0}: {1} requested '.WHOIS'".format(curtime.get_time(), user_name))
-                    user = message.mentions[0]
+                    try:
+                        user = message.mentions[0]
+                    except IndexError:
+                        await self.client.send_message(message.channel, "You `@` a role, not a user!")
                     full_user_name = "{}#{}".format(user.name, user.discriminator)
                     if message.content[7:] is None:
                         await self.client.send_message(message.channel, "You forgot to '@' a user!")
@@ -208,6 +204,7 @@ class Verified:
                         try:
                             user_join_date = str(user.joined_at).split('.', 1)[0]
                             user_created_at_date = str(user.created_at).split('.', 1)[0]
+                            avatar = user.avatar_url if user.avatar else user.default_avatar_url
 
                             embed = discord.Embed(title="Username:", description=full_user_name,
                                                   color=settings.embed_color)
@@ -215,12 +212,15 @@ class Verified:
                             embed.add_field(name="Joined the server at:", value=user_join_date[:10])
                             embed.add_field(name="User Created at:", value=user_created_at_date[:10])
                             embed.add_field(name="User ID:", value=user.id)
-                            embed.add_field(name="User Status:", value=user.status)
+                            embed.add_field(name="User Status:", value=str(user.status).title())
                             embed.add_field(name="User Game:", value=user.game)
                             embed.add_field(name="User Custom Name:", value=user.nick)
                             embed.add_field(name="User Color:", value=user.color)
-                            embed.add_field(name="User Top Role (Level):", value=user.top_role)
-                            embed.add_field(name="User Avatar URL", value=user.avatar_url)
+                            if len(user.roles) > 1:  # TIL @everyone is a role that is assigned to everyone but hidden
+                                embed.add_field(name="User Top Role (Level):", value=user.top_role)
+                            else:
+                                embed.add_field(name="User Top Role (Level):", value="User has no roles")
+                            embed.add_field(name="User Avatar URL", value=avatar)
                             embed.set_thumbnail(url=user.avatar_url)
                             await self.client.send_message(message.channel, embed=embed)
                         except (IndexError, AttributeError):
@@ -276,11 +276,14 @@ class Verified:
                         invite = await self.client.create_invite(destination=message.channel, max_age=0,
                                                                  temporary=False,
                                                                  unique=True)
-                        await self.client.send_message(user, "<@{}> ({}) wants to invite  you to `{}`. You can join "
-                                                             "with this link: {}".format(message.author.id,
-                                                                                         message.author.name,
-                                                                                         message.server.name, invite))
-
+                        try:
+                            await self.client.send_message(
+                                user, "<@{}> ({}) wants to invite  you to `{}`. You can join with this link: {}".format(
+                                    message.author.id, message.author.name, message.server.name, invite))
+                        except discord.Forbidden:
+                            await self.client.send_message(message.channel, "Sorry, but I cannot send a message to "
+                                                                            "that user due to there privacy settings "
+                                                                            ":(")
                 # Roulette system
                 if message.content.upper().startswith(".ROULETTE"):
                     if message.content.upper().startswith(".ROULETTE HELP"):
@@ -484,8 +487,8 @@ class Verified:
                         "C:/Users/maxla/PycharmProjects/synapsBot remastered/banned_words.json")
                     await self.client.send_message(
                         message.channel, "**Banned Words List:** \n• `{}`".format("`\n• `".join(banned_words)))
-        except (IndexError, AttributeError):
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's".format(
+        else:
+            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Verified)".format(
                 curtime.get_time()))
 
 
