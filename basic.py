@@ -31,11 +31,11 @@ class Basic:
             await self.client.send_message(
                 message.channel, "I think it's `{}` {}".format(curtime.get_time(), random.choice(clock_emoji)))
 
-        try:
+        if message.server:
             if settings.shut_up_role in [role.id for role in message.author.roles]:
                 print("{0}: Told {1} to shaddup".format(curtime.get_time(), user_name))
                 await self.client.send_message(message.channel, "Shut up <@{}>".format(user_id))
-        except (IndexError, AttributeError):
+        else:
             print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Basic)".format(
                 curtime.get_time()))
 
@@ -44,8 +44,8 @@ class Basic:
 
             print("{0}: {1} requested '.ABOUT'".format(curtime.get_time(), user_name))
             embed = discord.Embed(title="Github", url="https://github.com/Mehvix/synapsBot", color=settings.embed_color)
-            embed.set_author(name="About:", url="https://steamcommunity.com/id/Mehvix/")
-            embed.set_thumbnail(url="https://goo.gl/FCddaV")
+            embed.set_author(name="About:")
+            embed.set_thumbnail(url=self.client.user.avatar_url)
             embed.add_field(name="Creator:", value="Mehvix#7172", inline=True)
             embed.add_field(name="File Version:", value=file_name[10:-3])
             embed.add_field(name="Python Version:", value=sys.version.split()[0])
