@@ -36,8 +36,7 @@ class Basic:
                 print("{0}: Told {1} to shaddup".format(curtime.get_time(), user_name))
                 await self.client.send_message(message.channel, "Shut up <@{}>".format(user_id))
         else:
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Basic)".format(
-                curtime.get_time()))
+            return
 
         if message.content.upper().startswith(".ABOUT"):
             file_name = os.path.basename(sys.argv[0])  # Gets file name

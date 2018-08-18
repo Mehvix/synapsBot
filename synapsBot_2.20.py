@@ -18,7 +18,7 @@ from discord.ext import commands
 '''''
 Make sure to change this to either 'test' or 'main'
 '''''
-settings.set_server("test")
+settings.set_server("main")
 
 
 # Resets uptime settings
@@ -28,7 +28,8 @@ hours = 0
 days = 0
 
 # Cogs being used
-extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll']
+extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'hearthstone', 'music',
+              'forwarding', 'insults']
 
 # Defines Client
 client = commands.Bot(description="synapsBot", command_prefix='.')
@@ -41,13 +42,18 @@ aiosession = aiohttp.ClientSession(loop=client.loop)
 > Hearthstone cards (import hearthstone)
 > Give XP for voice channel usage
 > Remind me in x minutes
-> save console to file
 > GUI
-> dont down these files
-> change bot avatar every hour/launch 
-> more roulette options (red/green/black/numbers)
 > logging
-> embeds for on_member_x (join/leave/ban/etc)
+> seeb server
+> music bot
+> twitter bot (leaks)
+> slots
+> poker
+> .nick @user "newnickname"
+> .servers (bot servers are in)
+> minesweeper
+> who has max level/karma
+> nickname filter
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 # How to get custom values
@@ -161,29 +167,39 @@ async def on_message(message):
     user_name = message.author
 
     # ".Accept" code
-    try:
-        role = discord.utils.get(message.server.roles, name=settings.member_role_name)
-        if settings.member_role_id not in [role.id for role in message.author.roles]:
-            if message.content.upper().startswith(".ACCEPT"):
-                await client.add_roles(user_name, role)
-                await asyncio.sleep(1)
-                await client.delete_message(message)
-                await client.send_message(discord.Object(id=settings.notification_channel),
-                                          "<@{}> is now a Member :ok_hand:".format(user_id))
-                print("{0}: {1} joined the server (.accept)".format(curtime.get_time(), user_name))
-
-            if message.content == '':
-                pass
-            else:
-                await asyncio.sleep(.1)
-                try:
+    if message.server:
+        if message.channel.id == settings.accept_channel:
+            role = discord.utils.get(message.server.roles, name=settings.member_role_name)
+            if settings.member_role_id not in [role.id for role in message.author.roles]:
+                if message.content.upper().startswith(".ACCEPT"):
+                    await client.add_roles(user_name, role)
+                    await asyncio.sleep(1)
                     await client.delete_message(message)
-                    print("{0}: DIDN'T type '.accept'".format(curtime.get_time(), user_name))
-                except discord.NotFound:  # If user types .accept it already deletes the message
-                    pass
-    except (IndexError, AttributeError):
-        print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (synapsBot)".format(
-            curtime.get_time()))
+                    await client.send_message(discord.Object(id=settings.notification_channel),
+                                              "<@{}> is now a Member :ok_hand:".format(user_id))
+                    print("{0}: {1} joined the server (.accept)".format(curtime.get_time(), user_name))
+
+                if message.content == '':
+                    pass  # discord sends a embed message and this should pass it
+                else:
+                    await asyncio.sleep(.1)
+                    try:
+                        await client.delete_message(message)
+                        print("{0}: DIDN'T type '.accept'".format(curtime.get_time(), user_name))
+                    except discord.NotFound:  # If user types .accept it already deletes the message
+                        pass
+        else:
+            pass
+    else:
+        return
+
+    if message.content.upper().startswith("BAD BOT"):
+        await client.send_message(message.channel, "Bad human")
+
+    if message.content.upper().startswith("GIT "):
+        word = message.content.split(" ")
+        await client.send_message(message.channel, "`git: '{}' is not a git command. See 'git --help'.`".format(
+            word[1]))
 
     if message.content.upper().startswith(".PING"):
         print("{0}: {1} activated 'PING".format(curtime.get_time(), user_name))

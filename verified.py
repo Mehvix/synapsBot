@@ -98,7 +98,7 @@ class Verified:
                 if message.content.upper().startswith(".UPTIME"):
                     print("{0}: {1} requested '.UPTIME'".format(curtime.get_time(), user_name))
 
-                    await self.client.send_message(message.channel, "The bot has been live for {} {}".format(
+                    await self.client.send_message(message.channel, "The bot has been live for `{}` {}".format(
                         curtime.uptime(), random.choice(clock_emoji)))
 
                 # Gets random bear picture
@@ -488,8 +488,7 @@ class Verified:
                     await self.client.send_message(
                         message.channel, "**Banned Words List:** \n• `{}`".format("`\n• `".join(banned_words)))
         else:
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Verified)".format(
-                curtime.get_time()))
+            return
 
 
 def setup(client):
