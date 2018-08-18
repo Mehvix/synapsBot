@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+This is just for reference when creating cogs
+"""
+
 import discord
 from discord.ext import commands
 
 
-class Verified:
+class __COG__:
     def __init__(self, client):
         self.client = client
 
-    print("Loading Verified...")
+    print("Loading __COG__...")
 
     async def on_message(self, message):
         # Message author variables
@@ -18,4 +22,4 @@ class Verified:
 
 
 def setup(client):
-    client.add_cog(Verified(client))
+    client.add_cog(__COG__(client))
