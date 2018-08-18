@@ -29,9 +29,12 @@ class Notifications:
         embed.add_field(name="Account Created at:", value=member_created_at_date, inline=False)
         embed.add_field(name="User Avatar URL", value=member.avatar_url)
         embed.set_thumbnail(url=avatar)
-
         await self.client.send_message(
             discord.Object(id=settings.notification_channel), embed=embed)
+
+        await self.client.send_message(member, "Thank you for joining the server! **After reading the rules** in <#{}>"
+                                               " type `.accept` in the channel to gain access to other channels"
+                                       .format(settings.accept_channel))
 
     async def on_member_ban(self, member):
         global ban_message
