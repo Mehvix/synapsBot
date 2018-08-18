@@ -6,6 +6,7 @@ import sys
 import time
 import json
 import discord
+import logging
 import subprocess
 from discord.ext import commands
 
@@ -39,9 +40,12 @@ def set_server(server):
     global mute_role_id
     global mute_role_name
     global embed_color
+    global server_name
+    global accept_channel
     embed_color = 0x1abc9c
 
     if server == "test":
+        print("Using TEST account")
         jsontoken = get_json('tokens.json')
         token = jsontoken.get("test")
         upvote_emoji = ":upvote:414204250642579488"
@@ -57,6 +61,8 @@ def set_server(server):
         pokemon_channel = "439198154324181002"  # N/A
         mute_role_id = "445059188973109259"
         mute_role_name = "Text Muted"
+        server_name = "test"
+        accept_channel = None
         return
     if server == "main":
         print("Using MAIN account")
@@ -75,5 +81,7 @@ def set_server(server):
         pokemon_channel = "439198154324181002"
         mute_role_id = "363900817805148160"
         mute_role_name = "Text Muted"
+        server_name = "main"
+        accept_channel = "356456207185215491"
     else:
         sys.exit("No Server (main/test)")
