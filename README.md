@@ -7,7 +7,7 @@ If you keep getting an error code when trying to write to the `users.json` file 
 
 ## Cogs / Files 
 
-### .default_formatting.py
+### [.default_formatting.py](https://github.com/Mehvix/synapsBot/blob/master/.default_formatting.py)
 
 Template for when I make a new cog
 
