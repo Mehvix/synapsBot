@@ -8,14 +8,17 @@ If you keep getting an error code when trying to write to the `users.json` file 
 # Cogs / Files 
 
 > .default_formatting.py
+
 Template for when I make a new cog
 
 
 > admin.py
+
 Admin-exclusive commands
 
 
 > basic.py
+
 Very simple commands everyone in the server can use
 
 
