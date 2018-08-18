@@ -153,8 +153,13 @@ class Karma:
             try:
                 role_name = "Level {}".format(new_level)
                 level_role = discord.utils.get(message.server.roles, name=role_name)
+
+                old_role = "Level {}".format(new_level - 1)
+                old_level_role = discord.utils.get(message.server.roles, name=old_role)
+
                 set_level(user_id, new_level)
                 try:
+                    await self.client.remove_roles(message.author, old_level_role)
                     await self.client.add_roles(message.author, level_role)
                     await self.client.send_message(message.channel, "Congrats, <@{0}>! You're now level `{1}`.  :tada: "
                                                    .format(user_id, new_level))
