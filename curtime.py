@@ -13,7 +13,28 @@ def uptime():
     sec = timedelta(seconds=int(sec[0]))
     d = datetime(1, 1, 1) + sec
 
-    return "{}:{}:{}:{} (DAYS:HOURS:MIN:SEC)".format(d.day - 1, d.hour, d.minute, d.second)
+    # Puts "0" in front of number time
+    if d.day - 1 < 10:
+        up_day = "0{}".format(d.day - 1)
+    else:
+        up_day = d.day - 1
+
+    if d.hour < 10:
+        up_hour = "0{}".format(d.hour)
+    else:
+        up_hour = d.hour
+
+    if d.minute < 10:
+        up_minute = "0{}".format(d.minute)
+    else:
+        up_minute = d.minute
+
+    if d.second < 10:
+        up_second = "0{}".format(d.second)
+    else:
+        up_second = d.second
+
+    return "{}:{}:{}:{} / Days:Hours:Minutes:Seconds".format(up_day, up_hour, up_minute, up_second)
 
 
 def get_time():
