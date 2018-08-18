@@ -9,55 +9,68 @@ If you keep getting an error code when trying to write to the `users.json` file 
 
 ### [.default_formatting.py](https://github.com/Mehvix/synapsBot/blob/master/.default_formatting.py)
 
-Template for when I make a new cog
+Template for when I make a new cog.
 
 
-### admin.py
+### [admin.py](https://github.com/Mehvix/synapsBot/blob/master/admin.py)
 
-Admin-exclusive commands
-
-
-### basic.py
-
-Very simple commands everyone in the server can use
+Admin-exclusive commands.
 
 
-### createpoll.py
-Cog for the .createpoll command. Moved out of `verified.py` because it took up too much space
+### [basic.py](https://github.com/Mehvix/synapsBot/blob/master/basic.py)
+
+Very simple commands everyone in the server can use.
 
 
-### curtime.py
-Used to track uptime and cur(rent) time
+### [createpoll.py](https://github.com/Mehvix/synapsBot/blob/master/createpoll.py)
+
+Cog for the .createpoll command. Moved out of `verified.py` because it took up too much space.
 
 
-### forwarding.py
-Forwards all DM's the bot sends and recieves to the owner (me)
+### [curtime.py](https://github.com/Mehvix/synapsBot/blob/master/curtime.py)
+
+Used to track uptime and cur(rent) time.
 
 
-### insults.json
+### [forwarding.py](https://github.com/Mehvix/synapsBot/blob/master/forwarding.py)
+
+Forwards all DM's the bot sends and recieves to the owner (me.)
+
+
+### [insults.json](https://github.com/Mehvix/synapsBot/blob/master/insults.json)
+
 All insults for .insult command (in `verified.py`)
-Found this from [TwentySixe's Github](https://github.com/Twentysix26/26-Cogs/blob/master/insult/data/insults.json)
+Found this from [TwentySixe's Github.](https://github.com/Twentysix26/26-Cogs/blob/master/insult/data/insults.json)
 
 
-### karma.py
+### [karma.py](https://github.com/Mehvix/synapsBot/blob/master/karma.py)
+
 For managing levels and karma (users.json)
 
 
-### music.py
-Simple music bot. Used for when Rythm is down
+### [music.py](https://github.com/Mehvix/synapsBot/blob/master/music.py)
+
+Simple music bot. Used for when Rythm is down.
 
 
-### notifications.py
-Messages for when people join/leave/.accept/are banned from sever
+### [notifications.py](https://github.com/Mehvix/synapsBot/blob/master/notifications.py)
+
+Messages for when people join/leave/.accept/are banned from sever.
 
 
-### roulette_outcomes / users.json 
-Backups for if anything goes wrong
+### [roulette_outcomes](https://github.com/Mehvix/synapsBot/blob/master/roulette_outcomes.json) / [users.json](https://github.com/Mehvix/synapsBot/blob/master/users.json)
+
+Backups for if anything goes wrong.
 
 
-### settings.py
-Where server settings are stored for my main server and my testing server
+### [settings.py](https://github.com/Mehvix/synapsBot/blob/master/settings.py)
 
+Where server settings are stored for my main server and my testing server.
 
-### verified.py
-Verified-exclusive commands (cool-kid stuff)
+### [synapsBot_X.XX(2.20)](https://github.com/Mehvix/synapsBot/blob/master/synapsBot_2.20.py)
+
+Host file. Holds a few commands, such as `.ping`  but not much else.
+
+### [verified.py](https://github.com/Mehvix/synapsBot/blob/master/verified.py)
+
+Verified-exclusive commands (cool-kid stuff.)
