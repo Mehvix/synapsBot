@@ -148,7 +148,6 @@ class Admin:
                 if message.content.upper().startswith(".CLEAR "):
                     channel = message.channel
                     amount = message.content[7:]
-
                     messages = []
                     try:
                         async for message in self.client.logs_from(channel, limit=int(amount) + 1):
@@ -161,9 +160,21 @@ class Admin:
                     except (ValueError, discord.ClientException):
                         await self.client.send_message(channel,
                                                        "You need to give a number between `2` and `99`")
+
+                if message.content.upper().startswith(".NICK "):
+                    if not message.raw_mentions:
+                        await self.client.send_message(message.channel, "You need to `@` a user")
+                    else:
+                        nick_target = message.mentions[0]
+                        nick_name = message.content.split(" ")
+                        nick_name = nick_name[2]
+                        await self.client.change_nickname(nick_target, nick_name)
+                        print("{0}: {1} named {2} to {3}".format(curtime.get_time(), user_name, nick_target, nick_name))
+
+                        await self.client.send_message(message.channel, "Set {}'s nick to `{}`".format(nick_target, nick_name))
+
         else:
-            print("{}: Couldn't find user roles. It's probably a webhook or a message via DM's (Admin)".format(
-                curtime.get_time()))
+            return
 
 
 def setup(client):
