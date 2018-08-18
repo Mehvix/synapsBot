@@ -29,7 +29,7 @@ days = 0
 
 # Cogs being used
 extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'hearthstone', 'music',
-              'forwarding', 'insults']
+              'forwarding']
 
 # Defines Client
 client = commands.Bot(description="synapsBot", command_prefix='.')

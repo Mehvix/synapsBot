@@ -487,6 +487,26 @@ class Verified:
                         "C:/Users/maxla/PycharmProjects/synapsBot remastered/banned_words.json")
                     await self.client.send_message(
                         message.channel, "**Banned Words List:** \n• `{}`".format("`\n• `".join(banned_words)))
+
+                if message.content.upper().startswith(".INSULT"):
+                    insults = settings.get_json("insults.json")
+                    if not message.raw_mentions:
+                        await self.client.send_message(message.channel,
+                                                       "<@{}>, {}".format(message.author.id, random.choice(insults)))
+                    else:
+                        mention = message.raw_mentions[0]
+                        if mention == self.client.user.id:
+                            await self.client.send_message(message.channel,
+                                                           "How original. No one else had thought of trying to get "
+                                                           "the bot to insult itself. I applaud your creativity. "
+                                                           "Yawn. Perhaps this is why you don't have friends. You "
+                                                           "don't add anything new to any conversation. You are more "
+                                                           "of a bot than me, predictable answers, and absolutely "
+                                                           "dull to have an actual conversation with.")
+                            return
+                        await self.client.send_message(message.channel, "<@{}>, {}".format(message.raw_mentions[0],
+                                                                                           random.choice(insults)))
+
         else:
             return
 
