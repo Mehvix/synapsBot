@@ -1,43 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import math
-import time
-import random
-import asyncio
-import aiohttp
-import curtime
-import discord
-import datetime
-import settings
-import numpy as np
-from discord.ext import commands
-
-'''''
-Make sure to change this to either 'test' or 'main'
-'''''
-settings.set_server("main")
-
-
-# Resets uptime settings
-seconds = 0
-minutes = 0
-hours = 0
-days = 0
-
-# Cogs being used
-extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'hearthstone', 'music',
-              'forwarding']
-
-# Defines Client
-client = commands.Bot(description="synapsBot", command_prefix='.')
-
-aiosession = aiohttp.ClientSession(loop=client.loop)
-
 # TODO New Commands
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+"""
 > Cool down
 > Hearthstone cards (import hearthstone)
 > Give XP for voice channel usage
@@ -54,7 +19,42 @@ aiosession = aiohttp.ClientSession(loop=client.loop)
 > minesweeper
 > who has max level/karma
 > nickname filter
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+"""
+
+import os
+import sys
+import math
+import time
+import random
+import asyncio
+import aiohttp
+import curtime
+import discord
+import datetime
+import settings
+import numpy as np
+from discord.ext import commands
+
+'''
+Make sure to change this to either 'test' or 'main'
+'''
+settings.set_server("main")
+
+
+# Resets uptime settings
+seconds = 0
+minutes = 0
+hours = 0
+days = 0
+
+# Cogs being used
+extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'hearthstone', 'music',
+              'forwarding', 'typeracer']
+
+# Defines Client
+client = commands.Bot(description="synapsBot", command_prefix='.')
+
+aiosession = aiohttp.ClientSession(loop=client.loop)
 
 # How to get custom values
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
