@@ -42,7 +42,7 @@ def set_server(server):
     global embed_color
     global server_name
     global accept_channel
-    embed_color = 0x1abc9c
+    embed_color = 0x593595
 
     if server == "test":
         print("Using TEST account")
