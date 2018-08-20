@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import json
+import zalgo
 import karma
 import random
 import discord
@@ -20,6 +21,7 @@ clock_emoji = ["🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "
 class Verified:
     def __init__(self, client):
         self.client = client
+        self.session = self.client.http.session
 
     print("Loading Verified...")
 
@@ -67,6 +69,12 @@ class Verified:
                                 "https://www.urbandictionary.com/add.php?word=" + target_def_link_format)
 
                 # 8Ball Code
+                if message.content.upper().startswith(".ZALGO "):
+                    target = message.content[7:]
+                    intensity = {"up": 18, "mid": 18, "down": 18}
+                    await self.client.send_message(message.channel, zalgo.zalgo(target, intensity))
+
+                # 8Ball Code
                 if message.content.upper().startswith(".8BALL"):
                     print("{0}: {1} requested '.8BALL'".format(curtime.get_time(), user_name))
 
@@ -107,17 +115,23 @@ class Verified:
                     fp = random.choice(os.listdir("media/bears"))
                     await self.client.send_file(message.channel, "media/bears/{}".format(fp))
 
-                    # Gets random Sam picture
+                # Gets random Sam picture
                 if message.content.upper().startswith(".SAM"):
                     print("{0}: {1} sent a sam".format(curtime.get_time(), user_name))
                     fp = random.choice(os.listdir("media/sams"))
                     await self.client.send_file(message.channel, "media/sams/{}".format(fp))
 
-                    # Gets random Apu picture
+                # Gets random Apu picture
                 if message.content.upper().startswith(".APU"):
                     print("{0}: {1} sent a apu".format(curtime.get_time(), user_name))
                     fp = random.choice(os.listdir("media/apus"))
                     await self.client.send_file(message.channel, "media/apus/{}".format(fp))
+
+                if message.content.upper() ==  ".CAT":
+                    search = "https://nekos.life/api/v2/img/meow"
+                    async with self.session.get(search) as r:
+                        result = await r.json()
+                    await self.client.send_message(message.channel, result['url'])
 
                 # Server Info
                 if message.content.upper().startswith(".SERVERINFO"):
