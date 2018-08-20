@@ -29,6 +29,7 @@ class Notifications:
         embed.add_field(name="Account Created at:", value=member_created_at_date, inline=False)
         embed.add_field(name="User Avatar URL", value=member.avatar_url)
         embed.set_thumbnail(url=avatar)
+        embed.set_footer(text="We now have %s members!" % (len(member.server.members)))
         await self.client.send_message(
             discord.Object(id=settings.notification_channel), embed=embed)
 
