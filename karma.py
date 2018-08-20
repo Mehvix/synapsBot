@@ -150,26 +150,28 @@ class Karma:
         # Checks Karma / Level
         new_level = author_level + 1
         if author_karma >= 100 * new_level:
+            role_name = "Level {}".format(new_level)
+            level_role = discord.utils.get(message.server.roles, name=role_name)
+
+            old_role = "Level {}".format(new_level - 1)
+            old_level_role = discord.utils.get(message.server.roles, name=old_role)
+
+            set_level(user_id, new_level)
+
             try:
-                role_name = "Level {}".format(new_level)
-                level_role = discord.utils.get(message.server.roles, name=role_name)
-
-                old_role = "Level {}".format(new_level - 1)
-                old_level_role = discord.utils.get(message.server.roles, name=old_role)
-
-                set_level(user_id, new_level)
-                try:
-                    await self.client.remove_roles(message.author, old_level_role)
-                    await self.client.add_roles(message.author, level_role)
-                    await self.client.send_message(message.channel, "Congrats, <@{0}>! You're now level `{1}`.  :tada: "
-                                                   .format(user_id, new_level))
-                    print("{0}: {1} leveled up to {2}".format(curtime.get_time(), user_id, get_level(user_id)))
-                except AttributeError:
-                    print("{0}: {1} leveled up to {2}, but the server doesn't have that role the level name!"
-                          .format(curtime.get_time(), user_id, new_level))
+                await self.client.remove_roles(message.author, old_level_role)
+                await self.client.add_roles(message.author, level_role)
             except AttributeError:
-                print("{0}: {1} leveled up to {2}, but the server doesn't have that role the level name!"
-                      .format(curtime.get_time(), user_id, new_level))
+                role = await self.client.create_role(message.server, name="Level" + new_level)
+                await self.client.add_roles(message.author, role)
+
+                user = await self.client.get_user_info(message.server.owner)
+                await self.client.send_message(user, "The bot manually created a role for <@{}> when they leveled up".
+                                               format(user_id))
+
+            await self.client.send_message(message.channel, "Congrats, <@{0}>! You're now level `{1}`.  :tada: "
+                                           .format(user_id, new_level))
+            print("{0}: {1} leveled up to {2}".format(curtime.get_time(), user_name, get_level(user_id)))
 
 
 def user_add_karma(user_id: int, karma: int):
