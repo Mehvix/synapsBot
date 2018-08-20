@@ -25,9 +25,11 @@ class Typeracer:
             async with self.session.get(search) as r:
                 result = await r.json()
             try:
-                embed = discord.Embed(description="[Add {0} on Typeracer]("
-                                                  "https://data.typeracer.com/pit/friend_request?user={0})".format(user)
-                                      , color=settings.embed_color)
+                embed = discord.Embed(
+                    description="• [Add {0} on Typeracer](https://data.typeracer.com/pit/friend_request?user={0})\n"
+                                "• [View {0}'s Profile](https://data.typeracer.com/pit/profile?user={0})\n• [View {0}'s"
+                                " Game History](https://data.typeracer.com/pit/race_history?user={0}&n=100&startDate=)"
+                                "".format(user), color=settings.embed_color)
                 embed.set_author(name="{}'s Type Racer Stats:".format(user))
                 embed.add_field(name="Name:", value=result["name"] + " " + result["lastName"], inline=True)
                 embed.add_field(name="Country:", value=str(result["country"]).upper(), inline=True)
@@ -39,7 +41,8 @@ class Typeracer:
                 # embed.add_field(name="Recent WPM:", value=str(result["tstats"]["recentScores"]), inline=True)
                 embed.add_field(name="Average Recent WPM:", value=str(result["tstats"]["recentAvgWpm"])[:10],
                                 inline=True)
-                embed.set_thumbnail(url="https://data.typeracer.com/public/images/avatars/{}".format(result["avatar"]))
+                image = "https://data.typeracer.com/misc/badge?user=" + user
+                embed.set_thumbnail(url=image)
 
                 await self.client.send_message(message.channel, embed=embed)
             except TypeError:
