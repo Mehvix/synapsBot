@@ -3,22 +3,23 @@
 
 # TODO New Commands
 """
-> Cool down
-> Hearthstone cards (import hearthstone)
-> Give XP for voice channel usage
-> Remind me in x minutes
-> GUI
-> logging
-> seeb server
-> music bot
-> twitter bot (leaks)
-> slots
-> poker
-> .nick @user "newnickname"
-> .servers (bot servers are in)
-> minesweeper
-> who has max level/karma
-> nickname filter
+• Cool down
+• Hearthstone cards (import hearthstone)
+• Give XP for voice channel usage
+• Remind me in x minutes
+• GUI
+• logging
+• seeb server
+• music bot
+• twitter bot (leaks)
+• slots
+• poker
+• minesweeper
+• who has max level/karma
+• nickname filter
+• black jack
+• dog
+• copy pastas
 """
 
 import os

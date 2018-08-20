@@ -171,7 +171,7 @@ class Admin:
                         await self.client.change_nickname(nick_target, nick_name)
                         print("{0}: {1} named {2} to {3}".format(curtime.get_time(), user_name, nick_target, nick_name))
 
-                        await self.client.send_message(message.channel, "Set {}'s nick to `{}`".format(nick_target, nick_name))
+                        await self.client.send_message(message.channel, "Set `{}`'s nick to `{}`".format(nick_target, nick_name))
 
         else:
             return
