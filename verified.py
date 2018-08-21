@@ -71,7 +71,7 @@ class Verified:
                 # 8Ball Code
                 if message.content.upper().startswith(".ZALGO "):
                     target = message.content[7:]
-                    intensity = {"up": 18, "mid": 18, "down": 18}
+                    intensity = {"up": 10, "mid": 10, "down": 10}
                     await self.client.send_message(message.channel, zalgo.zalgo(target, intensity))
 
                 # 8Ball Code
