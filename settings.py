@@ -25,23 +25,9 @@ def get_version():
 
 
 def set_server(server):
-    global token
-    global upvote_emoji
-    global downvote_emoji
-    global notification_channel
-    global member_role_id
-    global member_role_name
-    global shut_up_role
-    global admin_role_name
-    global verified_role_id
-    global admin_role_id
-    global verified_role_name
-    global pokemon_channel
-    global mute_role_id
-    global mute_role_name
-    global embed_color
-    global server_name
-    global accept_channel
+    global token, upvote_emoji, downvote_emoji, notification_channel, member_role_id, member_role_name, shut_up_role, \
+        admin_role_name, verified_role_id, admin_role_id, verified_role_name, pokemon_channel, mute_role_id, \
+        mute_role_name, embed_color, server_name, accept_channel, canvas_channel
     embed_color = 0x593595
 
     if server == "test":
@@ -63,6 +49,7 @@ def set_server(server):
         mute_role_name = "Text Muted"
         server_name = "test"
         accept_channel = None
+        canvas_channel = None
         return
     if server == "main":
         print("Using MAIN account")
@@ -83,5 +70,6 @@ def set_server(server):
         mute_role_name = "Text Muted"
         server_name = "main"
         accept_channel = "356456207185215491"
+        canvas_channel = "482084251702132746"
     else:
         sys.exit("No Server (main/test)")
