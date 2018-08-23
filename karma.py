@@ -53,10 +53,11 @@ class Karma:
             print("{0}: DIDN'T change {1}'s karma because they're in the Pokemon Channel!"
                   .format(curtime.get_time(), user))
 
+
     async def on_reaction_remove(self, reaction, user):
         emoji_used = str(reaction.emoji)
-        formated_up = "<{}>".format(upvote_emoji)
-        formated_down = "<{}>".format(downvote_emoji)
+        formated_up = "<{}>".format(settings.upvote_emoji)
+        formated_down = "<{}>".format(settings.downvote_emoji)
 
         if reaction.message.channel.id != settings.pokemon_channel:
             if emoji_used == formated_up:
