@@ -127,11 +127,17 @@ class Verified:
                     fp = random.choice(os.listdir("media/apus"))
                     await self.client.send_file(message.channel, "media/apus/{}".format(fp))
 
-                if message.content.upper() ==  ".CAT":
+                if message.content.upper() == ".CAT":
                     search = "https://nekos.life/api/v2/img/meow"
                     async with self.session.get(search) as r:
                         result = await r.json()
                     await self.client.send_message(message.channel, result['url'])
+
+                if message.content.upper() == ".DOG":
+                    search = "https://dog.ceo/api/breeds/image/random"
+                    async with self.session.get(search) as r:
+                        result = await r.json()
+                    await self.client.send_message(message.channel, result['message'])
 
                 # Server Info
                 if message.content.upper().startswith(".SERVERINFO"):

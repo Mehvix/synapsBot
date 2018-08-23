@@ -18,8 +18,11 @@
 • who has max level/karma
 • nickname filter
 • black jack
-• dog
-• copy pastas
+• .dog
+• .copypasta
+• clever bot
+• stats
+• update help command(s)
 """
 
 import os
@@ -50,7 +53,7 @@ days = 0
 
 # Cogs being used
 extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'hearthstone', 'music',
-              'forwarding', 'typeracer']
+              'forwarding', 'typeracer', "canvas"]
 
 # Defines Client
 client = commands.Bot(description="synapsBot", command_prefix='.')
