@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-  'forwarding.py' is port of a port from another bot:
-  Original:   https://github.com/jacobcheatley/dankbot
-  Import:     https://github.com/aikaterna/aikaterna-cogs/blob/master/away/away.py
+'forwarding.py' is port of a port from another bot:
+Original:   https://github.com/jacobcheatley/dankbot
+Import:     https://github.com/aikaterna/aikaterna-cogs/blob/master/away/away.py
 """
 
 
