@@ -73,11 +73,14 @@ class Basic:
                 embed.add_field(name=".bear", value="Random bear gif", inline=False)
                 embed.add_field(name=".sam", value="Random Sam picture", inline=False)
                 embed.add_field(name=".apu", value="Random Apu picture", inline=False)
+                embed.add_field(name=".dog", value="Random dog pic", inline=False)
+                embed.add_field(name=".cat", value="Random cat pic", inline=False)
                 embed.add_field(name=".serverinfo", value="Information about the server", inline=False)
                 embed.add_field(name=".emotes", value="All custom emotes the server uses", inline=False)
                 embed.add_field(name=".beta", value="Gain access to the beta testing server", inline=False)
-                embed.add_field(name=".whois +@name", value="Information about a user", inline=False)
+                embed.add_field(name=".whois @name", value="Information about a user", inline=False)
                 embed.add_field(name=".banlist", value="Lists all members who are banned from the server", inline=False)
+                embed.add_field(name=".invite @name", value="The bot DM's @name with an invite to the server", inline=False)
                 embed.add_field(name=".createinvite", value="Creates a invite that lasts forever and is unique",
                                 inline=False)
                 embed.add_field(name=".roulette", value="Gamble your karma", inline=False)
@@ -85,6 +88,10 @@ class Basic:
                 embed.add_field(name=".karma @name", value="(@Name's) karma", inline=False)
                 embed.add_field(name=".level", value="Your level", inline=False)
                 embed.add_field(name=".level @name", value="(@Name's) level", inline=False)
+                embed.add_field(name=".tr (typeracer name)", value="(Typeracer name's) data", inline=False)
+                embed.add_field(name=".zalgo (text)", value="z̓̅̆a̭ͨ̍ḽ̣̤ĝ̍ͥoͨ̓̏'͌̔̈s̎ͣͩ (text)", inline=False)
+                embed.add_field(name=".bannedwords", value="Returns what words are banned in the server", inline=False)
+                embed.add_field(name=".insult @name", value="The bot insults whoever you tag", inline=False)
                 embed.set_footer(text="You can also try `.help basic`, `.help admin`, & `.help karma`")
                 await self.client.send_message(message.channel, embed=embed)
                 return
@@ -95,7 +102,8 @@ class Basic:
                 embed.add_field(name=".givekarma", value="Abuse of this will get your admin revoked", inline=False)
                 embed.add_field(name=".mute @name", value="Adds muted role to @name", inline=False)
                 embed.add_field(name=".unmute @name", value="Removes the muted role of @name", inline=False)
-                embed.add_field(name=".banword +word", value="Adds(word) to list of banned words", inline=False)
+                embed.add_field(name=".banword +word", value="Adds (word) to list of banned words", inline=False)
+                embed.add_field(name=".nick @name", value="Changes @name's nick", inline=False)
                 embed.add_field(name=".ban @name", value="Bans (name)", inline=False)
                 embed.add_field(name=".unban @name", value="Unbans (name)", inline=False)
                 embed.add_field(name=".kick @name", value="Kicks (@name)", inline=False)
@@ -114,12 +122,20 @@ class Basic:
                 embed.set_footer(text="You can also try `.help verified`, `.help admin`, & `.help basic`")
                 await self.client.send_message(message.channel, embed=embed)
                 return
+            if message.content.upper().startswith(".HELP CANVAS"):
+                embed = discord.Embed(title="Canvas Help:", color=settings.embed_color)
+                embed.add_field(name=".draw [LETTER][NUMBER] [COLOR]", value="Paints tile in row [letter] and line [number] to color [color]", inline=False)
+                embed.add_field(name="Example:", value=".draw a3 red", inline=False)
+                embed.set_footer(text="You can also try `.help verified`, `.help admin`, & `.help basic`")
+                await self.client.send_message(message.channel, embed=embed)
+                return
             else:
                 print("{0}: {1} requested '.HELP'".format(curtime.get_time(), user_name))
                 embed = discord.Embed(title="Help Commands", color=settings.embed_color)
                 embed.add_field(name=".help basic", value="Commands everyone can use.", inline=False)
                 embed.add_field(name=".help verified", value="Commands only verified members can use.", inline=False)
                 embed.add_field(name=".help admin", value="Commands only admins can use.", inline=False)
+                embed.add_field(name=".help canvas", value="Commands for the Canvas channel.", inline=False)
                 await self.client.send_message(message.channel, embed=embed)
 
         if message.content.upper().startswith(".MENTION"):
