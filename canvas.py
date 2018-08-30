@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import json
+import basic
+import random
 import discord
 import asyncio
 import settings
@@ -15,8 +17,7 @@ blue = ":blue:481329615483437057"
 indigo = ":indigo:481329772153012225"
 violet = ":violet:481329771809210369"
 white = ":white:481329771700289538"
-
-emoji_color = ""
+black = ":black:484770699790254091"
 
 
 class Canvas:
@@ -25,61 +26,93 @@ class Canvas:
 
     print("Loading Canvas...")
 
+    async def get_canvas(self, channel_id):
+        with open('canvas.json') as fp:
+            file_content = json.load(fp)
+        global a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+
+        channel = self.client.get_channel(settings.canvas_channel)
+
+        a = await self.client.send_message(channel, "{}".format(" ".join(file_content['a'])))
+        b = await self.client.send_message(channel, "{}".format(" ".join(file_content['b'])))
+        c = await self.client.send_message(channel, "{}".format(" ".join(file_content['c'])))
+        d = await self.client.send_message(channel, "{}".format(" ".join(file_content['d'])))
+        e = await self.client.send_message(channel, "{}".format(" ".join(file_content['e'])))
+        f = await self.client.send_message(channel, "{}".format(" ".join(file_content['f'])))
+        g = await self.client.send_message(channel, "{}".format(" ".join(file_content['g'])))
+        h = await self.client.send_message(channel, "{}".format(" ".join(file_content['h'])))
+        i = await self.client.send_message(channel, "{}".format(" ".join(file_content['i'])))
+        j = await self.client.send_message(channel, "{}".format(" ".join(file_content['j'])))
+        k = await self.client.send_message(channel, "{}".format(" ".join(file_content['k'])))
+        l = await self.client.send_message(channel, "{}".format(" ".join(file_content['l'])))
+        m = await self.client.send_message(channel, "{}".format(" ".join(file_content['m'])))
+        n = await self.client.send_message(channel, "{}".format(" ".join(file_content['n'])))
+        o = await self.client.send_message(channel, "{}".format(" ".join(file_content['o'])))
+        p = await self.client.send_message(channel, "{}".format(" ".join(file_content['p'])))
+        q = await self.client.send_message(channel, "{}".format(" ".join(file_content['q'])))
+        r = await self.client.send_message(channel, "{}".format(" ".join(file_content['r'])))
+        s = await self.client.send_message(channel, "{}".format(" ".join(file_content['s'])))
+        t = await self.client.send_message(channel, "{}".format(" ".join(file_content['t'])))
+        u = await self.client.send_message(channel, "{}".format(" ".join(file_content['u'])))
+        v = await self.client.send_message(channel, "{}".format(" ".join(file_content['v'])))
+        w = await self.client.send_message(channel, "{}".format(" ".join(file_content['w'])))
+        x = await self.client.send_message(channel, "{}".format(" ".join(file_content['x'])))
+        y = await self.client.send_message(channel, "{}".format(" ".join(file_content['y'])))
+        z = await self.client.send_message(channel, "{}".format(" ".join(file_content['z'])))
+        await self.client.send_message(channel,
+                                       ":black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :black_large_square: :one: :one: :one: :one: :one: :one: :one: :one: :one: :one: :two: :two: :two: :two: :two: :two:")
+        await self.client.send_message(channel,
+                                       ":black_large_square: :zero: :one: :two: :three: :four: :five: :six: :seven: :eight: :nine: :zero: :one: :two: :three: :four: :five: :six: :seven: :eight: :nine: :zero: :one: :two: :three: :four: :five:")
+        await self.client.send_message(channel,
+                                       "**Colors:**\n<{}> = Red\n<{}> = Orange\n<{}> = Yellow\n<{}> = Green\n<{}> = Blue\n<{}> = Indigo\n<{}> = Violet\n<{}> = White\n<{}> = Black".format(
+                                           red, orange, yellow, green, blue, indigo, violet, white, black))
+        return
+
+    async def on_ready(self):
+        channel = self.client.get_channel(settings.canvas_channel)
+        messages = []
+
+        try:
+            async for message in self.client.logs_from(channel, limit=32):
+                messages.append(message)
+            await self.client.delete_messages(messages)
+        except discord.ClientException:
+            pass  # channel has no messages
+
+        embed = discord.Embed(description="Client was (re)started")
+        embed.add_field(name="Updating Canvas..", value=" " )
+        await self.client.send_message(channel, embed)
+        await self.get_canvas(channel)
+
     async def on_message(self, message):
+        global emoji_color, line_content
+        user_id = message.author.id
+
         if message.channel.id == settings.canvas_channel:
-            if message.content.upper() == ".DRAW BLANK":
-                if message.author.server_permissions.administrator:
-
-                    await self.client.delete_message(message)
-                    global emoji_color, line_content, a, b, c, d, e, f, g, h, i, j
-
-                    a = await self.client.send_message(message.channel, "🇦 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    b = await self.client.send_message(message.channel, "🇧 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    c = await self.client.send_message(message.channel, "🇨 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    d = await self.client.send_message(message.channel, "🇩 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    e = await self.client.send_message(message.channel, "🇪 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    f = await self.client.send_message(message.channel, "🇫 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    g = await self.client.send_message(message.channel, "🇬 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    h = await self.client.send_message(message.channel, "🇭 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    i = await self.client.send_message(message.channel, "🇮 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    j = await self.client.send_message(message.channel, "🇯 <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}> <{0}>".format(white))
-                    await self.client.send_message(message.channel, ":black_large_square: :zero: :one: :two: :three: :four: :five: :six: :seven: :eight: :nine:")
-                    await self.client.send_message(message.channel, "**Colors:**\n<{}> = Red\n<{}> = Orange\n<{}> = Yellow\n<{}> = Green\n<{}> = Blue\n<{}> = Indigo\n<{}> = Violet\n<{}> = White".format(red, orange, yellow, green, blue, indigo, violet, white))
-                    return
-
             if message.content.upper() == ".DRAW SAVED":
                 if message.author.server_permissions.administrator:
-
                     await self.client.delete_message(message)
-
-                    with open('canvas.json') as fp:
-                        content = json.load(fp)
-
-                    a = await self.client.send_message(message.channel, "{}".format(" ".join(content['a'])))
-                    b = await self.client.send_message(message.channel, "{}".format(" ".join(content['b'])))
-                    c = await self.client.send_message(message.channel, "{}".format(" ".join(content['c'])))
-                    d = await self.client.send_message(message.channel, "{}".format(" ".join(content['d'])))
-                    e = await self.client.send_message(message.channel, "{}".format(" ".join(content['e'])))
-                    f = await self.client.send_message(message.channel, "{}".format(" ".join(content['f'])))
-                    g = await self.client.send_message(message.channel, "{}".format(" ".join(content['g'])))
-                    h = await self.client.send_message(message.channel, "{}".format(" ".join(content['h'])))
-                    i = await self.client.send_message(message.channel, "{}".format(" ".join(content['i'])))
-                    j = await self.client.send_message(message.channel, "{}".format(" ".join(content['j'])))
-                    await self.client.send_message(message.channel,
-                                                   ":black_large_square: :zero: :one: :two: :three: :four: :five: :six: :seven: :eight: :nine:")
-                    await self.client.send_message(message.channel,
-                                                   "**Colors:**\n<{}> = Red\n<{}> = Orange\n<{}> = Yellow\n<{}> = Green\n<{}> = Blue\n<{}> = Indigo\n<{}> = Violet\n<{}> = White".format(
-                                                       red, orange, yellow, green, blue, indigo, violet, white))
+                    await self.get_canvas(settings.canvas_channel)
                     return
 
-            if message.content.upper().startswith(".DRAW "):
+            else:
+                if user_id == self.client.user.id:
+                    return
+
                 args = str(message.content).split(" ")
 
-                pos = args[1]
-                color = args[2]
+                try:
+                    pos = args[0]
+                    color = args[1]
 
-                posy = pos[0]  # A
-                posx = int(pos[1]) + 1  # 4
+                    posy = pos[0]  # A
+                    posx = int(pos[1:]) + 1  # 4
+                except:
+                    user = await self.client.get_user_info(user_id)
+                    await self.client.send_message(user,
+                                                   "Your message was incorrectly formatted! It should look like `.draw a3 red` or .`draw g0 blue`")
+                    await self.client.delete_message(message)
+                    return
 
                 print("COLOR:" + color)
                 print("POSX: {}".format(posx))
@@ -101,9 +134,12 @@ class Canvas:
                     emoji_color = indigo
                 if color.lower() == "violet":
                     emoji_color = violet
-                if emoji_color == "":
+                if color.lower() == "black":
+                    emoji_color = black
+                if emoji_color is None:
                     user = await self.client.get_user_info(user_id)
-                    await self.client.send_message(user, "Your message was incorrectly formatted! It should look like `.draw a3 red` or .`draw g0 blue`")
+                    await self.client.send_message(user,
+                                                   "Your message was incorrectly formatted! It should look like `.draw a3 red` or .`draw g0 blue`")
                     return
 
                 with open('canvas.json') as fp:
@@ -140,15 +176,62 @@ class Canvas:
                     if posy.lower() == "j":
                         line_content = content['j']
                         line = j
-                except NameError as e:
+                    if posy.lower() == "k":
+                        line_content = content['k']
+                        line = k
+                    if posy.lower() == "l":
+                        line_content = content['l']
+                        line = l
+                    if posy.lower() == "m":
+                        line_content = content['m']
+                        line = m
+                    if posy.lower() == "n":
+                        line_content = content['n']
+                        line = n
+                    if posy.lower() == "o":
+                        line_content = content['o']
+                        line = o
+                    if posy.lower() == "p":
+                        line_content = content['p']
+                        line = p
+                    if posy.lower() == "q":
+                        line_content = content['q']
+                        line = q
+                    if posy.lower() == "r":
+                        line_content = content['r']
+                        line = r
+                    if posy.lower() == "s":
+                        line_content = content['s']
+                        line = s
+                    if posy.lower() == "t":
+                        line_content = content['t']
+                        line = t
+                    if posy.lower() == "u":
+                        line_content = content['u']
+                        line = u
+                    if posy.lower() == "v":
+                        line_content = content['v']
+                        line = v
+                    if posy.lower() == "w":
+                        line_content = content['w']
+                        line = w
+                    if posy.lower() == "x":
+                        line_content = content['x']
+                        line = x
+                    if posy.lower() == "y":
+                        line_content = content['y']
+                        line = y
+                    if posy.lower() == "z":
+                        line_content = content['z']
+                        line = z
+
+                except (TypeError, NameError) as error:
                     messages = []
-                    with open('canvas.json') as fp:
-                        content = json.load(fp)
                     async for message in self.client.logs_from(message.channel, limit=30):
                         messages.append(message)
                     await self.client.delete_messages(messages)
 
-                    await self.client.send_message(message.channel, "ERROR: `{}`\nReloading Canvas...".format(e))
+                    await self.client.send_message(message.channel, "ERROR: `{}`\nReloading Canvas...".format(error))
 
                     embed = discord.Embed(title="Canvas Help:", color=settings.embed_color)
                     embed.add_field(name=".draw [LETTER][NUMBER] [COLOR]",
@@ -158,27 +241,16 @@ class Canvas:
                     embed.set_footer(text="You can also try `.help verified`, `.help admin`, & `.help basic`")
                     await self.client.send_message(message.channel, embed=embed)
 
-                    a = await self.client.send_message(message.channel, "{}".format(" ".join(content['a'])))
-                    b = await self.client.send_message(message.channel, "{}".format(" ".join(content['b'])))
-                    c = await self.client.send_message(message.channel, "{}".format(" ".join(content['c'])))
-                    d = await self.client.send_message(message.channel, "{}".format(" ".join(content['d'])))
-                    e = await self.client.send_message(message.channel, "{}".format(" ".join(content['e'])))
-                    f = await self.client.send_message(message.channel, "{}".format(" ".join(content['f'])))
-                    g = await self.client.send_message(message.channel, "{}".format(" ".join(content['g'])))
-                    h = await self.client.send_message(message.channel, "{}".format(" ".join(content['h'])))
-                    i = await self.client.send_message(message.channel, "{}".format(" ".join(content['i'])))
-                    j = await self.client.send_message(message.channel, "{}".format(" ".join(content['j'])))
-                    await self.client.send_message(message.channel,
-                                                   ":black_large_square: :zero: :one: :two: :three: :four: :five: :six: :seven: :eight: :nine:")
-                    await self.client.send_message(message.channel,
-                                                   "**Colors:**\n<{}> = Red\n<{}> = Orange\n<{}> = Yellow\n<{}> = Green\n<{}> = Blue\n<{}> = Indigo\n<{}> = Violet\n<{}> = White".format(
-                                                       red, orange, yellow, green, blue, indigo, violet, white))
+                    await get_canvas(settings.canvas_channel)
                     return
 
                 if not line_content:
-                    user = await self.client.get_user_info(user_id)
-                    await self.client.send_message(user, "Your message was incorrectly formatted! It should look like `.draw a3 red` or .`draw g0 blue`")
-                    return
+                    if message.server.owner.id != user_id:
+                        user = await self.client.get_user_info(user_id)
+                        await self.client.send_message(user, "Your message was incorrectly formatted! It should look like `.draw a3 red` or .`draw g0 blue`")
+                        return
+                    else:
+                        await self.client.delete_message(message)
 
                 old_content = line_content
                 print("Old content: {}".format(old_content))
@@ -206,13 +278,6 @@ class Canvas:
                 await self.client.delete_message(message)
 
                 return
-            else:
-                if message.author.id == self.client.user.id:
-                    pass
-                else:
-                    await self.client.delete_message(message)
-                    user = await self.client.get_user_info(message.author.id)
-                    await self.client.send_message(user, "Your message was incorrectly formatted! It should look like `.draw a3 red` or .`draw g0 blue`")
 
 
 def setup(client):
