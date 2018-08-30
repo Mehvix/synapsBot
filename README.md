@@ -74,3 +74,15 @@ Host file. Holds a few commands, such as `.ping`  but not much else.
 ### [verified.py](https://github.com/Mehvix/synapsBot/blob/master/verified.py)
 
 Verified-exclusive commands (cool-kid stuff.)
+
+### [zalgo.py](https://github.com/Mehvix/synapsBot/blob/master/zalgo.py)
+
+For generating z͗̎͟aͫͯ́l͍̩̔ġ͘͞o͌ͬ̏҉̴̡̧ text with zalgo command in .verified
+
+### [typeracer.py](https://github.com/Mehvix/synapsBot/blob/master/typeracer.py)
+
+Gets stats for a user's typeracer.com account
+
+### [canvas.py](https://github.com/Mehvix/synapsBot/blob/master/canvas.py)
+
+It's like [reddit.com/r/place](https://www.reddit.com/r/place/) but for discord and a lot smaller
