@@ -1,3 +1,5 @@
+requests
+async
 numpy
 aiohttp
 youtube_dl
