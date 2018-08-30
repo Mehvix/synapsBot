@@ -19,10 +19,14 @@
 • nickname filter
 • black jack
 • .dog
-• .copypasta
+• .copypasta (from r/copypasta)
 • clever bot
 • stats
 • update help command(s)
+• .aidan
+• .aj
+• https://i.redd.it/4iklecheyw601.jpg
+• hearthstone stats
 """
 
 import os
@@ -52,7 +56,7 @@ hours = 0
 days = 0
 
 # Cogs being used
-extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'hearthstone', 'music',
+extensions = ['admin', 'karma', 'basic', 'notifications', 'verified', 'createpoll', 'music',
               'forwarding', 'typeracer', "canvas"]
 
 # Defines Client

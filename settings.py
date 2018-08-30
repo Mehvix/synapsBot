@@ -49,7 +49,7 @@ def set_server(server):
         mute_role_name = "Text Muted"
         server_name = "test"
         accept_channel = None
-        canvas_channel = None
+        canvas_channel = "484772795687895041"
         return
     if server == "main":
         print("Using MAIN account")
