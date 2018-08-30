@@ -53,7 +53,7 @@ class Createpoll:
                 except AttributeError:
                     await self.client.send_message(
                         message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
-                            message.author.id))
+                            user_id))
                     return
 
                 options_embed = discord.Embed(title="\u200b", color=settings.embed_color)
@@ -84,7 +84,7 @@ class Createpoll:
                 except AttributeError:
                     await self.client.send_message(
                         message.channel, "<@{}> didn't respond fast enough, so the poll was cancelled".format(
-                            message.author.id))
+                            user_id))
                     return
 
                 # Option debugging
@@ -122,7 +122,7 @@ class Createpoll:
                     await self.client.send_message(
                         message.channel,
                         "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
-                            message.author.id))
+                            user_id))
                     return
 
                 two_embed = discord.Embed(title="\u200b", color=settings.embed_color)
@@ -154,7 +154,7 @@ class Createpoll:
                     await self.client.send_message(
                         message.channel,
                         "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
-                            message.author.id))
+                            user_id))
                     return
 
                 if poll_options >= 3:
@@ -188,7 +188,7 @@ class Createpoll:
                         await self.client.send_message(
                             message.channel,
                             "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
-                                message.author.id))
+                                user_id))
                         return
 
                     if poll_options >= 4:
@@ -222,7 +222,7 @@ class Createpoll:
                             await self.client.send_message(
                                 message.channel,
                                 "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
-                                    message.author.id))
+                                    user_id))
                             return
 
                         if poll_options >= 5:
@@ -259,7 +259,7 @@ class Createpoll:
                                 await self.client.send_message(
                                     message.channel,
                                     "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format(
-                                        message.author.id))
+                                        user_id))
                                 return
 
                             if poll_options >= 6:
@@ -297,7 +297,7 @@ class Createpoll:
                                     await self.client.send_message(
                                         message.channel,
                                         "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
-                                        (message.author.id))
+                                        (user_id))
                                     return
 
                                 if poll_options >= 7:
@@ -335,7 +335,7 @@ class Createpoll:
                                         await self.client.send_message(
                                             message.channel,
                                             "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
-                                            (message.author.id))
+                                            (user_id))
                                         return
 
                                     if poll_options >= 8:
@@ -376,7 +376,7 @@ class Createpoll:
                                             await self.client.send_message(
                                                 message.channel,
                                                 "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
-                                                (message.author.id))
+                                                (user_id))
                                             return
 
                                         if poll_options >= 9:
@@ -419,7 +419,7 @@ class Createpoll:
                                                 await self.client.send_message(
                                                     message.channel,
                                                     "<@{}> DIDN'T respond fast enough, so the poll was cancelled".format
-                                                    (message.author.id))
+                                                    (user_id))
                                                 return
 
                                             if poll_options >= 10:
@@ -465,7 +465,7 @@ class Createpoll:
                                                     await self.client.send_message(message.channel,
                                                                                    "<@{}> DIDN'T respond fast enough, so the"
                                                                                    " poll was cancelled".format(
-                                                                                       message.author.id))
+                                                                                       user_id))
                                                     return
 
                                                 await asyncio.sleep(.1)
