@@ -8,9 +8,11 @@ import json
 import zalgo
 import karma
 import random
+import string
 import discord
 import asyncio
 import curtime
+import requests
 import settings
 from discord.ext import commands
 from urbandictionary_top import udtop
@@ -33,7 +35,7 @@ class Verified:
         author_level = karma.get_level(user_id)
         author_karma = karma.get_karma(user_id)
 
-        if message.server:
+        if message.server and message.author.roles:
             if settings.verified_role_id in [role.id for role in message.author.roles]:
                 # UD Code
                 if message.content.upper().startswith(".UD"):
@@ -42,7 +44,7 @@ class Verified:
 
                     if "MAGGIE" in message.content.upper():  # Hey don't worry about these couple of lines
                         print("{0}: {1}  requested the UD for Maggie".format(curtime.get_time(), user_name))
-                        embed = discord.Embed(title="Definition Page", url="https://goo.gl/j2DX9N", color=embed_color)
+                        embed = discord.Embed(title="Definition Page", url="https://goo.gl/j2DX9N", color=settings.embed_color)
                         embed.set_author(name="Definition for Maggie", url="https://goo.gl/j2DX9N")
                         embed.add_field(name="Definition 📚", value="Girl with YUUUG milkers. Doesnt need a coat",
                                         inline=False)
@@ -55,15 +57,15 @@ class Verified:
                         try:
                             term = udtop(target_def)
                             print("{0}: {1} requested the UD for {2}".format(curtime.get_time(), user_name, target_def))
-                            embed = discord.Embed(title="Definition Page", color=embed_color)
+                            embed = discord.Embed(title="Definition Page", color=settings.embed_color)
                             embed.set_author(name="Definition for {}".format(string.capwords(target_def)))
                             embed.add_field(name="Definition 📚", value=term.definition[:1024], inline=False)
                             embed.add_field(name="Example 💬", value=term.example[:1024], inline=True)
                             await self.client.send_message(message.channel, embed=embed)
-                        except (IndexError, AttributeError):
+                        except (IndexError, AttributeError) as error:
                             await self.client.send_message(message.channel,
-                                                           "Sorry, that word doesnt have a definition :( "
-                                                           ". You can add your own here: ")
+                                                           "ERROR `{}`\nSorry, that word doesn't have a definition :( "
+                                                           ". You can add your own here: ".format(error))
                             await self.client.send_message(
                                 message.channel,
                                 "https://www.urbandictionary.com/add.php?word=" + target_def_link_format)
@@ -155,31 +157,32 @@ class Verified:
                     em = discord.Embed(color=settings.embed_color)
                     em.set_author(name="Server Info:")
                     em.add_field(name="Server Name:", value=message.server.name)
+                    em.add_field(name="Server ID:", value=message.server.id)
                     em.add_field(name="Owner:", value=message.server.owner, inline=False)
                     em.add_field(name="Members:", value=message.server.member_count)
-                    em.add_field(name="Memebers Online:", value=online)
+                    em.add_field(name="Members Online:", value=online)
                     # em.add_field(name="Text Channels", value=str(channel_count))
                     em.add_field(name="Region:", value=message.server.region)
                     em.add_field(name="Verification Level:", value=str(message.server.verification_level).capitalize())
-                    em.add_field(name="Highest ranking role:", value=message.server.role_hierarchy[0])
-                    em.add_field(name="Number of roles:", value=str(role_count))
-                    em.add_field(name="Number of custom emotes:", value=str(emoji_count))
-                    em.add_field(name="Created At:", value=str(server_created_time)[:10])
+                    em.add_field(name="Highest Ranking Role:", value=message.server.role_hierarchy[0])
+                    em.add_field(name="Number of Roles:", value=str(role_count))
+                    em.add_field(name="Custom Emotes:", value=str(emoji_count))
+                    em.add_field(name="Time Created:", value=str(server_created_time)[:10])
                     em.add_field(name="Default Channel:", value=message.server.default_channel)
-                    em.add_field(name="AFK Time:", value=message.server.afk_timeout + "seconds")
+                    em.add_field(name="AFK Time:", value="{} seconds".format(message.server.afk_timeout))
                     em.add_field(name="AFK Channel:", value=message.server.afk_channel)
                     em.add_field(name="Voice Client:", value=message.server.voice_client)
                     em.add_field(name="Icon URL", value=message.server.icon_url)
                     em.set_thumbnail(url=message.server.icon_url)
                     em.set_author(name="\u200b")
-                    em.set_footer(text="Server ID: {}".format(message.server.id))
                     await self.client.send_message(message.channel, embed=em)
 
+                # TODO Fix this
                 # Gives Server Emojis
                 if message.content.upper().startswith(".EMOTES"):
                     print("{0}: {1} activated the EMOTES command".format(curtime.get_time(), user_name))
                     emojis = [str(x) for x in message.server.emojis]
-                    emojis_str = "".join(emojis)
+                    emojis_str = "> <".join(emojis)
                     await self.client.send_message(message.channel, emojis_str)
 
                     # Gives link to beta testing server
@@ -209,6 +212,46 @@ class Verified:
                     user = await self.client.get_user_info(user_id)
                     await self.client.send_message(user, "DM")
 
+                if message.content.upper().startswith(".COPYPASTA"):
+                    c = 0
+                    while c != 1:
+                        search = "https://www.reddit.com/r/copypasta/random/.json?limit=1"
+                        async with self.session.get("{}?limit=1".format(search)) as r:
+                            result = await r.json()
+                        if result[0]['data']['children'][0]['data']['author'] == "AutoModerator" or result[0]['data']['children'][0]['data']['pinned'] == "false":
+                            print("Post was automodpost, skipping")
+                            pass
+                        else:
+                            c = 1
+
+                    embed = discord.Embed(
+                        title=str(result[0]['data']['children'][0]['data']['title'])[:256],
+                        color=settings.embed_color, description="[View Post]({})\n {}".format(
+                            str(result[0]['data']['children'][0]['data']['url']),
+                            str(result[0]['data']['children'][0]['data']['selftext'])[:2000]))
+
+                    await self.client.send_message(message.channel, embed=embed)
+
+                if message.content.upper().startswith(".EMOJIPASTA"):
+                    c = 0
+                    while c != 1:
+                        search = "https://www.reddit.com/r/emojipasta/random/.json?limit=1"
+                        async with self.session.get("{}?limit=1".format(search)) as r:
+                            result = await r.json()
+                        if result[0]['data']['children'][0]['data']['author'] == "AutoModerator" or result[0]['data']['children'][0]['data']['pinned'] == "false":
+                            print("Post was automodpost, skipping")
+                            pass
+                        else:
+                            c = 1
+
+                    embed = discord.Embed(
+                        title=str(result[0]['data']['children'][0]['data']['title'])[:256],
+                        color=settings.embed_color, description="[View Post]({})\n {}".format(
+                            str(result[0]['data']['children'][0]['data']['url']),
+                            str(result[0]['data']['children'][0]['data']['selftext'])[:1800]))
+
+                    await self.client.send_message(message.channel, embed=embed)
+
                 # Who-is command
                 # Assistance from https://gist.github.com/Grewoss/c0601832982a99f59cc73510f7841fe4
                 if message.content.upper().startswith(".WHOIS"):
@@ -226,16 +269,16 @@ class Verified:
                             user_created_at_date = str(user.created_at).split('.', 1)[0]
                             avatar = user.avatar_url if user.avatar else user.default_avatar_url
 
-                            embed = discord.Embed(title="Username:", description=full_user_name,
-                                                  color=settings.embed_color)
+                            embed = discord.Embed(color=settings.embed_color)
                             embed.set_author(name="User Info")
-                            embed.add_field(name="Joined the server at:", value=user_join_date[:10])
-                            embed.add_field(name="User Created at:", value=user_created_at_date[:10])
+                            embed.add_field(name="Username:", value=full_user_name)
                             embed.add_field(name="User ID:", value=user.id)
+                            embed.add_field(name="Joined the server on:", value=user_join_date[:10])
+                            embed.add_field(name="User Created on:", value=user_created_at_date[:10])
                             embed.add_field(name="User Status:", value=str(user.status).title())
                             embed.add_field(name="User Game:", value=user.game)
                             embed.add_field(name="User Custom Name:", value=user.nick)
-                            embed.add_field(name="User Color:", value=user.color)
+                            embed.add_field(name="User Role Color:", value=user.color)
                             if len(user.roles) > 1:  # TIL @everyone is a role that is assigned to everyone but hidden
                                 embed.add_field(name="User Top Role (Level):", value=user.top_role)
                             else:
@@ -247,8 +290,6 @@ class Verified:
                             print("{0}: {1} requested '.WHOIS' but they DIDN'T exist".format(curtime.get_time(),
                                                                                              user_name))
                             await self.client.send_message(message.channel, "Sorry, but I couldn't find that user")
-                        finally:
-                            pass
 
                 if message.content.upper().startswith(".BANLIST"):
                     ban_list = await self.client.get_bans(message.server)

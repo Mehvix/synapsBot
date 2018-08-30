@@ -92,8 +92,13 @@ class Karma:
         user_id = message.author.id
         user_name = message.author
 
-        author_level = get_level(user_id)
-        author_karma = get_karma(user_id)
+        try:
+            author_level = get_level(user_id)
+            author_karma = get_karma(user_id)
+        except:
+            author_level = None
+            author_karma = None
+            pass  # User just joined
 
         # Because @xpoes#9244 spams the shit out of our pokemon channel
         if message.channel.id == settings.pokemon_channel:
@@ -101,8 +106,11 @@ class Karma:
                   .format(curtime.get_time(), message.author, message.content))
         else:
             user_add_karma(user_id, 1)
-            print("{0}: ADDED 1 karma to {1} for a message '{2}' in {3}"
-                  .format(curtime.get_time(), user_name, message.content, message.channel))
+            try:
+                print("{0}: ADDED 1 karma to {1} for a message '{2}' in {3}"
+                      .format(curtime.get_time(), user_name, message.content, message.channel))
+            except:
+                pass
 
         # Finds if message is a link or a file attachment (PDF, image, etc.)
         regex = re.compile(
@@ -130,8 +138,13 @@ class Karma:
                 else:
                     user_req = message.raw_mentions[0]
             print("{0}: {1} requested {2}'s level".format(curtime.get_time(), user_name, user_req))
-            await self.client.send_message(
-                message.channel, "<@{0}> has `{1}` karma".format(user_req, get_karma(user_req)))
+
+            try:
+                await self.client.send_message(
+                    message.channel, "<@{0}> has `{1}` karma".format(user_req, get_karma(user_req)))
+            except KeyError:
+                await self.client.send_message(
+                    message.channel, "<@{0}> has `0` karma".format(user_req))
 
         # Leveling
         if message.content.upper().startswith(".LEVEL"):
@@ -169,9 +182,9 @@ class Karma:
                 user = await self.client.get_user_info(message.server.owner)
                 await self.client.send_message(user, "The bot manually created a role for <@{}> when they leveled up".
                                                format(user_id))
-
-            await self.client.send_message(message.channel, "Congrats, <@{0}>! You're now level `{1}`.  :tada: "
-                                           .format(user_id, new_level))
+            if message.channel.id != settings.canvas_channel or user_id != self.client.user.id:
+                await self.client.send_message(message.channel, "Congrats, <@{0}>! You're now level `{1}`.  :tada: "
+                                               .format(user_id, new_level))
             print("{0}: {1} leveled up to {2}".format(curtime.get_time(), user_name, get_level(user_id)))
 
 
@@ -202,6 +215,7 @@ def get_karma(user_id: int):
         with open('users.json', 'r') as fp:
             users = json.load(fp)
         return users[user_id]['karma']
+
     else:
         return 0
 

@@ -3,6 +3,7 @@
 
 import os
 import sys
+import karma
 import curtime
 import discord
 import settings
@@ -18,6 +19,7 @@ class Notifications:
     print("Loading Notifications...")
 
     async def on_member_join(self, member):
+        await karma.user_add_karma(member.id, 1)
         member_created_at_date = str(member.created_at).split('.', 1)[0]
         avatar = member.avatar_url if member.avatar else member.default_avatar_url
 
