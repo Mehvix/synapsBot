@@ -54,7 +54,8 @@ class Admin:
                                                   "XDDDLOLOELELALAL\nYou can see what is banned via the `.bannedwords` "
                                                   "command.")
             return
-        if message.server and message.author.roles:
+
+        if message.author.server_permissions.administrator:
             if message.content.upper().startswith(".SERVERRULES"):
                 await self.client.delete_message(message)
                 embed = discord.Embed(title="Synaps Rules and Info",
@@ -189,11 +190,11 @@ class Admin:
                 else:
                     nick_target = message.mentions[0]
                     nick_name = message.content.split(" ")
-                    nick_name = nick_name[2]
-                    await self.client.change_nickname(nick_target, nick_name)
-                    print("{0}: {1} named {2} to {3}".format(curtime.get_time(), user_name, nick_target, nick_name))
+                    nick_name = nick_name[2:]
+                    await self.client.change_nickname(nick_target, " ".join(nick_name))
+                    print("{0}: {1} named {2} to {3}".format(curtime.get_time(), user_name, nick_target, " ".join(nick_name)))
 
-                    await self.client.send_message(message.channel, "Set `{}`'s nick to `{}`".format(nick_target, nick_name))
+                    await self.client.send_message(message.channel, "Set `{}`'s nick to `{}`".format(nick_target, " ".join(nick_name)))
 
         else:
             return

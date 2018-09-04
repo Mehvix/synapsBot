@@ -9,24 +9,23 @@
 • Remind me in x minutes
 • GUI
 • logging
-• seeb server
-• music bot
 • twitter bot (leaks)
 • slots
 • poker
 • minesweeper
 • who has max level/karma
-• nickname filter
 • black jack
-• .dog
-• .copypasta (from r/copypasta)
 • clever bot
-• stats
 • update help command(s)
 • .aidan
 • .aj
 • https://i.redd.it/4iklecheyw601.jpg
-• hearthstone stats
+• game stats
+• reddit embed
+• 8ball to Ouija
+• .announce @role announcement (dms all users in role)
+• let server owner dm users via bot
+• fix removing old role after level up
 """
 
 import os
@@ -42,6 +41,7 @@ import datetime
 import settings
 import numpy as np
 from discord.ext import commands
+
 
 '''
 Make sure to change this to either 'test' or 'main'
@@ -138,6 +138,7 @@ async def on_ready():
         await client.change_presence(game=discord.Game(name="Created by Mehvix#7172", url="https://twitch.tv/mehvix",
                                                        type=1))
     server_list = list(client.servers)
+    server_list = "test"
 
     print("============================================================")
     print("                                      ____        __")

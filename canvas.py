@@ -79,9 +79,9 @@ class Canvas:
         except discord.ClientException:
             pass  # channel has no messages
 
-        embed = discord.Embed(description="Client was (re)started")
-        embed.add_field(name="Updating Canvas..", value=" " )
-        await self.client.send_message(channel, embed)
+        embed = discord.Embed(color=settings.embed_color)
+        embed.add_field(name="Client was (re)started\nUpdating Canvas..", value="{}{}{}{}{}".format(random.choice(basic.clock_emoji), random.choice(basic.clock_emoji), random.choice(basic.clock_emoji), random.choice(basic.clock_emoji), random.choice(basic.clock_emoji)))
+        await self.client.send_message(channel, embed=embed)
         await self.get_canvas(channel)
 
     async def on_message(self, message):

@@ -228,7 +228,14 @@ class Verified:
                         title=str(result[0]['data']['children'][0]['data']['title'])[:256],
                         color=settings.embed_color, description="[View Post]({})\n {}".format(
                             str(result[0]['data']['children'][0]['data']['url']),
-                            str(result[0]['data']['children'][0]['data']['selftext'])[:2000]))
+                            str(result[0]['data']['children'][0]['data']['selftext'])[:1800]))
+
+                    if '.redd.it' or 'imgur' in result[0]['data']['children'][0]['data']['url']:
+                        embed.set_image(url=result[0]['data']['children'][0]['data']['url'])
+
+                    if len(result[0]['data']['children'][0]['data']['selftext']) > 1800:
+                        embed.set_footer(text="This post was too long to fit. Full version can be found via the 'View "
+                                              "Post' button above")
 
                     await self.client.send_message(message.channel, embed=embed)
 
@@ -249,6 +256,16 @@ class Verified:
                         color=settings.embed_color, description="[View Post]({})\n {}".format(
                             str(result[0]['data']['children'][0]['data']['url']),
                             str(result[0]['data']['children'][0]['data']['selftext'])[:1800]))
+
+                    try:
+                        # if '.redd.it' or 'imgur' in result[0]['data']['children'][0]['data']['url']:
+                        embed.set_image(url=result[0]['data']['children'][0]['data']['url'])
+                    except:
+                        pass
+
+                    if len(result[0]['data']['children'][0]['data']['selftext']) > 1800:
+                        embed.set_footer(text="This post was too long to fit. Full version can be found via the 'View "
+                                              "Post' button above")
 
                     await self.client.send_message(message.channel, embed=embed)
 
